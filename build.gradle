@@ -26,6 +26,7 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'info.picocli:picocli:3.8.2'
+    implementation 'me.tongfei:progressbar:0.7.2'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'

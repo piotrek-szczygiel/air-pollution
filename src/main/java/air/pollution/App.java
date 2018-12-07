@@ -1,8 +1,12 @@
 package air.pollution;
 
+import me.tongfei.progressbar.ProgressBar;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Command(name = "air-pollution",
         mixinStandardHelpOptions = true,
@@ -16,15 +20,22 @@ import picocli.CommandLine.Option;
         optionListHeading = "%n@|bold,underline Options:|@%n"
 )
 public class App implements Runnable {
-    @Option(names = {"-t", "--town"}, required = true, paramLabel = "TOWN", description = "town")
-    private String town;
+    @Option(names = {"-t", "--town"}, split = ",", required = true, paramLabel = "TOWN", description = "town")
+    private List<String> town = new ArrayList<>();
 
     public static void main(String[] args) {
         CommandLine.run(new App(), args);
+
     }
 
     @Override
     public void run() {
-        System.out.println("Town: " + town);
+        for (String town : ProgressBar.wrap(town, "searching...")) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 }

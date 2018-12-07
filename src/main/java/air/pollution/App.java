@@ -1,12 +1,12 @@
 package air.pollution;
 
-import me.tongfei.progressbar.ProgressBar;
+import com.google.gson.JsonSyntaxException;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.util.Date;
 
 @Command(name = "air-pollution",
         mixinStandardHelpOptions = true,
@@ -20,21 +20,75 @@ import java.util.List;
         optionListHeading = "%n@|bold,underline Options:|@%n"
 )
 public class App implements Runnable {
-    @Option(names = {"-t", "--town"}, split = ",", required = true, paramLabel = "TOWN", description = "town")
-    private List<String> town = new ArrayList<>();
+    @Option(names = {"--station"}, paramLabel = "STATION", description = "station")
+    private String paramStationName;
+
+    @Option(names = {"--date"}, paramLabel = "DATE", description = "date")
+    private Date paramDate;
+
+    @Option(names = {"--parameter"}, paramLabel = "PARAMETER", description = "parameter")
+    private String paramAirParameter;
 
     public static void main(String[] args) {
         CommandLine.run(new App(), args);
-
     }
 
     @Override
     public void run() {
-        for (String town : ProgressBar.wrap(town, "searching...")) {
+        DataCollector dataCollector = new DataCollector();
+
+        Station[] stations;
+        try {
+            stations = dataCollector.collectAllStations();
+        } catch (IOException | JsonSyntaxException ex) {
+            System.out.println("error while loading stations: " + ex);
+            return;
+        }
+
+        Station station = null;
+        if (paramStationName != null) {
+            for (Station stationIterator : stations) {
+                if (stationIterator.stationName.equals(paramStationName)) {
+                    station = stationIterator;
+                }
+            }
+        }
+
+        if (station != null) {
+            System.out.println(station.id + ": " + station.stationName + ", " + station.city.commune.communeName);
+
+            AirIndex airIndex;
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
+                airIndex = dataCollector.collectAirIndexData(station.id);
+            } catch (IOException | JsonSyntaxException ex) {
+                System.out.println("error while loading air index: " + ex);
+                return;
+            }
+
+            System.out.println("stale: " + airIndex.stIndexLevel.indexLevelName);
+
+            Sensor[] sensors;
+            try {
+                sensors = dataCollector.collectAllSensors(station.id);
+            } catch (IOException | JsonSyntaxException ex) {
+                System.out.println("error while loading sensors: " + ex);
+                return;
+            }
+
+            for (Sensor sensorIterator : sensors) {
+                System.out.println(sensorIterator.id + ": " + sensorIterator.param.paramCode);
+                SensorData sensorData;
+                try {
+                    sensorData = dataCollector.collectSensorData(sensorIterator.id);
+                } catch (IOException | JsonSyntaxException ex) {
+                    System.out.println("error while loading sensor data: " + ex);
+                    return;
+                }
+
+                System.out.println("\t" + sensorData.key + ": ");
+                for (SensorData.Value value : sensorData.values) {
+                    System.out.println("\t\t" + value.date + ": " + value.value);
+                }
             }
         }
     }

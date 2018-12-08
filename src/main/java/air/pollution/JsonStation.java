@@ -1,6 +1,6 @@
 package air.pollution;
 
-class JSONStation {
+class JsonStation {
     int id;
     String stationName;
     float gegrLat;

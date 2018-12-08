@@ -2,7 +2,7 @@ package air.pollution;
 
 import java.util.Date;
 
-class JSONSensorData {
+class JsonSensorData {
     String key;
     Value[] values;
 

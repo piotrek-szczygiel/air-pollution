@@ -1,20 +1,14 @@
 package air.pollution;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonParseException;
-import me.tongfei.progressbar.ProgressBar;
 import org.fusesource.jansi.AnsiConsole;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Command(name = "air-pollution",
         mixinStandardHelpOptions = true,
@@ -38,57 +32,63 @@ public class App implements Runnable {
 
     @Override
     public void run() {
-        SimpleDateFormat sdfNormal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Gson gson = new GsonBuilder().registerTypeAdapter(
-                Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> {
-                    String dateStr = json.getAsString();
-                    if (dateStr.contains("-")) {
-                        try {
-                            return sdfNormal.parse(dateStr);
-                        } catch (ParseException ex) {
-                            throw new JsonParseException(ex);
-                        }
-                    }
-
-                    return new Date(json.getAsJsonPrimitive().getAsLong());
-                }).create();
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.gios.gov.pl/pjp-api/rest/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create(JsonDecoder.getGson()))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
-        try {
-            AirPollutionService service = retrofit.create(AirPollutionService.class);
+        AirPollutionService service = retrofit.create(AirPollutionService.class);
+        List<JsonStation> jsonStations = service.getAllStations().blockingFirst();
 
-            List<JSONStation> stations = service.getAllStations().execute().body();
+        List<Station> stations = jsonStations
+                .stream()
+                .map(Station::new)
+                .collect(Collectors.toList());
 
-            if (stations == null) {
-                throw new IllegalArgumentException("no stations received");
-            }
+        System.out.println(stations.size() + " stations available");
 
-            System.out.println("found " + stations.size() + " stations");
-
-            for (JSONStation station : ProgressBar.wrap(stations, "loading data...")) {
-                List<JSONSensor> sensors = service.getSensors(station.id).execute().body();
-
-                if (sensors == null) {
-                    throw new IllegalArgumentException("no sensors received");
-                }
-
-                for (JSONSensor sensor : sensors) {
-                    JSONSensorData sensorData = service.getSensorData(sensor.id).execute().body();
-
-                    if (sensorData == null) {
-                        throw new IllegalArgumentException("no sensor data received");
-                    }
-                }
-            }
-
-        } catch (Exception ex) {
-            System.out.println("error: " + ex);
-        } finally {
-            System.out.println("finished");
+/*        List<Observable<List<JsonSensor>>> sensorRequests = new ArrayList<>();
+        for (var station : stations) {
+            sensorRequests.add(service.getSensors(station.id));
         }
+
+        List<List<JsonSensor>> allSensors = Observable
+                .zip(sensorRequests, objects -> {
+                    List<List<JsonSensor>> sensorsList = new ArrayList<>();
+
+                    for (Object o : objects) {
+                        List<JsonSensor> sensors = (List<JsonSensor>) o;
+                        sensorsList.add(sensors);
+                    }
+
+                    return sensorsList;
+                })
+                .blockingFirst();
+
+        List<Observable<JsonSensorData>> dataRequests = new ArrayList<>();
+        int counter = 0;
+        for (var sensors : allSensors) {
+            for (var sensor : sensors) {
+                counter++;
+                dataRequests.add(service.getSensorData(sensor.id));
+            }
+        }
+
+        System.out.println("collected " + counter + " sensors");
+
+        List<JsonSensorData> allSensorData = Observable
+                .zip(dataRequests, objects -> {
+                    List<JsonSensorData> dataList = new ArrayList<>();
+
+                    for (Object o : objects) {
+                        JsonSensorData data = (JsonSensorData) o;
+                        dataList.add(data);
+                    }
+
+                    return dataList;
+                }).blockingFirst();
+
+        System.out.println("collected " + allSensorData.size() + " sensor data");*/
     }
 }

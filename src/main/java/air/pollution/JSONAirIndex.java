@@ -2,7 +2,7 @@ package air.pollution;
 
 import java.util.Date;
 
-class AirIndex {
+class JSONAirIndex {
     int id;
 
     IndexLevel stIndexLevel;

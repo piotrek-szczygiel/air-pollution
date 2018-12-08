@@ -1,6 +1,6 @@
 package air.pollution;
 
-class Sensor {
+class JSONSensor {
     int id;
     int stationId;
 

@@ -9,9 +9,9 @@ class AirIndex {
     Date stCalcDate;
     Date stSourceDataDate;
 
-    IndexLevel s02IndexLevel;
-    Date s02CalcDate;
-    Date s02SourceDataDate;
+    IndexLevel so2IndexLevel;
+    Date so2CalcDate;
+    Date so2SourceDataDate;
 
     IndexLevel no2IndexLevel;
     Date no2CalcDate;

@@ -3,6 +3,7 @@ package air.pollution;
 import org.fusesource.jansi.AnsiConsole;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -10,13 +11,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.fusesource.jansi.Ansi.ansi;
+
 @Command(name = "air-pollution",
         mixinStandardHelpOptions = true,
-        version = "Air Pollution Information v1.0 by Piotr Szczygieł 2018",
+        version = "Air Pollution Information v1.0 by Piotr Szczygie\u0142 2018",
         header = "Display information about air pollution in Poland.",
-        description = "Displays information about air pollution usign JSON API provided by the Polish government.\n\n"
-                + "Available commands\n"
-                + "\tair-index: show curret air index for specified station",
+        description = "Displays information about air pollution using JSON API provided by the Polish government.",
         headerHeading = "@|bold,underline Usage:|@%n%n",
         synopsisHeading = "%n",
         descriptionHeading = "%n@|bold,underline Description:|@%n%n",
@@ -24,6 +25,16 @@ import java.util.stream.Collectors;
         optionListHeading = "%n@|bold,underline Options:|@%n"
 )
 public class App implements Runnable {
+    @Option(names = {"--list", "-l"}, description = "List available stations.")
+    private boolean listStations;
+
+    @Option(names = {"--station", "-s"}, paramLabel = "STATION", description = "station name")
+    private String stationName;
+
+    @Option(names = {"--parameter", "-p"}, paramLabel = "PARAMETER", description = "valid values: " +
+            "${COMPLETION-CANDIDATES}")
+    private Parameter parameter;
+
     public static void main(String[] args) {
         AnsiConsole.systemInstall();
         CommandLine.run(new App(), args);
@@ -46,49 +57,65 @@ public class App implements Runnable {
                 .map(Station::new)
                 .collect(Collectors.toList());
 
-        System.out.println(stations.size() + " stations available");
+        System.out.println(ansi().fgBrightYellow().a(stations.size()).
+                fgDefault().a(" stations available\n"));
 
-/*        List<Observable<List<JsonSensor>>> sensorRequests = new ArrayList<>();
-        for (var station : stations) {
-            sensorRequests.add(service.getSensors(station.id));
+        if (listStations) {
+            System.out.println("Listing stations:");
+            for (Station station : stations) {
+                System.out.println("  " + station.getName());
+            }
+            System.out.println();
         }
 
-        List<List<JsonSensor>> allSensors = Observable
-                .zip(sensorRequests, objects -> {
-                    List<List<JsonSensor>> sensorsList = new ArrayList<>();
+        if (stationName != null) {
+            List<Station> found = stations
+                    .stream()
+                    .filter(station -> station.getName().equals(stationName))
+                    .collect(Collectors.toList());
 
-                    for (Object o : objects) {
-                        List<JsonSensor> sensors = (List<JsonSensor>) o;
-                        sensorsList.add(sensors);
+            if (found.size() < 1) {
+                System.out.println(ansi().fgBrightRed()
+                        .a("error: unable to find station").reset());
+                System.exit(1);
+            }
+
+            Station station = found.get(0);
+
+            if (parameter == null) {
+                // Show Air Index
+                System.out.println(ansi().a("found station, id: ")
+                        .fgBrightGreen().a(station.getId()).reset()
+                        .a("\nretrieving air index info about ")
+                        .fgBrightYellow().a(stationName).reset().a("..."));
+
+                AirIndex airIndex = new AirIndex(service.getAirIndex(station.getId()).blockingFirst());
+                System.out.print(airIndex);
+            } else {
+                Sensor sensor = null;
+
+                List<JsonSensor> jsonSensors = service.getSensors(station.getId()).blockingFirst();
+                for (JsonSensor jsonSensor : jsonSensors) {
+                    Sensor findSensor = new Sensor(jsonSensor);
+                    if (findSensor.getParameter() == parameter) {
+                        sensor = findSensor;
+                        break;
                     }
+                }
 
-                    return sensorsList;
-                })
-                .blockingFirst();
+                if (sensor == null) {
+                    System.out.println(ansi().fgBrightRed().a("error: ").fgBrightYellow().a(stationName).fgBrightRed()
+                            .a(" doesn't have ").fgBrightMagenta().a(parameter).fgBrightRed().a(" sensor.").reset());
+                    System.exit(1);
+                }
 
-        List<Observable<JsonSensorData>> dataRequests = new ArrayList<>();
-        int counter = 0;
-        for (var sensors : allSensors) {
-            for (var sensor : sensors) {
-                counter++;
-                dataRequests.add(service.getSensorData(sensor.id));
+                System.out.println(ansi().a("retrieving sensor data for ").fgMagenta().a(parameter).reset()
+                        .a(" in ").fgBrightYellow().a(stationName).reset().a("..."));
+
+                JsonSensorData jsonSensorData = service.getSensorData(sensor.getId()).blockingFirst();
+                sensor.setSensorData(jsonSensorData);
+                System.out.print(sensor);
             }
         }
-
-        System.out.println("collected " + counter + " sensors");
-
-        List<JsonSensorData> allSensorData = Observable
-                .zip(dataRequests, objects -> {
-                    List<JsonSensorData> dataList = new ArrayList<>();
-
-                    for (Object o : objects) {
-                        JsonSensorData data = (JsonSensorData) o;
-                        dataList.add(data);
-                    }
-
-                    return dataList;
-                }).blockingFirst();
-
-        System.out.println("collected " + allSensorData.size() + " sensor data");*/
     }
 }

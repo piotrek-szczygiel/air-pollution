@@ -1,5 +1,7 @@
 package air.pollution;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,15 +65,11 @@ class Sensor {
     void setSensorData(JsonSensorData jsonSensorData) {
         data.clear();
 
-        boolean skip = true;
         for (var value : jsonSensorData.values) {
-            // Skip first value, always 0.0 for some reason
-            if (skip) {
-                skip = false;
-                continue;
+            // add only non zero values
+            if (value.value != 0.0f) {
+                data.add(new Value(value.date, value.value));
             }
-
-            data.add(new Value(value.date, value.value));
         }
     }
 
@@ -79,50 +77,77 @@ class Sensor {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-
-        int counter = 0;
-        final int show = 5;
-        sb.append("displaying last 5 measurements:\n");
         for (Value value : data) {
-            sb.append("    ").append(getFormatted(value.value)).append("\t").append(value.date).append("\n");
-            if (++counter >= show) {
-                break;
-            }
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm\td MMMM");
+            String strDate = dateFormat.format(value.date);
+            sb.append("    ").append(getFormatted(value.value)).append("\t\t").append(strDate).append("\n");
         }
 
         return sb.toString();
     }
 
     private String getFormatted(float value) {
-        String good = ansi().fgGreen().toString();
-        String mediocre = ansi().fgYellow().toString();
-        String bad = ansi().fgRed().toString();
+        String c1 = ansi().fgGreen().toString();
+        String c2 = ansi().fgBrightGreen().toString();
+        String c3 = ansi().fgBrightYellow().toString();
+        String c4 = ansi().fgYellow().toString();
+        String c5 = ansi().fgBrightRed().toString();
+        String c6 = ansi().fgRed().toString();
 
-        String color;
+        String[] colors = {c1, c2, c3, c4, c5, c6};
 
-        String ug = ansi().fgBrightDefault().a("\u00b5g").reset().toString();
+        String color = ansi().fgDefault().toString();
 
-        String unit = "";
+        String unit = " \u00b5g";
 
-        switch (parameter) {
-            case PM10:
-                unit = ug;
-                if (value < 0) {
-                    color = "";
-                } else if (value > 141) {
-                    color = bad;
-                } else if (value > 101) {
-                    color = mediocre;
-                } else {
-                    color = good;
+        int[] thresholds = null;
+
+        if (value > 0) {
+            switch (parameter) {
+                case PM10:
+                    thresholds = new int[]{21, 61, 101, 141, 201};
+                    break;
+                case PM25:
+                    thresholds = new int[]{13, 37, 61, 85, 121};
+                    break;
+                case O3:
+                    thresholds = new int[]{71, 121, 151, 181, 241};
+                    break;
+                case NO2:
+                    thresholds = new int[]{41, 101, 151, 201, 401};
+                    break;
+                case SO2:
+                    thresholds = new int[]{51, 101, 201, 351, 501};
+                    break;
+                case C6H6:
+                    thresholds = new int[]{6, 11, 16, 21, 51};
+                    break;
+                case CO:
+                    value /= 1000.f;
+                    unit = " mg";
+                    thresholds = new int[]{3, 7, 11, 15, 21};
+                    break;
+            }
+
+            if (thresholds != null) {
+                boolean found = false;
+                for (int i = 0; i < 5; i++) {
+                    if (value < thresholds[i]) {
+                        color = colors[i];
+                        found = true;
+                        break;
+                    }
                 }
-                break;
-            default:
-                color = "";
-                break;
+
+                if (!found) {
+                    color = colors[5];
+                }
+            } else {
+                System.out.println("no thresholds");
+            }
         }
 
-        return color + String.format("%.2f", value) + unit;
+        return color + String.format("%.2f", value) + unit + ansi().reset().toString();
     }
 
     class Value {

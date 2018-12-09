@@ -1,7 +1,5 @@
 package air.pollution;
 
-import org.fusesource.jansi.Ansi;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,10 +45,9 @@ class AirIndex {
 
     @Override
     public String toString() {
-        Ansi.Color color = Ansi.Color.CYAN;
         StringBuilder sb = new StringBuilder();
         for (Parameter parameter : Parameter.values()) {
-            sb.append(ansi().fgBright(color).a("  ").a(parameter).a(":\t")
+            sb.append(ansi().fgCyan().a("  ").a(parameter).a(":\t")
                     .reset().a(getFormattedIndex(parameter)).a("\n"));
         }
 
@@ -68,10 +65,18 @@ class AirIndex {
             case "Dobry":
                 color = ansi().fgBrightGreen().toString();
                 break;
-            case "Dostateczny":
+            case "Umiarkowany":
                 color = ansi().fgBrightYellow().toString();
                 break;
-            // TODO: finish
+            case "Dostateczny":
+                color = ansi().fgYellow().toString();
+                break;
+            case "Zły":
+                color = ansi().fgBrightRed().toString();
+                break;
+            case "Bardzo zły":
+                color = ansi().fgRed().toString();
+                break;
             default:
                 color = ansi().fgDefault().toString();
                 break;

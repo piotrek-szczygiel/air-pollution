@@ -57,15 +57,15 @@ public class App implements Runnable {
                 .map(Station::new)
                 .collect(Collectors.toList());
 
-        System.out.println(ansi().fgBrightYellow().a(stations.size()).
-                fgDefault().a(" stations available\n"));
 
         if (listStations) {
-            System.out.println("Listing stations:");
+            System.out.println(ansi().fgBrightYellow().a(stations.size()).
+                    fgDefault().a(" stations available:"));
             for (Station station : stations) {
-                System.out.println("  " + station.getName());
+                System.out.println(station.getName());
             }
-            System.out.println();
+
+            return;
         }
 
         if (stationName != null) {
@@ -76,7 +76,8 @@ public class App implements Runnable {
 
             if (found.size() < 1) {
                 System.out.println(ansi().fgBrightRed()
-                        .a("error: unable to find station").reset());
+                        .a("error: unable to find station: '").a(stationName).a("'").reset());
+
                 System.exit(1);
             }
 
@@ -91,31 +92,37 @@ public class App implements Runnable {
 
                 AirIndex airIndex = new AirIndex(service.getAirIndex(station.getId()).blockingFirst());
                 System.out.print(airIndex);
-            } else {
-                Sensor sensor = null;
 
-                List<JsonSensor> jsonSensors = service.getSensors(station.getId()).blockingFirst();
-                for (JsonSensor jsonSensor : jsonSensors) {
-                    Sensor findSensor = new Sensor(jsonSensor);
-                    if (findSensor.getParameter() == parameter) {
-                        sensor = findSensor;
-                        break;
-                    }
-                }
-
-                if (sensor == null) {
-                    System.out.println(ansi().fgBrightRed().a("error: ").fgBrightYellow().a(stationName).fgBrightRed()
-                            .a(" doesn't have ").fgBrightMagenta().a(parameter).fgBrightRed().a(" sensor.").reset());
-                    System.exit(1);
-                }
-
-                System.out.println(ansi().a("retrieving sensor data for ").fgMagenta().a(parameter).reset()
-                        .a(" in ").fgBrightYellow().a(stationName).reset().a("..."));
-
-                JsonSensorData jsonSensorData = service.getSensorData(sensor.getId()).blockingFirst();
-                sensor.setSensorData(jsonSensorData);
-                System.out.print(sensor);
+                return;
             }
+
+            Sensor sensor = null;
+
+            List<JsonSensor> jsonSensors = service.getSensors(station.getId()).blockingFirst();
+            for (JsonSensor jsonSensor : jsonSensors) {
+                Sensor findSensor = new Sensor(jsonSensor);
+                if (findSensor.getParameter() == parameter) {
+                    sensor = findSensor;
+                    break;
+                }
+            }
+
+            if (sensor == null) {
+                System.out.println(ansi().fgBrightRed().a("error: ").fgBrightYellow().a(stationName).fgBrightRed()
+                        .a(" doesn't have ").fgCyan().a(parameter).fgBrightRed().a(" sensor.").reset());
+                System.exit(1);
+            }
+
+            System.out.println(ansi().a("retrieving sensor data for ").fgCyan().a(parameter).reset()
+                    .a(" in ").fgBrightYellow().a(stationName).reset().a("..."));
+
+            JsonSensorData jsonSensorData = service.getSensorData(sensor.getId()).blockingFirst();
+            sensor.setSensorData(jsonSensorData);
+            System.out.print(sensor);
+
+            return;
         }
+
+        CommandLine.usage(this, System.out);
     }
 }

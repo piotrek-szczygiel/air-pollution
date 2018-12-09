@@ -8,10 +8,12 @@ import static org.fusesource.jansi.Ansi.ansi;
 class AirIndex {
     private int id;
     private Map<Parameter, String> values;
+    private String airQuality;
 
     AirIndex(JsonAirIndex jsonAirIndex) {
         id = jsonAirIndex.id;
         values = new HashMap<>();
+        airQuality = "-";
 
         if (jsonAirIndex.pm10IndexLevel != null) {
             values.put(Parameter.PM10, jsonAirIndex.pm10IndexLevel.indexLevelName);
@@ -35,7 +37,7 @@ class AirIndex {
             values.put(Parameter.CO, jsonAirIndex.coIndexLevel.indexLevelName);
         }
         if (jsonAirIndex.stIndexLevel != null) {
-            values.put(Parameter.ST, jsonAirIndex.stIndexLevel.indexLevelName);
+            airQuality = jsonAirIndex.stIndexLevel.indexLevelName;
         }
     }
 
@@ -46,16 +48,18 @@ class AirIndex {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        sb.append(ansi().fgCyan().a("  ").a("Air quality: ").a(getFormattedIndex(airQuality))
+                .a("\n-----------------------------\n"));
         for (Parameter parameter : Parameter.values()) {
+            String index = values.getOrDefault(parameter, "-");
             sb.append(ansi().fgCyan().a("  ").a(parameter).a(":\t")
-                    .reset().a(getFormattedIndex(parameter)).a("\n"));
+                    .a(getFormattedIndex(index)).a("\n"));
         }
 
         return sb.toString();
     }
 
-    private String getFormattedIndex(Parameter parameter) {
-        String index = values.getOrDefault(parameter, "-");
+    private String getFormattedIndex(String index) {
         String color;
 
         switch (index) {

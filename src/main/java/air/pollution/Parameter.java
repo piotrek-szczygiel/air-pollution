@@ -1,7 +1,6 @@
 package air.pollution;
 
 enum Parameter {
-    ST,
     PM10,
     PM25,
     O3,

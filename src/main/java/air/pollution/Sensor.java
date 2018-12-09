@@ -29,10 +29,6 @@ class Sensor {
         return parameter;
     }
 
-    void setParameter(Parameter parameter) {
-        this.parameter = parameter;
-    }
-
     private void setParameter(String formula) {
         switch (formula) {
             case "PM10":
@@ -55,9 +51,6 @@ class Sensor {
                 break;
             case "CO":
                 parameter = Parameter.CO;
-                break;
-            case "ST":
-                parameter = Parameter.ST;
                 break;
         }
     }
@@ -129,21 +122,17 @@ class Sensor {
                     break;
             }
 
-            if (thresholds != null) {
-                boolean found = false;
-                for (int i = 0; i < 5; i++) {
-                    if (value < thresholds[i]) {
-                        color = colors[i];
-                        found = true;
-                        break;
-                    }
+            boolean found = false;
+            for (int i = 0; i < 5; i++) {
+                if (value < thresholds[i]) {
+                    color = colors[i];
+                    found = true;
+                    break;
                 }
+            }
 
-                if (!found) {
-                    color = colors[5];
-                }
-            } else {
-                System.out.println("no thresholds");
+            if (!found) {
+                color = colors[5];
             }
         }
 

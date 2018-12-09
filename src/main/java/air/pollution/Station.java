@@ -4,21 +4,19 @@ class Station {
     private int id;
     private String name;
 
-    Station(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    Station(JsonStation station) {
-        id = station.id;
-        name = station.stationName;
-    }
-
     int getId() {
         return id;
     }
 
+    void setId(int id) {
+        this.id = id;
+    }
+
     String getName() {
         return name;
+    }
+
+    void setName(String name) {
+        this.name = name;
     }
 }

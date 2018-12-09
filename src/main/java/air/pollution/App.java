@@ -43,6 +43,8 @@ public class App implements Runnable {
 
     @Override
     public void run() {
+        JsonObjectFactory factory = JsonObjectFactory.getInstance();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.gios.gov.pl/pjp-api/rest/")
                 .addConverterFactory(GsonConverterFactory.create(JsonDecoder.getGson()))
@@ -54,7 +56,7 @@ public class App implements Runnable {
 
         List<Station> stations = jsonStations
                 .stream()
-                .map(Station::new)
+                .map(factory::fromJson)
                 .collect(Collectors.toList());
 
 
@@ -88,9 +90,9 @@ public class App implements Runnable {
                 System.out.println(ansi().a("found station, id: ")
                         .fgBrightGreen().a(station.getId()).reset()
                         .a("\nretrieving air index info about ")
-                        .fgBrightYellow().a(stationName).reset().a("..."));
+                        .fgBrightYellow().a(stationName).reset().a("...\n"));
 
-                AirIndex airIndex = new AirIndex(service.getAirIndex(station.getId()).blockingFirst());
+                AirIndex airIndex = factory.fromJson(service.getAirIndex(station.getId()).blockingFirst());
                 System.out.print(airIndex);
 
                 return;
@@ -100,7 +102,8 @@ public class App implements Runnable {
 
             List<JsonSensor> jsonSensors = service.getSensors(station.getId()).blockingFirst();
             for (JsonSensor jsonSensor : jsonSensors) {
-                Sensor findSensor = new Sensor(jsonSensor);
+                Sensor findSensor = factory.fromJson(jsonSensor);
+
                 if (findSensor.getParameter() == parameter) {
                     sensor = findSensor;
                     break;
@@ -114,10 +117,10 @@ public class App implements Runnable {
             }
 
             System.out.println(ansi().a("retrieving sensor data for ").fgCyan().a(parameter).reset()
-                    .a(" in ").fgBrightYellow().a(stationName).reset().a("..."));
+                    .a(" in ").fgBrightYellow().a(stationName).reset().a("...\n"));
 
             JsonSensorData jsonSensorData = service.getSensorData(sensor.getId()).blockingFirst();
-            sensor.setSensorData(jsonSensorData);
+            sensor.setMeasurements(factory.fromJson(jsonSensorData));
             System.out.print(sensor);
 
             return;

@@ -3,7 +3,6 @@ package air.pollution;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.fusesource.jansi.Ansi.ansi;
@@ -12,24 +11,25 @@ class Sensor {
     private int id;
     private Parameter parameter;
 
-    private List<Value> data;
+    private List<SensorMeasurement> measurements;
 
-    Sensor(JsonSensor jsonSensor) {
-        id = jsonSensor.id;
-        setParameter(jsonSensor.param.paramFormula);
-
-        data = new ArrayList<>();
+    Sensor() {
+        measurements = new ArrayList<>();
     }
 
     int getId() {
         return id;
     }
 
+    void setId(int id) {
+        this.id = id;
+    }
+
     Parameter getParameter() {
         return parameter;
     }
 
-    private void setParameter(String formula) {
+    void setParameter(String formula) {
         switch (formula) {
             case "PM10":
                 parameter = Parameter.PM10;
@@ -55,25 +55,18 @@ class Sensor {
         }
     }
 
-    void setSensorData(JsonSensorData jsonSensorData) {
-        data.clear();
-
-        for (var value : jsonSensorData.values) {
-            // add only non zero values
-            if (value.value != 0.0f) {
-                data.add(new Value(value.date, value.value));
-            }
-        }
+    void setMeasurements(List<SensorMeasurement> measurements) {
+        this.measurements = measurements;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        for (Value value : data) {
+        for (SensorMeasurement measurement : measurements) {
             DateFormat dateFormat = new SimpleDateFormat("HH:mm\td MMMM");
-            String strDate = dateFormat.format(value.date);
-            sb.append("    ").append(getFormatted(value.value)).append("\t\t").append(strDate).append("\n");
+            String strDate = dateFormat.format(measurement.date);
+            sb.append("    ").append(getFormatted(measurement.value)).append("\t\t").append(strDate).append("\n");
         }
 
         return sb.toString();
@@ -137,15 +130,5 @@ class Sensor {
         }
 
         return color + String.format("%.2f", value) + unit + ansi().reset().toString();
-    }
-
-    class Value {
-        Date date;
-        float value;
-
-        Value(Date date, float value) {
-            this.date = date;
-            this.value = value;
-        }
     }
 }

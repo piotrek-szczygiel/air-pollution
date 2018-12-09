@@ -6,43 +6,20 @@ import java.util.Map;
 import static org.fusesource.jansi.Ansi.ansi;
 
 class AirIndex {
-    private int id;
     private Map<Parameter, String> values;
     private String airQuality;
 
-    AirIndex(JsonAirIndex jsonAirIndex) {
-        id = jsonAirIndex.id;
+    AirIndex() {
         values = new HashMap<>();
         airQuality = "-";
-
-        if (jsonAirIndex.pm10IndexLevel != null) {
-            values.put(Parameter.PM10, jsonAirIndex.pm10IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.pm25IndexLevel != null) {
-            values.put(Parameter.PM25, jsonAirIndex.pm25IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.o3IndexLevel != null) {
-            values.put(Parameter.O3, jsonAirIndex.o3IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.no2IndexLevel != null) {
-            values.put(Parameter.NO2, jsonAirIndex.no2IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.so2IndexLevel != null) {
-            values.put(Parameter.SO2, jsonAirIndex.so2IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.c6h6IndexLevel != null) {
-            values.put(Parameter.C6H6, jsonAirIndex.c6h6IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.coIndexLevel != null) {
-            values.put(Parameter.CO, jsonAirIndex.coIndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.stIndexLevel != null) {
-            airQuality = jsonAirIndex.stIndexLevel.indexLevelName;
-        }
     }
 
-    int getId() {
-        return id;
+    void setValue(Parameter parameter, String value) {
+        values.put(parameter, value);
+    }
+
+    void setAirQuality(String airQuality) {
+        this.airQuality = airQuality;
     }
 
     @Override

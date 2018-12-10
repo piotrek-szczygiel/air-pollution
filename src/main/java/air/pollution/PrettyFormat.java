@@ -14,7 +14,7 @@ class PrettyFormat {
     private static final int[] NO2_THRESHOLDS = new int[]{41, 101, 151, 201, 401};
     private static final int[] SO2_THRESHOLDS = new int[]{51, 101, 201, 351, 501};
     private static final int[] C6H6_THRESHOLDS = new int[]{6, 11, 16, 21, 51};
-    private static final int[] CO_THRESHOLDS = new int[]{3, 7, 11, 15, 21};
+    private static final int[] CO_THRESHOLDS = new int[]{3000, 7000, 11000, 15000, 21000};
 
     private static final Ansi[] COLOR_THRESHOLDS = {
             ansi().fgGreen(),
@@ -25,25 +25,25 @@ class PrettyFormat {
             ansi().fgRed()
     };
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm\td MMMM");
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm d MMMM");
 
     static String format(AirIndex airIndex) {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder
                 .append(ansi().fgCyan())
-                .append("  Air quality: ")
+                .append("Air quality:\t")
                 .append(getColoredIndex(airIndex.getAirQuality()))
-                .append("\n-----------------------------");
+                .append("\n----------------------------");
 
         for (Parameter parameter : Parameter.values()) {
             String index = airIndex.getValue(parameter);
 
             stringBuilder
                     .append(ansi().fgCyan())
-                    .append("\n  ")
+                    .append("\n")
                     .append(parameter)
-                    .append(":\t")
+                    .append(":\t\t")
                     .append(getColoredIndex(index));
         }
 
@@ -94,9 +94,8 @@ class PrettyFormat {
             }
 
             stringBuilder
-                    .append("    ")
                     .append(getFormattedMeasurementValue(sensor.getParameter(), measurement.value))
-                    .append("\t\t")
+                    .append("\t")
                     .append(strDate);
         }
 
@@ -132,8 +131,6 @@ class PrettyFormat {
                     break;
                 case CO:
                     thresholds = CO_THRESHOLDS;
-                    value /= 1000.f;
-                    unit = " mg";
                     break;
             }
 
@@ -151,6 +148,11 @@ class PrettyFormat {
             }
         }
 
-        return color.toString() + String.format("%.2f", value) + unit + ansi().reset().toString();
+        if (value >= 1000.f) {
+            value /= 1000.f;
+            unit = " mg";
+        }
+
+        return color.toString() + String.format("%6s", String.format("%.2f", value)) + unit + ansi().reset().toString();
     }
 }

@@ -4,14 +4,8 @@ import org.fusesource.jansi.AnsiConsole;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.fusesource.jansi.Ansi.ansi;
 
 @Command(name = "air-pollution",
         mixinStandardHelpOptions = true,
@@ -43,26 +37,17 @@ public class App implements Runnable {
 
     @Override
     public void run() {
-        JsonObjectFactory factory = JsonObjectFactory.getInstance();
+        Logger logger = new Logger(this);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.gios.gov.pl/pjp-api/rest/")
-                .addConverterFactory(GsonConverterFactory.create(JsonDecoder.getGson()))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
-
-        AirPollutionService service = retrofit.create(AirPollutionService.class);
-        List<JsonStation> jsonStations = service.getAllStations().blockingFirst();
-
-        List<Station> stations = jsonStations
-                .stream()
-                .map(factory::fromJson)
-                .collect(Collectors.toList());
-
+        ApiObjectCollector collector = ApiObjectCollector.getInstance();
 
         if (listStations) {
-            System.out.println(ansi().fgBrightYellow().a(stations.size()).
-                    fgDefault().a(" stations available:"));
+            List<Station> stations = collector.getAllStations();
+
+            if (stations == null) {
+                return;
+            }
+
             for (Station station : stations) {
                 System.out.println(station.getName());
             }
@@ -71,58 +56,28 @@ public class App implements Runnable {
         }
 
         if (stationName != null) {
-            List<Station> found = stations
-                    .stream()
-                    .filter(station -> station.getName().equals(stationName))
-                    .collect(Collectors.toList());
+            Station station = collector.getStation(stationName);
 
-            if (found.size() < 1) {
-                System.out.println(ansi().fgBrightRed()
-                        .a("error: unable to find station: '").a(stationName).a("'").reset());
-
-                System.exit(1);
+            if (station == null) {
+                return;
             }
 
-            Station station = found.get(0);
-
             if (parameter == null) {
-                // Show Air Index
-                System.out.println(ansi().a("found station, id: ")
-                        .fgBrightGreen().a(station.getId()).reset()
-                        .a("\nretrieving air index info about ")
-                        .fgBrightYellow().a(stationName).reset().a("...\n"));
-
-                AirIndex airIndex = factory.fromJson(service.getAirIndex(station.getId()).blockingFirst());
-                System.out.print(airIndex);
+                AirIndex airIndex = collector.getAirIndex(station.getId());
+                System.out.println(PrettyFormat.format(airIndex));
 
                 return;
             }
 
-            Sensor sensor = null;
-
-            List<JsonSensor> jsonSensors = service.getSensors(station.getId()).blockingFirst();
-            for (JsonSensor jsonSensor : jsonSensors) {
-                Sensor findSensor = factory.fromJson(jsonSensor);
-
-                if (findSensor.getParameter() == parameter) {
-                    sensor = findSensor;
-                    break;
-                }
-            }
+            Sensor sensor = collector.getSensor(station.getId(), parameter);
 
             if (sensor == null) {
-                System.out.println(ansi().fgBrightRed().a("error: ").fgBrightYellow().a(stationName).fgBrightRed()
-                        .a(" doesn't have ").fgCyan().a(parameter).fgBrightRed().a(" sensor.").reset());
-                System.exit(1);
+                return;
             }
 
-            System.out.println(ansi().a("retrieving sensor data for ").fgCyan().a(parameter).reset()
-                    .a(" in ").fgBrightYellow().a(stationName).reset().a("...\n"));
+            sensor.setMeasurements(collector.getSensorData(sensor.getId()));
 
-            JsonSensorData jsonSensorData = service.getSensorData(sensor.getId()).blockingFirst();
-            sensor.setMeasurements(factory.fromJson(jsonSensorData));
-            System.out.print(sensor);
-
+            System.out.println(PrettyFormat.format(sensor));
             return;
         }
 

@@ -12,6 +12,9 @@ plugins {
 
     // Apply the application plugin to add support for building an application
     id 'application'
+
+    // Apply the shadow plugin to add support for build fat jar
+    id 'com.github.johnrengelman.shadow' version '4.0.3'
 }
 
 repositories {

@@ -17,17 +17,21 @@ class Logger {
         globalErrorLevel = errorLevel;
     }
 
-    void log(ErrorLevel errorLevel, Ansi message) {
-        log(errorLevel, message.toString());
+    void log(ErrorLevel errorLevel, String message) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+
+        log(errorLevel, message, methodName);
     }
 
-    void log(ErrorLevel errorLevel, String message) {
+    private void log(ErrorLevel errorLevel, String message, String methodName) {
         if (globalErrorLevel.contains(errorLevel)) {
             System.err.print(errorLevel.color);
             System.err.println(ansi()
                     .a(errorLevel)
                     .a(" [")
                     .a(loggerName)
+                    .a(".")
+                    .a(methodName)
                     .a("]:")
                     .reset()
                     .a(" ")
@@ -38,5 +42,11 @@ class Logger {
         if (errorLevel == ErrorLevel.FATAL) {
             System.exit(1);
         }
+    }
+
+    void log(ErrorLevel errorLevel, Ansi message) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+
+        log(errorLevel, message.toString(), methodName);
     }
 }

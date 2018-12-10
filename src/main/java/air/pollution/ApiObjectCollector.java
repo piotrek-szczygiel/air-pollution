@@ -32,15 +32,12 @@ class ApiObjectCollector {
     }
 
     Station getStation(String stationName) {
-        List<Station> stations = getAllStations();
+        List<JsonStation> jsonStations = service.getAllStations().blockingFirst();
 
-        if (stations == null) {
-            return null;
-        }
-
-        List<Station> found = stations
+        List<Station> found = jsonStations
                 .stream()
-                .filter(station -> station.getName().equals(stationName))
+                .filter(jsonStation -> jsonStation.stationName.equals(stationName))
+                .map(jsonObjectFactory::fromJson)
                 .collect(Collectors.toList());
 
         if (found.size() < 1) {
@@ -48,6 +45,7 @@ class ApiObjectCollector {
                     .a("unable to find station: ")
                     .fgBrightYellow()
                     .a(stationName));
+
             return null;
         }
 

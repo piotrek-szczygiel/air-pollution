@@ -9,7 +9,7 @@ import java.util.List;
 
 @Command(name = "air-pollution",
         mixinStandardHelpOptions = true,
-        version = "Air Pollution Information v0.1.0 by Piotr Szczygie\u0142 2018",
+        version = "Air Pollution Information v0.1.1 by Piotr Szczygie\u0142 2018",
         header = "Display information about air pollution in Poland.",
         description = "Displays information about air pollution using JSON API provided by the Polish government.",
         headerHeading = "@|bold,underline Usage:|@%n%n",

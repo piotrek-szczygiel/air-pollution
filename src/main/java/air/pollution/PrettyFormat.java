@@ -25,7 +25,7 @@ class PrettyFormat {
             ansi().fgRed()
     };
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm d MMMM");
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm dd MMMM");
 
     static String format(AirIndex airIndex) {
         StringBuilder stringBuilder = new StringBuilder();

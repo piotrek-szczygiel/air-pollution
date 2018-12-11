@@ -105,7 +105,7 @@ class PrettyFormat {
     static private String getFormattedMeasurementValue(Parameter parameter, float value) {
         Ansi color = ansi().fgDefault();
 
-        String unit = " \u00b5g";
+        String unit = " ug/m3";
 
         int[] thresholds = null;
 
@@ -150,7 +150,7 @@ class PrettyFormat {
 
         if (value >= 1000.f) {
             value /= 1000.f;
-            unit = " mg";
+            unit = " mg/m3";
         }
 
         return color.toString() + String.format("%6s", String.format("%.2f", value)) + unit + ansi().reset().toString();

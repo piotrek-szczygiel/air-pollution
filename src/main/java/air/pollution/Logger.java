@@ -24,6 +24,10 @@ class Logger {
     }
 
     private void log(ErrorLevel errorLevel, String message, String methodName) {
+        if (globalErrorLevel == ErrorLevel.DISABLE) {
+            return;
+        }
+
         if (globalErrorLevel.contains(errorLevel)) {
             System.err.print(errorLevel.color);
             System.err.println(ansi()

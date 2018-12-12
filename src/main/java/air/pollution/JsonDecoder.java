@@ -9,6 +9,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Class containing customized Gson object.
+ * <p>
+ * Because API sometimes provides date in yyyy-MM-dd HH:mm:ss format,
+ * and sometimes in unix time format, we have to differentiate between them.
+ */
 class JsonDecoder {
     private static SimpleDateFormat normalDateFormat
             = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -16,6 +22,8 @@ class JsonDecoder {
     private static Gson gson = new GsonBuilder().registerTypeAdapter(
             Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> {
                 String dateStr = json.getAsString();
+
+                // If yyyy-MM-dd HH:mm:ss format
                 if (dateStr.contains("-")) {
                     try {
                         return normalDateFormat.parse(dateStr);
@@ -24,6 +32,7 @@ class JsonDecoder {
                     }
                 }
 
+                // If unix time format
                 return new Date(json.getAsJsonPrimitive().getAsLong());
             }).create();
 

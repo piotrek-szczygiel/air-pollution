@@ -4,14 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 class JsonObjectFactory {
-    private JsonObjectFactory() {
-
-    }
-
-    static JsonObjectFactory getInstance() {
-        return JsonObjectFactoryHolder.INSTANCE;
-    }
-
     AirIndex fromJson(JsonAirIndex jsonAirIndex) {
         AirIndex airIndex = new AirIndex();
 
@@ -64,7 +56,11 @@ class JsonObjectFactory {
     List<SensorMeasurement> fromJson(JsonSensorData jsonSensorData) {
         List<SensorMeasurement> measurements = new ArrayList<>();
 
-        for (var value : jsonSensorData.values) {
+        if (jsonSensorData.values == null) {
+            return measurements;
+        }
+
+        for (JsonSensorData.Value value : jsonSensorData.values) {
             // add only non zero values
             if (value.value != 0.0f) {
                 measurements.add(new SensorMeasurement(value.date, value.value));
@@ -72,9 +68,5 @@ class JsonObjectFactory {
         }
 
         return measurements;
-    }
-
-    private static class JsonObjectFactoryHolder {
-        private static final JsonObjectFactory INSTANCE = new JsonObjectFactory();
     }
 }

@@ -37,6 +37,11 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+    testImplementation 'com.tngtech.junit.dataprovider:junit4-dataprovider:2.4'
+
+    // Use Mockito for unit tests
+    testImplementation 'org.mockito:mockito-core:2.23.4'
+
 }
 
 // Define the main class for the application

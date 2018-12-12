@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="air-pollution.main" target="11" />
-      <module name="air-pollution.test" target="11" />
+      <module name="air-pollution.main" target="1.10" />
+      <module name="air-pollution.test" target="1.10" />
     </bytecodeTargetLevel>
   </component>
 </project>

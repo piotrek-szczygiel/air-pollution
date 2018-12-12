@@ -4,6 +4,9 @@ import org.fusesource.jansi.AnsiConsole;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.util.List;
 
@@ -39,7 +42,16 @@ public class App implements Runnable {
     public void run() {
         Logger logger = new Logger(this);
 
-        ApiObjectCollector collector = ApiObjectCollector.getInstance();
+
+        AirPollutionService airPollutionService = new Retrofit.Builder()
+                .baseUrl("http://api.gios.gov.pl/pjp-api/rest/")
+                .addConverterFactory(GsonConverterFactory.create(JsonDecoder.getGson()))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build()
+                .create(AirPollutionService.class);
+
+        JsonObjectFactory jsonObjectFactory = new JsonObjectFactory();
+        ApiObjectCollector collector = new ApiObjectCollector(airPollutionService, jsonObjectFactory);
 
         if (listStations) {
             List<Station> stations = collector.getAllStations();

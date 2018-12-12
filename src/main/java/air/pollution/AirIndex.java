@@ -17,7 +17,9 @@ class AirIndex {
     }
 
     void setValue(Parameter parameter, String value) {
-        values.put(parameter, value);
+        if (value != null) {
+            values.put(parameter, value);
+        }
     }
 
     String getAirQuality() {
@@ -25,7 +27,9 @@ class AirIndex {
     }
 
     void setAirQuality(String airQuality) {
-        this.airQuality = airQuality;
+        if (airQuality != null) {
+            this.airQuality = airQuality;
+        }
     }
 
     @Override
@@ -34,7 +38,7 @@ class AirIndex {
 
         stringBuilder.append("Air quality: ").append(airQuality);
 
-        for (var entry : values.entrySet()) {
+        for (Map.Entry<Parameter, String> entry : values.entrySet()) {
             stringBuilder
                     .append("\n")
                     .append(entry.getKey())

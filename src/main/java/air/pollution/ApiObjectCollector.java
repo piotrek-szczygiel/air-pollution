@@ -1,38 +1,24 @@
 package air.pollution;
 
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
 class ApiObjectCollector {
-    private AirPollutionService service;
+    private AirPollutionService airPollutionService;
     private JsonObjectFactory jsonObjectFactory;
     private Logger logger;
 
-    private ApiObjectCollector() {
-        jsonObjectFactory = JsonObjectFactory.getInstance();
-
-        service = new Retrofit.Builder()
-                .baseUrl("http://api.gios.gov.pl/pjp-api/rest/")
-                .addConverterFactory(GsonConverterFactory.create(JsonDecoder.getGson()))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build()
-                .create(AirPollutionService.class);
+    ApiObjectCollector(AirPollutionService airPollutionService, JsonObjectFactory jsonObjectFactory) {
+        this.airPollutionService = airPollutionService;
+        this.jsonObjectFactory = jsonObjectFactory;
 
         logger = new Logger(this);
     }
 
-    static ApiObjectCollector getInstance() {
-        return ApiObjectCollectorHolder.INSTANCE;
-    }
-
     Station getStation(String stationName) {
-        List<JsonStation> jsonStations = service.getAllStations().blockingFirst();
+        List<JsonStation> jsonStations = airPollutionService.getAllStations().blockingFirst();
 
         List<Station> found = jsonStations
                 .stream()
@@ -71,7 +57,7 @@ class ApiObjectCollector {
     List<Station> getAllStations() {
         logger.log(ErrorLevel.DEBUG, "fetching all stations...");
 
-        List<JsonStation> jsonStations = service.getAllStations().blockingFirst();
+        List<JsonStation> jsonStations = airPollutionService.getAllStations().blockingFirst();
 
         List<Station> stations = jsonStations
                 .stream()
@@ -118,7 +104,7 @@ class ApiObjectCollector {
         return null;
     }
 
-    private List<Sensor> getAllSensors(int stationId) {
+    List<Sensor> getAllSensors(int stationId) {
         logger.log(ErrorLevel.DEBUG, ansi()
                 .a("fetching all sensors for station with id ")
                 .fgBrightGreen()
@@ -126,7 +112,7 @@ class ApiObjectCollector {
                 .reset()
                 .a("..."));
 
-        List<JsonSensor> jsonSensors = service.getSensors(stationId).blockingFirst();
+        List<JsonSensor> jsonSensors = airPollutionService.getSensors(stationId).blockingFirst();
 
         if (jsonSensors == null || jsonSensors.size() < 1) {
             logger.log(ErrorLevel.ERROR, "unable to fetch sensors");
@@ -147,7 +133,7 @@ class ApiObjectCollector {
                 .reset()
                 .a("..."));
 
-        JsonSensorData jsonSensorData = service.getSensorData(sensorId).blockingFirst();
+        JsonSensorData jsonSensorData = airPollutionService.getSensorData(sensorId).blockingFirst();
 
         if (jsonSensorData == null) {
             logger.log(ErrorLevel.ERROR, "unable to fetch sensor data");
@@ -167,7 +153,7 @@ class ApiObjectCollector {
     }
 
     AirIndex getAirIndex(int stationId) {
-        JsonAirIndex jsonAirIndex = service.getAirIndex(stationId).blockingFirst();
+        JsonAirIndex jsonAirIndex = airPollutionService.getAirIndex(stationId).blockingFirst();
 
         if (jsonAirIndex == null) {
             logger.log(ErrorLevel.ERROR, ansi()
@@ -179,9 +165,5 @@ class ApiObjectCollector {
         }
 
         return jsonObjectFactory.fromJson(jsonAirIndex);
-    }
-
-    private static class ApiObjectCollectorHolder {
-        private static final ApiObjectCollector INSTANCE = new ApiObjectCollector();
     }
 }

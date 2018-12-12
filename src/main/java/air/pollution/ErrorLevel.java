@@ -9,7 +9,8 @@ enum ErrorLevel {
     INFO(1, ansi().fgBrightGreen()),
     WARN(2, ansi().fgYellow()),
     ERROR(3, ansi().fgBrightRed()),
-    FATAL(4, ansi().bgBrightRed().fgBlack());
+    FATAL(4, ansi().bgBrightRed().fgBlack()),
+    DISABLE(5, null);
 
     Ansi color;
     private Integer severity;

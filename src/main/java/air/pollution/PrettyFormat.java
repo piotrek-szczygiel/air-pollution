@@ -81,10 +81,24 @@ class PrettyFormat {
     }
 
     static String format(Sensor sensor) {
+        return format(sensor, 0);
+    }
+
+    static String format(Sensor sensor, int top) {
         StringBuilder stringBuilder = new StringBuilder();
+
+        int counter = 0;
 
         boolean addNewline = false;
         for (SensorMeasurement measurement : sensor.getMeasurements()) {
+            if (top != 0) {
+                counter++;
+            }
+
+            if (counter > top) {
+                break;
+            }
+
             String strDate = DATE_FORMAT.format(measurement.date);
 
             if (addNewline) {

@@ -32,6 +32,9 @@ public class App implements Runnable {
             "${COMPLETION-CANDIDATES}")
     private Parameter parameter;
 
+    @Option(names = {"--top", "-t"}, paramLabel = "TOP", description = "display top n values")
+    private int top = 0;
+
     public static void main(String[] args) {
         AnsiConsole.systemInstall();
         CommandLine.run(new App(), args);
@@ -89,7 +92,7 @@ public class App implements Runnable {
 
             sensor.setMeasurements(collector.getSensorData(sensor.getId()));
 
-            System.out.println(PrettyFormat.format(sensor));
+            System.out.println(PrettyFormat.format(sensor, top));
             return;
         }
 

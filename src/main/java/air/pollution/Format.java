@@ -4,6 +4,7 @@ import org.fusesource.jansi.Ansi;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
@@ -28,7 +29,7 @@ class Format {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm dd MMMM");
 
     static String stationName(String stationName) {
-        return ansi().fgBrightYellow().a(stationName).reset().toString();
+        return ansi().fgYellow().a(stationName).reset().toString();
     }
 
     static String stationId(Station station) {
@@ -36,7 +37,7 @@ class Format {
     }
 
     static String stationId(int stationId) {
-        return ansi().fgBrightGreen().a(stationId).reset().toString();
+        return ansi().fgGreen().a(stationId).reset().toString();
     }
 
     static String sensorId(int sensorId) {
@@ -44,11 +45,11 @@ class Format {
     }
 
     static String parameter(Parameter parameter) {
-        return ansi().fgBrightMagenta().a(parameter).reset().toString();
+        return ansi().fgMagenta().a(parameter).reset().toString();
     }
 
     static String size(long size) {
-        return ansi().fgBrightRed().a(size).reset().toString();
+        return ansi().fgRed().a(size).reset().toString();
     }
 
     static String format(AirIndex airIndex) {
@@ -104,17 +105,13 @@ class Format {
         return color.toString() + index + ansi().reset().toString();
     }
 
-    static String format(Sensor sensor) {
-        return format(sensor, 0);
-    }
-
-    static String format(Sensor sensor, int top) {
+    static String format(Parameter parameter, List<SensorMeasurement> measurements, int top) {
         StringBuilder stringBuilder = new StringBuilder();
 
         int counter = 0;
 
         boolean addNewline = false;
-        for (SensorMeasurement measurement : sensor.getMeasurements()) {
+        for (SensorMeasurement measurement : measurements) {
             if (top != 0) {
                 counter++;
             }
@@ -132,7 +129,7 @@ class Format {
             }
 
             stringBuilder
-                    .append(getFormattedMeasurementValue(sensor.getParameter(), measurement.value))
+                    .append(getFormattedMeasurementValue(parameter, measurement.value))
                     .append("\t")
                     .append(strDate);
         }

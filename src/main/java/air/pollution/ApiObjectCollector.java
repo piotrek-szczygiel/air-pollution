@@ -54,7 +54,7 @@ class ApiObjectCollector {
         }
 
         if (jsonSensors.size() < 1) {
-            logger.error("unable to fetch sensors");
+            logger.error("unable to fetch sensors for station with id " + Format.stationId(stationId));
             return null;
         }
 

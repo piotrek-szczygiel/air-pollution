@@ -8,23 +8,23 @@ class Station {
         return id;
     }
 
-    String getIdColored() {
-        return Format.stationId(id);
-    }
-
     void setId(int id) {
         this.id = id;
+    }
+
+    String getIdColored() {
+        return Format.stationId(id);
     }
 
     String getName() {
         return name;
     }
 
-    String getNameColored() {
-        return Format.stationName(name);
-    }
-
     void setName(String name) {
         this.name = name;
+    }
+
+    String getNameColored() {
+        return Format.stationName(name);
     }
 }

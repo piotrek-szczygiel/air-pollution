@@ -36,8 +36,8 @@ class Logger {
 
         if (globalErrorLevel.contains(errorLevel)) {
             synchronized (System.err) {
-                System.err.print(errorLevel.color.bold());
                 System.err.println(ansi()
+                        .a(errorLevel.color)
                         .a(errorLevel)
                         .a(" [")
                         .a(loggerName)

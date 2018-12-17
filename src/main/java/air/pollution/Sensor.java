@@ -1,12 +1,8 @@
 package air.pollution;
 
-import java.util.List;
-
 class Sensor {
     private int id;
     private Parameter parameter;
-
-    private List<SensorMeasurement> measurements;
 
     int getId() {
         return id;
@@ -52,29 +48,5 @@ class Sensor {
                 parameter = Parameter.CO;
                 break;
         }
-    }
-
-    List<SensorMeasurement> getMeasurements() {
-        return measurements;
-    }
-
-    void setMeasurements(List<SensorMeasurement> measurements) {
-        this.measurements = measurements;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(parameter);
-
-        for (SensorMeasurement measurement : measurements) {
-            stringBuilder
-                    .append("\n")
-                    .append(measurement.date)
-                    .append(" ")
-                    .append(measurement.value);
-        }
-
-        return stringBuilder.toString();
     }
 }

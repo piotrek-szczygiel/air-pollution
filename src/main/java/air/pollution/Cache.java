@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 class Cache {
     private ApiObjectCollector apiObjectCollector;
 
     private Map<String, Station> stationCache = new ConcurrentHashMap<>();
     private Map<Integer, List<Sensor>> sensorCache = new ConcurrentHashMap<>();
+    private Map<Integer, List<SensorMeasurement>> measurementCache = new ConcurrentHashMap<>();
+    private Map<Integer, AirIndex> airIndexCache = new ConcurrentHashMap<>();
 
     private Logger logger;
 
@@ -22,7 +23,7 @@ class Cache {
         logger = new Logger(this);
     }
 
-    void fillWholeCache() {
+    void cacheAll() {
         logger.debug("filling whole cache...");
 
         ErrorLevel originalLevel = Logger.getLevel();
@@ -30,17 +31,23 @@ class Cache {
 
         List<Station> stations = getAllStations();
 
-        AtomicInteger counter = new AtomicInteger(0);
+        if (stations == null) {
+            return;
+        }
 
         List<Thread> threads = new ArrayList<>();
 
         for (Station station : stations) {
             Thread thread = new Thread(() -> {
-                List<Sensor> sensors = getAllSensors(station);
+                List<Sensor> sensors = getAllSensors(station.getId());
 
-                for (Sensor sensor : sensors) {
-                    fillSensorMeasurements(sensor);
+                if (sensors != null) {
+                    for (Sensor sensor : sensors) {
+                        getSensorMeasurements(sensor.getId());
+                    }
                 }
+
+                getAirIndex(station.getId());
             });
 
             thread.start();
@@ -51,7 +58,7 @@ class Cache {
             try {
                 thread.join();
             } catch (InterruptedException e) {
-                logger.fatal(e);
+                logger.error("error while joining " + thread.getName() + ": " + e);
             }
         }
 
@@ -78,104 +85,69 @@ class Cache {
         return new ArrayList<>(stationCache.values());
     }
 
-    Station getStation(String stationName) {
-        if (stationCache.containsKey(stationName)) {
-            Station station = stationCache.get(stationName);
+    List<Sensor> getAllSensors(int stationId) {
+        if (sensorCache.containsKey(stationId)) {
+            List<Sensor> sensors = sensorCache.get(stationId);
 
-            logger.debug("fetched " + station.getNameColored() + " with id "
-                    + station.getIdColored() + " from cache");
-
-            return station;
-        }
-
-        if (stationCache.size() == 0) {
-            if (getAllStations() != null) {
-                return getStation(stationName);
-            }
-
-            return null;
-        }
-
-        logger.error("unable to fetch station: " + Format.stationName(stationName));
-
-        return null;
-    }
-
-    private List<Sensor> getAllSensors(Station station) {
-        if (sensorCache.containsKey(station.getId())) {
-            List<Sensor> sensors = sensorCache.get(station.getId());
-
-            logger.debug("fetched " + Format.size(sensors.size()) + " sensors for "
-                    + station.getNameColored() + " from cache");
+            logger.debug("fetched " + Format.size(sensors.size()) + " sensors for station with id "
+                    + Format.stationId(stationId) + " from cache");
 
             return sensors;
         }
 
-        logger.debug("filling sensor cache for " + station.getNameColored() + "...");
+        logger.debug("filling sensor cache for station with id " + Format.stationId(stationId) + "...");
 
-        List<Sensor> sensors = apiObjectCollector.getAllSensors(station.getId());
+        List<Sensor> sensors = apiObjectCollector.getAllSensors(stationId);
 
         if (sensors == null || sensors.size() < 1) {
-            logger.warn("unable to fetch sensors for " + station.getNameColored() + " from API");
-        }
-
-        sensorCache.put(station.getId(), sensors);
-        return getAllSensors(station);
-    }
-
-    Sensor getSensor(Station station, Parameter parameter) {
-        if (sensorCache.containsKey(station.getId())) {
-            List<Sensor> sensors = sensorCache.get(station.getId());
-
-            for (Sensor sensor : sensors) {
-                if (sensor.getParameter() == parameter) {
-                    logger.debug("fetched " + Format.parameter(parameter) + " sensor for "
-                            + station.getNameColored() + " from cache");
-
-                    return sensor;
-                }
-            }
-
-            logger.error(station.getNameColored() + " does not have "
-                    + Format.parameter(parameter) + " sensor");
-
+            logger.warn("unable to fetch sensors for station with id " + Format.stationId(stationId) + " from API");
             return null;
         }
 
-        if (getAllSensors(station) != null) {
-            return getSensor(station, parameter);
-        }
-
-        logger.error("unable to fetch " + Format.parameter(parameter) + " sensor for "
-                + station.getNameColored() + " from cache");
-
-        return null;
+        sensorCache.put(stationId, sensors);
+        return getAllSensors(stationId);
     }
 
-    boolean fillSensorMeasurements(Sensor sensor) {
-        if (sensor.getMeasurements() != null) {
-            logger.debug("measurements for " + Format.parameter(sensor.getParameter()) + " sensor with id "
-                    + sensor.getIdColored() + " are already filled");
+    List<SensorMeasurement> getSensorMeasurements(int sensorId) {
+        if (measurementCache.containsKey(sensorId)) {
+            List<SensorMeasurement> measurements = measurementCache.get(sensorId);
 
-            return true;
+            logger.debug("fetched " + Format.size(measurements.size()) + " measurements for sensor with id "
+                    + Format.sensorId(sensorId) + " from cache");
+
+            return measurements;
         }
 
-        List<SensorMeasurement> measurements = apiObjectCollector.getSensorMeasurements(sensor.getId());
+        logger.debug("filling measurements cache for sensor with id " + Format.sensorId(sensorId) + "...");
 
-        if (measurements != null) {
-            sensor.setMeasurements(measurements);
+        List<SensorMeasurement> measurements = apiObjectCollector.getSensorMeasurements(sensorId);
 
-            logger.debug("filled measurements for " + Format.parameter(sensor.getParameter())
-                    + " sensor with id " + sensor.getIdColored());
-
-            return true;
+        if (measurements == null) {
+            logger.warn("unable to fetch measurements for sensor with id " + Format.sensorId(sensorId) + " from API");
+            return null;
         }
 
-        logger.error("unable to fetch measurements for " + Format.parameter(sensor.getParameter())
-                + " sensor with id " + sensor.getIdColored());
+        measurementCache.put(sensorId, measurements);
+        return getSensorMeasurements(sensorId);
+    }
 
-        // Set empty array, so cache doesn't try to download it every time
-        sensor.setMeasurements(new ArrayList<>());
-        return false;
+    AirIndex getAirIndex(int stationId) {
+        if (airIndexCache.containsKey(stationId)) {
+            logger.debug("fetched air index for station with id " + Format.stationId(stationId) + " from cache");
+
+            return airIndexCache.get(stationId);
+        }
+
+        logger.debug("filling air index cache for station with id " + Format.stationId(stationId) + "...");
+
+        AirIndex airIndex = apiObjectCollector.getAirIndex(stationId);
+
+        if (airIndex == null) {
+            logger.warn("unable to fetch air index for station with id" + Format.stationId(stationId) + " from API");
+            return null;
+        }
+
+        airIndexCache.put(stationId, airIndex);
+        return getAirIndex(stationId);
     }
 }

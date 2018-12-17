@@ -2,14 +2,15 @@ package air.pollution;
 
 import org.fusesource.jansi.Ansi;
 
+import static org.fusesource.jansi.Ansi.Color;
 import static org.fusesource.jansi.Ansi.ansi;
 
 enum ErrorLevel {
-    DEBUG(0, ansi().fgBrightBlack()),
-    INFO(1, ansi().fgBrightGreen()),
-    WARN(2, ansi().fgYellow()),
-    ERROR(3, ansi().fgBrightRed()),
-    FATAL(4, ansi().bgBrightRed().fgBlack()),
+    DEBUG(0, ansi().fg(Color.WHITE)),
+    INFO(1, ansi().fg(Color.GREEN)),
+    WARN(2, ansi().fg(Color.YELLOW)),
+    ERROR(3, ansi().fg(Color.RED)),
+    FATAL(4, ansi().bg(Color.RED).fg(Color.BLACK)),
     DISABLE(5, null);
 
     Ansi color;

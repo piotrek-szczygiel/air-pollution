@@ -1,7 +1,5 @@
 package air.pollution;
 
-import org.fusesource.jansi.Ansi;
-
 import static org.fusesource.jansi.Ansi.ansi;
 
 class Logger {
@@ -13,34 +11,44 @@ class Logger {
         loggerName = loggerObject.getClass().getSimpleName();
     }
 
+    static ErrorLevel getLevel() {
+        return globalErrorLevel;
+    }
+
     static void setLevel(ErrorLevel errorLevel) {
         globalErrorLevel = errorLevel;
     }
 
-    void log(ErrorLevel errorLevel, String message) {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+    void debug(Object message) {
+        log(ErrorLevel.DEBUG, message);
+    }
 
-        log(errorLevel, message, methodName);
+    private void log(ErrorLevel errorLevel, Object message) {
+        String methodName = Thread.currentThread().getStackTrace()[3].getMethodName();
+
+        log(errorLevel, message.toString(), methodName);
     }
 
     private void log(ErrorLevel errorLevel, String message, String methodName) {
-        if (globalErrorLevel == ErrorLevel.DISABLE) {
+        if (errorLevel == ErrorLevel.DISABLE) {
             return;
         }
 
         if (globalErrorLevel.contains(errorLevel)) {
-            System.err.print(errorLevel.color);
-            System.err.println(ansi()
-                    .a(errorLevel)
-                    .a(" [")
-                    .a(loggerName)
-                    .a(".")
-                    .a(methodName)
-                    .a("]:")
-                    .reset()
-                    .a(" ")
-                    .a(message)
-                    .reset());
+            synchronized (System.err) {
+                System.err.print(errorLevel.color.bold());
+                System.err.println(ansi()
+                        .a(errorLevel)
+                        .a(" [")
+                        .a(loggerName)
+                        .a(".")
+                        .a(methodName)
+                        .a("]:")
+                        .reset()
+                        .a(" ")
+                        .a(message)
+                        .reset());
+            }
         }
 
         if (errorLevel == ErrorLevel.FATAL) {
@@ -48,9 +56,19 @@ class Logger {
         }
     }
 
-    void log(ErrorLevel errorLevel, Ansi message) {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+    void info(Object message) {
+        log(ErrorLevel.INFO, message);
+    }
 
-        log(errorLevel, message.toString(), methodName);
+    void warn(Object message) {
+        log(ErrorLevel.WARN, message);
+    }
+
+    void error(Object message) {
+        log(ErrorLevel.ERROR, message);
+    }
+
+    void fatal(Object message) {
+        log(ErrorLevel.FATAL, message);
     }
 }

@@ -53,14 +53,14 @@ class JsonObjectFactory {
         return sensor;
     }
 
-    List<SensorMeasurement> fromJson(JsonSensorData jsonSensorData) {
+    List<SensorMeasurement> fromJson(JsonSensorMeasurements jsonSensorMeasurements) {
         List<SensorMeasurement> measurements = new ArrayList<>();
 
-        if (jsonSensorData.values == null) {
+        if (jsonSensorMeasurements.values == null) {
             return measurements;
         }
 
-        for (JsonSensorData.Value value : jsonSensorData.values) {
+        for (JsonSensorMeasurements.Value value : jsonSensorMeasurements.values) {
             // add only non zero values
             if (value.value != 0.0f) {
                 measurements.add(new SensorMeasurement(value.date, value.value));

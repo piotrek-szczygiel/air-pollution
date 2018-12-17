@@ -16,9 +16,6 @@ import java.util.Date;
  * and sometimes in unix time format, we have to differentiate between them.
  */
 class JsonDecoder {
-    private static SimpleDateFormat normalDateFormat
-            = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     private static Gson gson = new GsonBuilder().registerTypeAdapter(
             Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> {
                 String dateStr = json.getAsString();
@@ -26,7 +23,7 @@ class JsonDecoder {
                 // If yyyy-MM-dd HH:mm:ss format
                 if (dateStr.contains("-")) {
                     try {
-                        return normalDateFormat.parse(dateStr);
+                        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateStr);
                     } catch (ParseException ex) {
                         throw new JsonParseException(ex);
                     }

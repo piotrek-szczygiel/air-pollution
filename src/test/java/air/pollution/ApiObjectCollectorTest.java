@@ -3,7 +3,6 @@ package air.pollution;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
-import io.reactivex.Observable;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -13,11 +12,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -142,25 +143,25 @@ public class ApiObjectCollectorTest {
     @DataProvider
     public static Object[] dataProviderJsonSensorData() {
         return new Object[]{
-                new JsonSensorData() {{
-                    values = new JsonSensorData.Value[]{
-                            new JsonSensorData.Value() {{
+                new JsonSensorMeasurements() {{
+                    values = new JsonSensorMeasurements.Value[]{
+                            new JsonSensorMeasurements.Value() {{
                                 date = new Date(0);
                                 value = 1.0f;
                             }},
-                            new JsonSensorData.Value() {{
+                            new JsonSensorMeasurements.Value() {{
                                 date = new Date(1);
                                 value = 2.0f;
                             }}
                     };
                 }},
-                new JsonSensorData() {{
-                    values = new JsonSensorData.Value[]{
-                            new JsonSensorData.Value() {{
+                new JsonSensorMeasurements() {{
+                    values = new JsonSensorMeasurements.Value[]{
+                            new JsonSensorMeasurements.Value() {{
                                 date = new Date(10);
                                 value = 10.0f;
                             }},
-                            new JsonSensorData.Value() {{
+                            new JsonSensorMeasurements.Value() {{
                                 date = new Date(20);
                                 value = 20.0f;
                             }}
@@ -203,101 +204,64 @@ public class ApiObjectCollectorTest {
     }
 
     @Test
-    public void getAllStations_SingleStation_SingleStationFromApi() {
-        when(airPollutionService.getAllStations()).thenReturn(Observable.just(
-                Collections.singletonList(new JsonStation())
-        ));
+    public void getAllStations_SingleStation_SingleStationFromApi() throws IOException {
+        when(airPollutionService.getAllStations()).thenReturn(Collections.singletonList(new JsonStation()));
 
         assertEquals(1, api.getAllStations().size());
     }
 
     @Test
-    public void getAllStations_Null_NoStationsFromApi() {
-        when(airPollutionService.getAllStations()).thenReturn(Observable.just(Collections.emptyList()));
+    public void getAllStations_Null_NoStationsFromApi() throws IOException {
+        when(airPollutionService.getAllStations()).thenReturn(Collections.emptyList());
 
         assertNull(api.getAllStations());
     }
 
     @Test
-    @UseDataProvider("dataProviderJsonStations")
-    public void getStation_ExpectedStation_ProvidedStations(JsonStation[] jsonStations, String stationName) {
-        when(airPollutionService.getAllStations()).thenReturn(Observable.just(Arrays.asList(jsonStations)));
-
-        assertEquals(stationName, api.getStation(stationName).getName());
-    }
-
-    @Test
-    @UseDataProvider("dataProviderJsonStations")
-    public void getStation_Null_NonExistentStation(JsonStation[] jsonStations, String stationName) {
-        when(airPollutionService.getAllStations()).thenReturn(Observable.just(Arrays.asList(jsonStations)));
-
-        assertNull(api.getStation("non-existent-station-name"));
-    }
-
-    @Test
-    public void getAllSensors_Null_NoSensorsFromApi() {
-        when(airPollutionService.getSensors(anyInt())).thenReturn(Observable.just(Collections.emptyList()));
+    public void getAllSensors_Null_NoSensorsFromApi() throws IOException {
+        when(airPollutionService.getAllSensors(anyInt())).thenReturn(Collections.emptyList());
 
         assertNull(api.getAllSensors(0));
     }
 
     @Test
     @UseDataProvider("dataProviderJsonSensors")
-    public void getAllSensors_ThreeSensors_ProvidedSensors(JsonSensor[] jsonSensors) {
-        when(airPollutionService.getSensors(anyInt())).thenReturn(Observable.just(Arrays.asList(jsonSensors)));
+    public void getAllSensors_ThreeSensors_ProvidedSensors(JsonSensor[] jsonSensors) throws IOException {
+        when(airPollutionService.getAllSensors(anyInt())).thenReturn(Arrays.asList(jsonSensors));
 
         assertEquals(3, api.getAllSensors(0).size());
     }
 
     @Test
-    public void getSensor_Null_NoSensorsFromApi() {
-        when(airPollutionService.getSensors(anyInt())).thenReturn(Observable.just(Collections.emptyList()));
+    public void getSensorData_Null_NoDataFromApi() throws IOException {
+        when(airPollutionService.getSensorMeasurements(anyInt())).thenReturn(new JsonSensorMeasurements());
 
-        assertNull(api.getSensor(0, Parameter.PM10));
-    }
-
-    @Test
-    @UseDataProvider("dataProviderJsonSensors")
-    public void getSensor_Null_NonExistedSensor(JsonSensor[] jsonSensors) {
-        when(airPollutionService.getSensors(anyInt())).thenReturn(Observable.just(Arrays.asList(jsonSensors)));
-
-        assertNull(api.getSensor(0, Parameter.CO));
-    }
-
-    @Test
-    @UseDataProvider("dataProviderJsonSensors")
-    public void getSensor_PM10Sensor_ProvidedSensors(JsonSensor[] jsonSensors) {
-        when(airPollutionService.getSensors(anyInt())).thenReturn(Observable.just(Arrays.asList(jsonSensors)));
-
-        assertNotNull(api.getSensor(0, Parameter.PM10));
-    }
-
-    @Test
-    public void getSensorData_Null_NoDataFromApi() {
-        when(airPollutionService.getSensorData(anyInt())).thenReturn(Observable.just(new JsonSensorData()));
-
-        assertEquals(0, api.getSensorData(0).size());
+        assertEquals(0, api.getSensorMeasurements(0).size());
     }
 
     @Test
     @UseDataProvider("dataProviderJsonSensorData")
-    public void getSensorData_ThreeMeasurements_ProvidedData(JsonSensorData jsonSensorData) {
-        when(airPollutionService.getSensorData(anyInt())).thenReturn(Observable.just(jsonSensorData));
+    public void getSensorData_ThreeMeasurements_ProvidedData(JsonSensorMeasurements jsonSensorData)
+            throws IOException {
 
-        assertEquals(2, api.getSensorData(0).size());
+        when(airPollutionService.getSensorMeasurements(anyInt())).thenReturn(jsonSensorData);
+
+        assertEquals(2, api.getSensorMeasurements(0).size());
     }
 
     @Test
-    public void getAirIndex_Null_NoDataFromApi() {
-        when(airPollutionService.getAirIndex(anyInt())).thenReturn(Observable.just(new JsonAirIndex()));
+    public void getAirIndex_Null_NoDataFromApi() throws IOException {
+        when(airPollutionService.getAirIndex(anyInt())).thenReturn(new JsonAirIndex());
 
         assertEquals("-", api.getAirIndex(0).getAirQuality());
     }
 
     @Test
     @UseDataProvider("dataProviderJsonAirIndex")
-    public void getAirIndex_ExpectedAirIndex_ProvidedAirIndexes(JsonAirIndex jsonAirIndex, String airQuality) {
-        when(airPollutionService.getAirIndex(anyInt())).thenReturn(Observable.just(jsonAirIndex));
+    public void getAirIndex_ExpectedAirIndex_ProvidedAirIndexes(JsonAirIndex jsonAirIndex, String airQuality)
+            throws IOException {
+
+        when(airPollutionService.getAirIndex(anyInt())).thenReturn(jsonAirIndex);
 
         assertEquals(airQuality, api.getAirIndex(0).getAirQuality());
     }

@@ -1,6 +1,5 @@
 package air.pollution;
 
-import java.util.ArrayList;
 import java.util.List;
 
 class Sensor {
@@ -9,12 +8,12 @@ class Sensor {
 
     private List<SensorMeasurement> measurements;
 
-    Sensor() {
-        measurements = new ArrayList<>();
-    }
-
     int getId() {
         return id;
+    }
+
+    String getIdColored() {
+        return Format.sensorId(id);
     }
 
     void setId(int id) {
@@ -23,6 +22,10 @@ class Sensor {
 
     Parameter getParameter() {
         return parameter;
+    }
+
+    String getParameterColored() {
+        return Format.parameter(parameter);
     }
 
     void setParameter(String formula) {

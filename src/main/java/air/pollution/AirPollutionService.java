@@ -1,21 +1,42 @@
 package air.pollution;
 
-import io.reactivex.Observable;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
-interface AirPollutionService {
-    @GET("station/findAll")
-    Observable<List<JsonStation>> getAllStations();
+class AirPollutionService {
+    private Gson gson;
+    private HttpGet get;
 
-    @GET("station/sensors/{stationId}")
-    Observable<List<JsonSensor>> getSensors(@Path("stationId") int stationId);
+    AirPollutionService(Gson gson) {
+        this.gson = gson;
 
-    @GET("data/getData/{sensorId}")
-    Observable<JsonSensorData> getSensorData(@Path("sensorId") int sensorId);
+        get = new HttpGet();
+    }
 
-    @GET("aqindex/getIndex/{stationId}")
-    Observable<JsonAirIndex> getAirIndex(@Path("stationId") int stationId);
+    List<JsonStation> getAllStations() throws IOException {
+        return Arrays.asList(gson.fromJson(
+                get.from("http://api.gios.gov.pl/pjp-api/rest/station/findAll"),
+                JsonStation[].class));
+    }
+
+    List<JsonSensor> getAllSensors(int stationId) throws IOException {
+        return Arrays.asList(gson.fromJson(get.from(
+                "http://api.gios.gov.pl/pjp-api/rest/station/sensors/" + stationId),
+                JsonSensor[].class));
+    }
+
+    JsonSensorMeasurements getSensorMeasurements(int sensorId) throws IOException {
+        return gson.fromJson(get.from(
+                "http://api.gios.gov.pl/pjp-api/rest/data/getData/" + sensorId),
+                JsonSensorMeasurements.class);
+    }
+
+    JsonAirIndex getAirIndex(int stationId) throws IOException {
+        return gson.fromJson(get.from(
+                "http://api.gios.gov.pl/pjp-api/rest/aqindex/getIndex/" + stationId),
+                JsonAirIndex.class);
+    }
 }

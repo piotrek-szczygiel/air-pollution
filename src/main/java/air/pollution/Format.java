@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
-class PrettyFormat {
+class Format {
     private static final int[] PM10_THRESHOLDS = new int[]{21, 61, 101, 141, 201};
     private static final int[] PM25_THRESHOLDS = new int[]{13, 37, 61, 85, 121};
     private static final int[] O3_THRESHOLDS = new int[]{71, 121, 151, 181, 241};
@@ -26,6 +26,30 @@ class PrettyFormat {
     };
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm dd MMMM");
+
+    static String stationName(String stationName) {
+        return ansi().fgBrightYellow().a(stationName).reset().toString();
+    }
+
+    static String stationId(Station station) {
+        return stationId(station.getId());
+    }
+
+    static String stationId(int stationId) {
+        return ansi().fgBrightGreen().a(stationId).reset().toString();
+    }
+
+    static String sensorId(int sensorId) {
+        return ansi().fgCyan().a(sensorId).reset().toString();
+    }
+
+    static String parameter(Parameter parameter) {
+        return ansi().fgBrightMagenta().a(parameter).reset().toString();
+    }
+
+    static String size(long size) {
+        return ansi().fgBrightRed().a(size).reset().toString();
+    }
 
     static String format(AirIndex airIndex) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -66,10 +90,10 @@ class PrettyFormat {
             case "Dostateczny":
                 color = COLOR_THRESHOLDS[3];
                 break;
-            case "Zły":
+            case "Z\u0142y":
                 color = COLOR_THRESHOLDS[4];
                 break;
-            case "Bardzo zły":
+            case "Bardzo z\u0142y":
                 color = COLOR_THRESHOLDS[5];
                 break;
             default:

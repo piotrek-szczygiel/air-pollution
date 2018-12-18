@@ -6,13 +6,11 @@ class CommandAirIndex implements Runnable {
     private Cache cache;
     private List<Station> stations;
 
-    private Logger logger;
+    private Logger logger = Logger.getLogger(this);
 
     CommandAirIndex(Cache cache, List<Station> stations) {
         this.cache = cache;
         this.stations = stations;
-
-        this.logger = new Logger(this);
     }
 
     @Override

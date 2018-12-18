@@ -8,13 +8,11 @@ import java.util.stream.Collectors;
 class ApiObjectCollector {
     private AirPollutionService airPollutionService;
     private JsonObjectFactory jsonObjectFactory;
-    private Logger logger;
+    private Logger logger = Logger.getLogger(this);
 
     ApiObjectCollector(AirPollutionService airPollutionService, JsonObjectFactory jsonObjectFactory) {
         this.airPollutionService = airPollutionService;
         this.jsonObjectFactory = jsonObjectFactory;
-
-        logger = new Logger(this);
     }
 
     List<Station> getAllStations() {

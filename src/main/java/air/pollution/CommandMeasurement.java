@@ -14,7 +14,7 @@ class CommandMeasurement implements Runnable {
     private LocalDateTime since;
     private LocalDateTime until;
 
-    private Logger logger;
+    private Logger logger = Logger.getLogger(this);
 
     CommandMeasurement(Cache cache, List<Station> stations, List<Parameter> parameters,
                        int top, LocalDateTime date, LocalDateTime since, LocalDateTime until) {
@@ -26,8 +26,6 @@ class CommandMeasurement implements Runnable {
         this.date = date;
         this.since = since;
         this.until = until;
-
-        this.logger = new Logger(this);
     }
 
     @Override
@@ -99,16 +97,35 @@ class CommandMeasurement implements Runnable {
                 } else {
                     logger.debug("collected " + Format.size(measurementsInRange.size()) + "~ measurements");
 
-                    System.out.println("Showing " + Format.size(measurementsInRange.size())
-                            + " measurements of " + sensor.getParameterColored() + " for "
-                            + station.getNameColored());
+                    // How many measurements have been already shown
+                    int counter = 0;
+
+                    // How many measurements are we supposed to show
+                    int show;
+
+                    if (top == 0) {
+                        // If there was no top option specified, show all measurements
+                        show = measurementsInRange.size();
+                    } else {
+                        // Otherwise, show at most top N measurements, without showing more than it is possible
+                        show = Math.min(top, measurementsInRange.size());
+                    }
+
+                    System.out.println("Showing " + Format.size(show) + " measurements of "
+                            + sensor.getParameterColored() + " for " + station.getNameColored());
 
                     for (SensorMeasurement measurement : measurementsInRange) {
+                        // Stop showing measurements, when we have already shown it top N times
+                        if (counter >= show) {
+                            break;
+                        }
+
                         System.out.println(Format.format(measurement));
+                        counter++;
                     }
                 }
 
-                // Add new line if this measurements are not the last one
+                // Add new line if these measurements were not the last one
                 if (stations.indexOf(station) != stations.size() - 1
                         || matchingSensors.indexOf(sensor) != matchingSensors.size() - 1) {
                     System.out.println();

@@ -32,10 +32,6 @@ class Format {
         return ansi().fgYellow().a(stationName).reset().toString();
     }
 
-    static String stationId(Station station) {
-        return stationId(station.getId());
-    }
-
     static String stationId(int stationId) {
         return ansi().fgGreen().a(stationId).reset().toString();
     }
@@ -48,7 +44,7 @@ class Format {
         return ansi().fgMagenta().a(parameter).reset().toString();
     }
 
-    static String size(long size) {
+    static String size(Object size) {
         return ansi().fgRed().a(size).reset().toString();
     }
 

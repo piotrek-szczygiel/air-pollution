@@ -1,11 +1,14 @@
 package air.pollution;
 
-import me.tongfei.progressbar.ProgressBar;
+import com.google.common.base.Stopwatch;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 class Cache {
     private ApiObjectCollector apiObjectCollector;
@@ -15,30 +18,34 @@ class Cache {
     private Map<Integer, List<SensorMeasurement>> measurementCache = new ConcurrentHashMap<>();
     private Map<Integer, AirIndex> airIndexCache = new ConcurrentHashMap<>();
 
-    private Logger logger;
+    private Logger logger = Logger.getLogger(this);
 
     Cache(ApiObjectCollector apiObjectCollector) {
         this.apiObjectCollector = apiObjectCollector;
-
-        logger = new Logger(this);
     }
 
-    void cacheAll() {
-        logger.debug("filling whole cache...");
+    void cacheStations(List<Station> stations) {
+        if (stations == null || stations.size() < 1) {
+            logger.warn("there are no stations to fill cache for");
 
-        ErrorLevel originalLevel = Logger.getLevel();
-        Logger.setLevel(ErrorLevel.ERROR);
-
-        List<Station> stations = getAllStations();
-
-        if (stations == null) {
             return;
         }
 
-        List<Thread> threads = new ArrayList<>();
+        logger.debug("filling cache for " + Format.size(stations.size()) + "~ stations...");
+
+        int processors = stations.size();
+        ExecutorService executorService = Executors.newFixedThreadPool(processors);
+
+        logger.info("fetching data from api using " + Format.size(processors) + "~ threads"
+                + " with timeout of " + Format.size(2) + "~ minutes...");
+
+        logger.setTemporaryLevel(ErrorLevel.INFO);
+        Logger.getLogger(apiObjectCollector).setTemporaryLevel(ErrorLevel.DISABLE);
+
+        Stopwatch stopwatch = Stopwatch.createStarted();
 
         for (Station station : stations) {
-            Thread thread = new Thread(() -> {
+            executorService.execute(() -> {
                 List<Sensor> sensors = getAllSensors(station.getId());
 
                 if (sensors != null) {
@@ -48,21 +55,28 @@ class Cache {
                 }
 
                 getAirIndex(station.getId());
+
+                synchronized (System.out) {
+                    System.out.print("fetched " + station.getNameColored() + "                                     \r");
+                }
             });
-
-            thread.start();
-            threads.add(thread);
         }
 
-        for (Thread thread : ProgressBar.wrap(threads, "fetching all stations data...")) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                logger.error("error while joining " + thread.getName() + ": " + e);
-            }
+        executorService.shutdown();
+
+        try {
+            executorService.awaitTermination(2, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            logger.restorePreviousLevel();
+            logger.error("executing tasks interrupted: " + e);
         }
 
-        Logger.setLevel(originalLevel);
+        stopwatch.stop();
+
+        logger.restorePreviousLevel();
+        Logger.getLogger(apiObjectCollector).restorePreviousLevel();
+
+        logger.info("fetching data from api finished in " + Format.size(stopwatch));
     }
 
     List<Station> getAllStations() {

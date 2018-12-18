@@ -6,4 +6,4 @@ Display information about Polish air quality.
 
 ## Usage
 
-[![asciicast](https://asciinema.org/a/xsWVuCqaGNlr50xOSWtfgygCK.svg)](https://asciinema.org/a/xsWVuCqaGNlr50xOSWtfgygCK)
+[![asciicast](https://asciinema.org/a/217488.svg)](https://asciinema.org/a/217488)

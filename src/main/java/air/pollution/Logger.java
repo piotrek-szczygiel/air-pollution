@@ -1,22 +1,46 @@
 package air.pollution;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import static org.fusesource.jansi.Ansi.ansi;
 
 class Logger {
-    private static ErrorLevel globalErrorLevel = ErrorLevel.DEBUG;
+    private static Map<Object, Logger> LOGGERS = new ConcurrentHashMap<>();
 
+    private static ErrorLevel ERROR_LEVEL = ErrorLevel.DEBUG;
+    private static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SSS");
+
+    private ErrorLevel localErrorLevel = ERROR_LEVEL;
+    private ErrorLevel lastErrorLevel = null;
     private String loggerName;
 
-    Logger(Object loggerObject) {
+    private Logger(Object loggerObject) {
         loggerName = loggerObject.getClass().getSimpleName();
+
+        LOGGERS.putIfAbsent(loggerObject, this);
     }
 
-    static ErrorLevel getLevel() {
-        return globalErrorLevel;
+    static Logger getLogger(Object loggerObject) {
+        return LOGGERS.getOrDefault(loggerObject, new Logger(loggerObject));
     }
 
-    static void setLevel(ErrorLevel errorLevel) {
-        globalErrorLevel = errorLevel;
+    static void setGlobalLevel(ErrorLevel errorLevel) {
+        ERROR_LEVEL = errorLevel;
+    }
+
+    void setTemporaryLevel(ErrorLevel errorLevel) {
+        lastErrorLevel = localErrorLevel;
+        localErrorLevel = errorLevel;
+    }
+
+    void restorePreviousLevel() {
+        if (lastErrorLevel != null) {
+            localErrorLevel = lastErrorLevel;
+            lastErrorLevel = null;
+        }
     }
 
     void debug(Object message) {
@@ -30,17 +54,19 @@ class Logger {
     }
 
     private void log(ErrorLevel errorLevel, String message, String methodName) {
-        if (errorLevel == ErrorLevel.DISABLE) {
+        if (localErrorLevel == ErrorLevel.DISABLE) {
             return;
         }
 
-        if (globalErrorLevel.contains(errorLevel)) {
+        if (localErrorLevel.contains(errorLevel)) {
             // '~' in logging message resets color to default for current error level
             message = message.replace("~", ansi().reset().a(errorLevel.color).toString());
 
             synchronized (System.err) {
                 System.err.println(ansi()
                         .a(errorLevel.color)
+                        .a(ZonedDateTime.now().format(TIME_FORMATTER))
+                        .a(" ")
                         .a(errorLevel)
                         .a(" [")
                         .a(loggerName)

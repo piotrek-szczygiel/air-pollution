@@ -38,7 +38,7 @@ public class ApiObjectCollectorTest {
     @BeforeClass
     public static void setupClass() {
         // disable logging in tests
-        Logger.setLevel(ErrorLevel.DISABLE);
+        Logger.setGlobalLevel(ErrorLevel.DISABLE);
     }
 
     @DataProvider

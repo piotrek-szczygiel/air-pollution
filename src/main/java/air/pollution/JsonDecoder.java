@@ -3,11 +3,11 @@ package air.pollution;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonParseException;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Class containing customized Gson object.
@@ -17,20 +17,17 @@ import java.util.Date;
  */
 class JsonDecoder {
     private static Gson gson = new GsonBuilder().registerTypeAdapter(
-            Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> {
+            LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> {
                 String dateStr = json.getAsString();
 
                 // If yyyy-MM-dd HH:mm:ss format
                 if (dateStr.contains("-")) {
-                    try {
-                        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateStr);
-                    } catch (ParseException ex) {
-                        throw new JsonParseException(ex);
-                    }
+                    return LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                 }
 
                 // If unix time format
-                return new Date(json.getAsJsonPrimitive().getAsLong());
+                Instant instant = Instant.ofEpochMilli(json.getAsJsonPrimitive().getAsLong());
+                return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
             }).create();
 
     static Gson getGson() {

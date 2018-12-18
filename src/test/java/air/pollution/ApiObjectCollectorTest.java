@@ -13,9 +13,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -144,25 +145,27 @@ public class ApiObjectCollectorTest {
     public static Object[] dataProviderJsonSensorData() {
         return new Object[]{
                 new JsonSensorMeasurements() {{
+                    key = "PM10";
                     values = new JsonSensorMeasurements.Value[]{
                             new JsonSensorMeasurements.Value() {{
-                                date = new Date(0);
+                                date = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
                                 value = 1.0f;
                             }},
                             new JsonSensorMeasurements.Value() {{
-                                date = new Date(1);
+                                date = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
                                 value = 2.0f;
                             }}
                     };
                 }},
                 new JsonSensorMeasurements() {{
+                    key = "PM10";
                     values = new JsonSensorMeasurements.Value[]{
                             new JsonSensorMeasurements.Value() {{
-                                date = new Date(10);
+                                date = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
                                 value = 10.0f;
                             }},
                             new JsonSensorMeasurements.Value() {{
-                                date = new Date(20);
+                                date = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
                                 value = 20.0f;
                             }}
                     };

@@ -38,13 +38,13 @@ class ApiObjectCollector {
             return null;
         }
 
-        logger.debug(Format.size(stations.size()) + " stations fetched");
+        logger.debug(Format.size(stations.size()) + "~ stations fetched");
 
         return stations;
     }
 
     List<Sensor> getAllSensors(int stationId) {
-        logger.debug("fetching all sensors for station with id " + Format.stationId(stationId) + "...");
+        logger.debug("fetching all sensors for station with id " + Format.stationId(stationId) + "~...");
 
         List<JsonSensor> jsonSensors = new ArrayList<>();
         try {
@@ -65,7 +65,7 @@ class ApiObjectCollector {
     }
 
     List<SensorMeasurement> getSensorMeasurements(int sensorId) {
-        logger.debug("fetching sensor data for sensor with id " + Format.sensorId(sensorId) + "...");
+        logger.debug("fetching sensor data for sensor with id " + Format.sensorId(sensorId) + "~...");
 
         JsonSensorMeasurements jsonSensorMeasurements = null;
         try {
@@ -81,7 +81,7 @@ class ApiObjectCollector {
 
         List<SensorMeasurement> sensorMeasurements = jsonObjectFactory.fromJson(jsonSensorMeasurements);
 
-        logger.debug("fetched " + Format.size(sensorMeasurements.size()) + " measurements");
+        logger.debug("fetched " + Format.size(sensorMeasurements.size()) + "~ measurements");
 
         return sensorMeasurements;
     }

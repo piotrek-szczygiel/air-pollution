@@ -2,8 +2,8 @@ package air.pollution;
 
 import org.fusesource.jansi.Ansi;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.fusesource.jansi.Ansi.ansi;
@@ -26,7 +26,7 @@ class Format {
             ansi().fgRed()
     };
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm dd MMMM");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd MMMM");
 
     static String stationName(String stationName) {
         return ansi().fgYellow().a(stationName).reset().toString();
@@ -105,7 +105,7 @@ class Format {
         return color.toString() + index + ansi().reset().toString();
     }
 
-    static String format(Parameter parameter, List<SensorMeasurement> measurements, int top) {
+    static String format(List<SensorMeasurement> measurements, int top) {
         StringBuilder stringBuilder = new StringBuilder();
 
         int counter = 0;
@@ -120,21 +120,22 @@ class Format {
                 break;
             }
 
-            String strDate = DATE_FORMAT.format(measurement.date);
-
             if (addNewline) {
                 stringBuilder.append("\n");
             } else {
                 addNewline = true;
             }
 
-            stringBuilder
-                    .append(getFormattedMeasurementValue(parameter, measurement.value))
-                    .append("\t")
-                    .append(strDate);
+            stringBuilder.append(format(measurement));
         }
 
         return stringBuilder.toString();
+    }
+
+    static String format(SensorMeasurement measurement) {
+        return getFormattedMeasurementValue(measurement.parameter, measurement.value)
+                + "\t"
+                + format(measurement.date);
     }
 
     static private String getFormattedMeasurementValue(Parameter parameter, float value) {
@@ -189,5 +190,9 @@ class Format {
         }
 
         return color.toString() + String.format("%6s", String.format("%.2f", value)) + unit + ansi().reset().toString();
+    }
+
+    private static String format(LocalDateTime date) {
+        return ansi().fgBrightBlack().a(date.format(DATE_FORMATTER)).reset().toString();
     }
 }

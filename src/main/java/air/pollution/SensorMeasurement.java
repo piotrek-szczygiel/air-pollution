@@ -1,12 +1,14 @@
 package air.pollution;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 class SensorMeasurement {
-    Date date;
+    Parameter parameter;
+    LocalDateTime date;
     float value;
 
-    SensorMeasurement(Date date, float value) {
+    SensorMeasurement(Parameter parameter, LocalDateTime date, float value) {
+        this.parameter = parameter;
         this.date = date;
         this.value = value;
     }

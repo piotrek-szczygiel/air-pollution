@@ -5,6 +5,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,28 +23,55 @@ import java.util.List;
 )
 public class App implements Runnable {
     @Option(names = {"--verbose", "-v"}, description = "verbose output")
-    private boolean[] verbosity = new boolean[0];
+    private boolean[] optionVerbosity = new boolean[0];
 
     @Option(names = {"--list", "-l"}, description = "list available stations")
-    private boolean listStations;
+    private boolean optionListStations;
 
-    @Option(names = {"--stations", "-s"}, split = ";", paramLabel = "STATION", description = "semicolon separated " +
-            "list of stations")
-    private String[] stationNames;
+    @Option(names = {"--air-index", "-a"}, description = "show air index")
+    private boolean optionAirIndex;
 
-    @Option(names = {"--parameter", "-p"}, paramLabel = "PARAMETER", description = "valid values: " +
-            "${COMPLETION-CANDIDATES}")
-    private Parameter parameter;
+    @Option(names = {"--measurement", "-m"}, description = "show measurement")
+    private boolean optionMeasurement;
+
+    @Option(names = {"--date", "-d"}, paramLabel = "DATE", description = "date")
+    private LocalDateTime optionDate;
+
+    @Option(names = {"--since", "-S"}, paramLabel = "DATE_SINCE", description = "date since")
+    private LocalDateTime optionSince;
+
+    @Option(names = {"--until", "-U"}, paramLabel = "DATE_UNTIL", description = "date until")
+    private LocalDateTime optionUntil;
+
+    @Option(names = {"--stations", "-s"}, split = ";",
+            paramLabel = "STATION", description = "semicolon separated list of stations")
+    private List<String> optionStationNames = new ArrayList<>();
+
+    @Option(names = {"--parameters", "-p"}, split = ";", paramLabel = "PARAMETER",
+            description = "semicolon separated list of parameters%nvalid values: ${COMPLETION-CANDIDATES}")
+    private List<Parameter> optionParameters = new ArrayList<>();
 
     @Option(names = {"--top", "-t"}, paramLabel = "TOP", description = "display top n values")
-    private int top = 0;
+    private int optionTop = 0;
 
     @Option(names = {"--fetch-all", "-F"}, description = "fetch everything provided by API")
-    private boolean fetchAll;
+    private boolean optionFetchAll;
 
     public static void main(String[] args) {
+        // Create new instance of this application
+        App app = new App();
+
+        // Display usage if no arguments were provided
+        if (args.length == 0) {
+            CommandLine.usage(app, System.out);
+            return;
+        }
+
         AnsiConsole.systemInstall();
-        CommandLine.run(new App(), args);
+
+        // Launch the application
+        CommandLine.run(app, args);
+
         AnsiConsole.systemUninstall();
     }
 
@@ -51,9 +79,9 @@ public class App implements Runnable {
     public void run() {
 
         // Set logging level
-        if (verbosity.length >= 2) {
+        if (optionVerbosity.length >= 2) {
             Logger.setLevel(ErrorLevel.DEBUG);
-        } else if (verbosity.length == 1) {
+        } else if (optionVerbosity.length == 1) {
             Logger.setLevel(ErrorLevel.INFO);
         } else {
             Logger.setLevel(ErrorLevel.ERROR);
@@ -61,7 +89,7 @@ public class App implements Runnable {
 
         Logger logger = new Logger(this);
 
-        logger.debug("initializing application...");
+        logger.info("initializing application...");
 
         // Initialize important objects
         JsonObjectFactory jsonObjectFactory = new JsonObjectFactory();
@@ -72,7 +100,7 @@ public class App implements Runnable {
         logger.debug("initialization complete");
 
         // List available stations
-        if (listStations) {
+        if (optionListStations) {
             logger.info("listing stations...");
             List<Station> stations = cache.getAllStations();
 
@@ -85,66 +113,37 @@ public class App implements Runnable {
             return;
         }
 
-        // Fetch everything to cache
-        if (fetchAll) {
+        // Fetch everything to cache before doing anything
+        if (optionFetchAll) {
             cache.cacheAll();
         }
 
         // Do something with provided station names
-        if (stationNames != null && stationNames.length > 0) {
+        if (optionStationNames.size() > 0) {
+
+            // Collect matching stations using case insensitive simple searching
             List<Station> stations = new ArrayList<>();
 
             for (Station station : cache.getAllStations()) {
-                for (String stationName : stationNames) {
+                for (String stationName : optionStationNames) {
                     if (station.getName().toLowerCase().contains(stationName.toLowerCase())) {
                         stations.add(station);
                     }
                 }
             }
 
-            for (Station station : stations) {
-                if (parameter == null) {
-                    logger.info("collecting air index for " + station.getNameColored());
-                    AirIndex airIndex = cache.getAirIndex(station.getId());
-
-                    logger.info("printing air index for " + station.getNameColored());
-                    System.out.println(Format.format(airIndex));
-
-                    continue;
-                }
-
-                List<Sensor> sensors = cache.getAllSensors(station.getId());
-
-                if (sensors == null || sensors.size() < 1) {
-                    continue;
-                }
-
-                Sensor sensor = null;
-
-                for (Sensor searchSensor : sensors) {
-                    if (searchSensor.getParameter() == parameter) {
-                        sensor = searchSensor;
-                    }
-                }
-
-                if (sensor == null) {
-                    continue;
-                }
-
-                List<SensorMeasurement> measurements = cache.getSensorMeasurements(sensor.getId());
-
-                if (measurements != null) {
-                    logger.info("printing " + (top > 0 ? Format.size(top) : "all") + " last "
-                            + Format.parameter(parameter) + " measurements for " + station.getNameColored());
-
-                    System.out.println(Format.format(parameter, measurements, top));
-                }
+            // --air-index
+            if (optionAirIndex) {
+                new CommandAirIndex(cache, stations).run();
             }
 
-            return;
+            // --measurement
+            if (optionMeasurement) {
+                new CommandMeasurement(cache, stations, optionParameters, optionTop,
+                        optionDate, optionSince, optionUntil).run();
+            }
         }
 
-        // Display usage when no command was executed
-        CommandLine.usage(this, System.out);
+        logger.info("exiting application...");
     }
 }

@@ -1,13 +1,13 @@
 package air.pollution;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 class JsonSensorMeasurements {
     String key;
     Value[] values;
 
     class Value {
-        Date date;
+        LocalDateTime date;
         float value;
     }
 }

@@ -35,6 +35,9 @@ class Logger {
         }
 
         if (globalErrorLevel.contains(errorLevel)) {
+            // '~' in logging message resets color to default for current error level
+            message = message.replace("~", ansi().reset().a(errorLevel.color).toString());
+
             synchronized (System.err) {
                 System.err.println(ansi()
                         .a(errorLevel.color)
@@ -43,9 +46,7 @@ class Logger {
                         .a(loggerName)
                         .a(".")
                         .a(methodName)
-                        .a("]:")
-                        .reset()
-                        .a(" ")
+                        .a("]: ")
                         .a(message)
                         .reset());
             }

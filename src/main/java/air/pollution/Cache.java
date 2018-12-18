@@ -89,18 +89,18 @@ class Cache {
         if (sensorCache.containsKey(stationId)) {
             List<Sensor> sensors = sensorCache.get(stationId);
 
-            logger.debug("fetched " + Format.size(sensors.size()) + " sensors for station with id "
-                    + Format.stationId(stationId) + " from cache");
+            logger.debug("fetched " + Format.size(sensors.size()) + "~ sensors for station with id "
+                    + Format.stationId(stationId) + "~ from cache");
 
             return sensors;
         }
 
-        logger.debug("filling sensor cache for station with id " + Format.stationId(stationId) + "...");
+        logger.debug("filling sensor cache for station with id " + Format.stationId(stationId) + "~...");
 
         List<Sensor> sensors = apiObjectCollector.getAllSensors(stationId);
 
         if (sensors == null || sensors.size() < 1) {
-            logger.warn("unable to fetch sensors for station with id " + Format.stationId(stationId) + " from API");
+            logger.warn("unable to fetch sensors for station with id " + Format.stationId(stationId) + "~ from API");
             return null;
         }
 
@@ -112,18 +112,18 @@ class Cache {
         if (measurementCache.containsKey(sensorId)) {
             List<SensorMeasurement> measurements = measurementCache.get(sensorId);
 
-            logger.debug("fetched " + Format.size(measurements.size()) + " measurements for sensor with id "
-                    + Format.sensorId(sensorId) + " from cache");
+            logger.debug("fetched " + Format.size(measurements.size()) + "~ measurements for sensor with id "
+                    + Format.sensorId(sensorId) + "~ from cache");
 
             return measurements;
         }
 
-        logger.debug("filling measurements cache for sensor with id " + Format.sensorId(sensorId) + "...");
+        logger.debug("filling measurements cache for sensor with id " + Format.sensorId(sensorId) + "~...");
 
         List<SensorMeasurement> measurements = apiObjectCollector.getSensorMeasurements(sensorId);
 
         if (measurements == null) {
-            logger.warn("unable to fetch measurements for sensor with id " + Format.sensorId(sensorId) + " from API");
+            logger.warn("unable to fetch measurements for sensor with id " + Format.sensorId(sensorId) + "~ from API");
             return null;
         }
 
@@ -133,17 +133,17 @@ class Cache {
 
     AirIndex getAirIndex(int stationId) {
         if (airIndexCache.containsKey(stationId)) {
-            logger.debug("fetched air index for station with id " + Format.stationId(stationId) + " from cache");
+            logger.debug("fetched air index for station with id " + Format.stationId(stationId) + "~ from cache");
 
             return airIndexCache.get(stationId);
         }
 
-        logger.debug("filling air index cache for station with id " + Format.stationId(stationId) + "...");
+        logger.debug("filling air index cache for station with id " + Format.stationId(stationId) + "~...");
 
         AirIndex airIndex = apiObjectCollector.getAirIndex(stationId);
 
         if (airIndex == null) {
-            logger.warn("unable to fetch air index for station with id" + Format.stationId(stationId) + " from API");
+            logger.warn("unable to fetch air index for station with id" + Format.stationId(stationId) + "~ from API");
             return null;
         }
 

@@ -25,6 +25,7 @@ public class CacheTest {
     @BeforeClass
     public static void disableLogging() {
         Logger.setGlobalLevel(ErrorLevel.DISABLE);
+        Utils.disableOutput();
     }
 
     @Before
@@ -33,7 +34,108 @@ public class CacheTest {
     }
 
     @Test
-    public void cacheStations() {
+    public void cacheStations_FullTest() {
+        Station station1 = new Station();
+        station1.setId(0);
+        station1.setName("example1");
+
+        Station station2 = new Station();
+        station2.setId(1);
+        station2.setName("example2");
+
+        AirIndex airIndex1 = new AirIndex();
+        airIndex1.setAirQuality("Dobry");
+
+        AirIndex airIndex2 = new AirIndex();
+        airIndex2.setAirQuality("Bardzo dobry");
+
+        Sensor sensor1 = new Sensor();
+        sensor1.setId(100);
+
+        Sensor sensor2 = new Sensor();
+        sensor2.setId(101);
+
+        Sensor sensor3 = new Sensor();
+        sensor3.setId(200);
+
+        Sensor sensor4 = new Sensor();
+        sensor4.setId(201);
+
+        SensorMeasurement sensorMeasurement1 = new SensorMeasurement();
+        sensorMeasurement1.setValue(0.0f);
+
+        SensorMeasurement sensorMeasurement2 = new SensorMeasurement();
+        sensorMeasurement2.setValue(1.0f);
+
+        SensorMeasurement sensorMeasurement3 = new SensorMeasurement();
+        sensorMeasurement3.setValue(2.0f);
+
+        SensorMeasurement sensorMeasurement4 = new SensorMeasurement();
+        sensorMeasurement4.setValue(3.0f);
+
+        SensorMeasurement sensorMeasurement5 = new SensorMeasurement();
+        sensorMeasurement5.setValue(4.0f);
+
+        SensorMeasurement sensorMeasurement6 = new SensorMeasurement();
+        sensorMeasurement6.setValue(5.0f);
+
+        SensorMeasurement sensorMeasurement7 = new SensorMeasurement();
+        sensorMeasurement7.setValue(6.0f);
+
+        SensorMeasurement sensorMeasurement8 = new SensorMeasurement();
+        sensorMeasurement8.setValue(7.0f);
+
+        when(apiObjectCollector.getAllStations()).thenReturn(List.of(station1, station2));
+
+        when(apiObjectCollector.getAirIndex(0)).thenReturn(airIndex1);
+        when(apiObjectCollector.getAirIndex(1)).thenReturn(airIndex2);
+
+        when(apiObjectCollector.getAllSensors(0)).thenReturn(List.of(sensor1, sensor2));
+        when(apiObjectCollector.getAllSensors(1)).thenReturn(List.of(sensor3, sensor4));
+
+        when(apiObjectCollector.getSensorMeasurements(100)).thenReturn(List.of(sensorMeasurement1, sensorMeasurement2));
+        when(apiObjectCollector.getSensorMeasurements(101)).thenReturn(List.of(sensorMeasurement3, sensorMeasurement4));
+        when(apiObjectCollector.getSensorMeasurements(200)).thenReturn(List.of(sensorMeasurement5, sensorMeasurement6));
+        when(apiObjectCollector.getSensorMeasurements(201)).thenReturn(List.of(sensorMeasurement7, sensorMeasurement8));
+
+        assertEquals(2, cache.getAllStations().size());
+
+        cache.cacheStations(cache.getAllStations());
+
+        assertEquals(airIndex1, cache.getAirIndex(0));
+        assertEquals(airIndex2, cache.getAirIndex(1));
+
+        assertEquals(2, cache.getAllSensors(0).size());
+        assertEquals(2, cache.getAllSensors(1).size());
+
+        assertTrue(cache.getAllSensors(0).containsAll(List.of(sensor1, sensor2)));
+        assertTrue(cache.getAllSensors(1).containsAll(List.of(sensor3, sensor4)));
+
+        assertEquals(2, cache.getSensorMeasurements(100).size());
+        assertEquals(2, cache.getSensorMeasurements(101).size());
+        assertEquals(2, cache.getSensorMeasurements(200).size());
+        assertEquals(2, cache.getSensorMeasurements(201).size());
+
+        assertTrue(cache.getSensorMeasurements(100).containsAll(List.of(sensorMeasurement1, sensorMeasurement2)));
+        assertTrue(cache.getSensorMeasurements(101).containsAll(List.of(sensorMeasurement3, sensorMeasurement4)));
+        assertTrue(cache.getSensorMeasurements(200).containsAll(List.of(sensorMeasurement5, sensorMeasurement6)));
+        assertTrue(cache.getSensorMeasurements(201).containsAll(List.of(sensorMeasurement7, sensorMeasurement8)));
+
+        verify(apiObjectCollector, times(1)).getAllStations();
+
+        verify(apiObjectCollector, times(1)).getAirIndex(0);
+        verify(apiObjectCollector, times(1)).getAirIndex(1);
+        verify(apiObjectCollector, times(2)).getAirIndex(anyInt());
+
+        verify(apiObjectCollector, times(1)).getAllSensors(0);
+        verify(apiObjectCollector, times(1)).getAllSensors(1);
+        verify(apiObjectCollector, times(2)).getAllSensors(anyInt());
+
+        verify(apiObjectCollector, times(1)).getSensorMeasurements(100);
+        verify(apiObjectCollector, times(1)).getSensorMeasurements(101);
+        verify(apiObjectCollector, times(1)).getSensorMeasurements(200);
+        verify(apiObjectCollector, times(1)).getSensorMeasurements(201);
+        verify(apiObjectCollector, times(4)).getSensorMeasurements(anyInt());
     }
 
     @Test

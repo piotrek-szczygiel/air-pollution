@@ -157,7 +157,7 @@ class Cache {
         AirIndex airIndex = apiObjectCollector.getAirIndex(stationId);
 
         if (airIndex == null) {
-            logger.warn("unable to fetch air index for station with id" + Format.stationId(stationId) + "~ from API");
+            logger.warn("unable to fetch air index for station with id " + Format.stationId(stationId) + "~ from API");
             return null;
         }
 

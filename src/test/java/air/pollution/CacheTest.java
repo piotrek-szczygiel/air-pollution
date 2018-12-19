@@ -24,13 +24,13 @@ public class CacheTest {
 
     @BeforeClass
     public static void disableLogging() {
-        Logger.setGlobalLevel(ErrorLevel.DISABLE);
-        Utils.disableOutput();
+        Utils.disableStderr();
     }
 
     @Before
     public void setUp() {
-        cache = new Cache(apiObjectCollector);
+        cache = new Cache();
+        cache.setApiObjectCollector(apiObjectCollector);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class CacheTest {
 
         assertEquals(2, cache.getAllStations().size());
 
-        cache.cacheStations(cache.getAllStations());
+        cache.cacheStations(cache.getAllStations(), 1);
 
         assertEquals(airIndex1, cache.getAirIndex(0));
         assertEquals(airIndex2, cache.getAirIndex(1));

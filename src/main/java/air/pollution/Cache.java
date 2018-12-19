@@ -11,20 +11,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 class Cache {
-    private ApiObjectCollector apiObjectCollector;
-
     private Map<String, Station> stationCache = new ConcurrentHashMap<>();
     private Map<Integer, List<Sensor>> sensorCache = new ConcurrentHashMap<>();
     private Map<Integer, List<SensorMeasurement>> measurementCache = new ConcurrentHashMap<>();
     private Map<Integer, AirIndex> airIndexCache = new ConcurrentHashMap<>();
 
-    private Logger logger = Logger.getLogger(this);
+    private transient ApiObjectCollector apiObjectCollector;
 
-    Cache(ApiObjectCollector apiObjectCollector) {
+    private transient Logger logger = Logger.getLogger(this);
+
+    void setApiObjectCollector(ApiObjectCollector apiObjectCollector) {
         this.apiObjectCollector = apiObjectCollector;
     }
 
-    void cacheStations(List<Station> stations) {
+    void cacheStations(List<Station> stations, int numberOfThreads) {
         if (stations == null || stations.size() < 1) {
             logger.warn("there are no stations to fill cache for");
 
@@ -33,11 +33,18 @@ class Cache {
 
         logger.debug("filling cache for " + Format.size(stations.size()) + "~ stations...");
 
-        int processors = stations.size();
+        int processors;
+
+        if (numberOfThreads <= 0) {
+            processors = stations.size();
+        } else {
+            processors = numberOfThreads;
+        }
+
         ExecutorService executorService = Executors.newFixedThreadPool(processors);
 
-        logger.info("fetching data from api using " + Format.size(processors) + "~ threads"
-                + " with timeout of " + Format.size(2) + "~ minutes...");
+        logger.info("fetching data from api using " + Format.size(processors) + "~ thread"
+                + ((processors > 1) ? "s" : "") + " with timeout of " + Format.size(2) + "~ minutes...");
 
         logger.setTemporaryLevel(ErrorLevel.INFO);
         Logger.getLogger(apiObjectCollector).setTemporaryLevel(ErrorLevel.DISABLE);
@@ -57,7 +64,9 @@ class Cache {
                 getAirIndex(station.getId());
 
                 synchronized (System.out) {
-                    System.out.print("fetched " + station.getNameColored() + "                                     \r");
+                    synchronized (System.err) {
+                        System.err.print("fetched " + station.getNameColored() + "                                 \r");
+                    }
                 }
             });
         }

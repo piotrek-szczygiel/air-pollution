@@ -45,7 +45,11 @@ class Format {
     }
 
     static String size(Object size) {
-        return ansi().fgRed().a(size).reset().toString();
+        return ansi().fgBrightBlue().a(size).reset().toString();
+    }
+
+    static String file(String fileName) {
+        return ansi().fgBrightMagenta().a(fileName).reset().toString();
     }
 
     static String format(AirIndex airIndex) {

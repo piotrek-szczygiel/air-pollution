@@ -62,6 +62,7 @@ class Logger {
             // '~' in logging message resets color to default for current error level
             message = message.replace("~", ansi().reset().a(errorLevel.color).toString());
 
+            // Synchronization on System.err enables us to do multithreaded logging
             synchronized (System.err) {
                 System.err.println(ansi()
                         .a(errorLevel.color)
@@ -79,7 +80,10 @@ class Logger {
         }
 
         if (errorLevel == ErrorLevel.FATAL) {
-            System.exit(1);
+            // Don't exit while printing
+            synchronized (System.err) {
+                System.exit(1);
+            }
         }
     }
 

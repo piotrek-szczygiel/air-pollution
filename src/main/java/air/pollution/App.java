@@ -59,6 +59,13 @@ public class App implements Runnable {
     @Option(names = {"--top", "-t"}, paramLabel = "TOP", description = "Display only the first N values.")
     private int optionTop = 0;
 
+    @Option(names = {"--threads", "-T"}, description = "Number of threads used while fetching data. "
+            + "If this argument is not provided, use one thread for every station.")
+    private int optionNumberOfThreads = 0;
+
+    @Option(names = {"--refresh", "-r"}, description = "Force cache update.")
+    private boolean optionRefreshCache;
+
     @Option(names = {"--verbose", "-v"}, description = "Show verbose output. Use -vv for highest verbosity mode.")
     private boolean[] optionVerbosity = new boolean[0];
 
@@ -135,9 +142,35 @@ public class App implements Runnable {
         JsonObjectFactory jsonObjectFactory = new JsonObjectFactory();
         AirPollutionService airPollutionService = new AirPollutionService(JsonDecoder.getGson());
         ApiObjectCollector apiObjectCollector = new ApiObjectCollector(airPollutionService, jsonObjectFactory);
-        Cache cache = new Cache(apiObjectCollector);
 
         logger.debug("initialization complete");
+
+        Cache cache = null;
+        CacheFile cacheFile = new CacheFile("cache.json");
+
+        // --refresh
+        if (!optionRefreshCache) {
+            cache = cacheFile.load();
+
+            if (cache == null) {
+                logger.warn("unable to load cache from file, creating new caching object...");
+
+                optionRefreshCache = true;
+            }
+        }
+
+        if (optionRefreshCache) {
+            logger.debug("creating new caching object...");
+
+            cache = new Cache();
+            cache.setApiObjectCollector(apiObjectCollector);
+
+            cache.cacheStations(cache.getAllStations(), optionNumberOfThreads);
+
+            logger.debug("saving up-to-date cache to file...");
+
+            cacheFile.save(cache);
+        }
 
         // --list
         if (optionListStations) {
@@ -185,9 +218,6 @@ public class App implements Runnable {
                 logger.fatal("unable to fetch any stations");
             }
         }
-
-        // Cache matched stations
-        cache.cacheStations(stations);
 
         // --air-index
         if (optionAirIndex) {

@@ -1,13 +1,12 @@
 package air.pollution;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 class ApiObjectCollector {
     private AirPollutionService airPollutionService;
     private JsonObjectFactory jsonObjectFactory;
+
     private Logger logger = Logger.getLogger(this);
 
     ApiObjectCollector(AirPollutionService airPollutionService, JsonObjectFactory jsonObjectFactory) {
@@ -18,12 +17,11 @@ class ApiObjectCollector {
     List<Station> getAllStations() {
         logger.debug("fetching all stations...");
 
-        List<JsonStation> jsonStations = new ArrayList<>();
+        List<JsonStation> jsonStations = airPollutionService.getAllStations();
 
-        try {
-            jsonStations = airPollutionService.getAllStations();
-        } catch (IOException e) {
-            logger.error(e);
+        if (jsonStations == null) {
+            logger.fatal("unable to fetch stations");
+            return null;
         }
 
         List<Station> stations = jsonStations
@@ -32,7 +30,7 @@ class ApiObjectCollector {
                 .collect(Collectors.toList());
 
         if (stations.size() < 1) {
-            logger.error("no stations fetched");
+            logger.fatal("no stations fetched");
             return null;
         }
 
@@ -44,15 +42,15 @@ class ApiObjectCollector {
     List<Sensor> getAllSensors(int stationId) {
         logger.debug("fetching all sensors for station with id " + Format.stationId(stationId) + "~...");
 
-        List<JsonSensor> jsonSensors = new ArrayList<>();
-        try {
-            jsonSensors = airPollutionService.getAllSensors(stationId);
-        } catch (IOException e) {
-            logger.error(e);
+        List<JsonSensor> jsonSensors = airPollutionService.getAllSensors(stationId);
+
+        if (jsonSensors == null) {
+            logger.fatal("unable to fetch sensors for station with id " + Format.stationId(stationId));
+            return null;
         }
 
         if (jsonSensors.size() < 1) {
-            logger.error("unable to fetch sensors for station with id " + Format.stationId(stationId));
+            logger.fatal("unable to fetch sensors for station with id " + Format.stationId(stationId));
             return null;
         }
 
@@ -65,15 +63,10 @@ class ApiObjectCollector {
     List<SensorMeasurement> getSensorMeasurements(int sensorId) {
         logger.debug("fetching sensor data for sensor with id " + Format.sensorId(sensorId) + "~...");
 
-        JsonSensorMeasurements jsonSensorMeasurements = null;
-        try {
-            jsonSensorMeasurements = airPollutionService.getSensorMeasurements(sensorId);
-        } catch (IOException e) {
-            logger.error(e);
-        }
+        JsonSensorMeasurements jsonSensorMeasurements = airPollutionService.getSensorMeasurements(sensorId);
 
         if (jsonSensorMeasurements == null) {
-            logger.error("unable to fetch sensor data");
+            logger.fatal("unable to fetch sensor measurements for sensor with id " + Format.sensorId(sensorId));
             return null;
         }
 
@@ -85,16 +78,12 @@ class ApiObjectCollector {
     }
 
     AirIndex getAirIndex(int stationId) {
-        JsonAirIndex jsonAirIndex = null;
+        logger.debug("fetching air index for station with id " + Format.stationId(stationId) + "~...");
 
-        try {
-            jsonAirIndex = airPollutionService.getAirIndex(stationId);
-        } catch (IOException e) {
-            logger.error(e);
-        }
+        JsonAirIndex jsonAirIndex = airPollutionService.getAirIndex(stationId);
 
         if (jsonAirIndex == null) {
-            logger.error("unable to fetch air index for station with id " + Format.stationId(stationId));
+            logger.fatal("unable to fetch air index for station with id " + Format.stationId(stationId));
             return null;
         }
 

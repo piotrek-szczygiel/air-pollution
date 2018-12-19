@@ -8,23 +8,23 @@ class Sensor {
         return id;
     }
 
-    String getIdColored() {
-        return Format.sensorId(id);
-    }
-
     void setId(int id) {
         this.id = id;
+    }
+
+    String getIdColored() {
+        return Format.sensorId(id);
     }
 
     Parameter getParameter() {
         return parameter;
     }
 
-    String getParameterColored() {
-        return Format.parameter(parameter);
-    }
-
     void setParameter(String formula) {
         parameter = Parameter.fromString(formula);
+    }
+
+    String getParameterColored() {
+        return Format.parameter(parameter);
     }
 }

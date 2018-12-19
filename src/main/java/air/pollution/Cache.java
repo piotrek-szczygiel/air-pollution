@@ -2,6 +2,7 @@ package air.pollution;
 
 import com.google.common.base.Stopwatch;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 class Cache {
+    private LocalDateTime lastUpdated;
+
     private Map<String, Station> stationCache = new ConcurrentHashMap<>();
     private Map<Integer, List<Sensor>> sensorCache = new ConcurrentHashMap<>();
     private Map<Integer, List<SensorMeasurement>> measurementCache = new ConcurrentHashMap<>();
@@ -22,6 +25,10 @@ class Cache {
 
     void setApiObjectCollector(ApiObjectCollector apiObjectCollector) {
         this.apiObjectCollector = apiObjectCollector;
+    }
+
+    LocalDateTime getLastUpdated() {
+        return lastUpdated;
     }
 
     void cacheStations(List<Station> stations, int numberOfThreads) {
@@ -86,6 +93,8 @@ class Cache {
         Logger.getLogger(apiObjectCollector).restorePreviousLevel();
 
         logger.info("fetching data from api finished in " + Format.size(stopwatch));
+
+        lastUpdated = LocalDateTime.now();
     }
 
     List<Station> getAllStations() {

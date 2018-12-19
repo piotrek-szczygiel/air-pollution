@@ -24,38 +24,56 @@ class AirPollutionService {
     }
 
     List<JsonStation> getAllStations() {
+        List<JsonStation> jsonStations;
+
         try {
-            return Arrays.asList(gson.fromJson(get.from(apiGetAllStations), JsonStation[].class));
+            jsonStations = Arrays.asList(gson.fromJson(get.from(apiGetAllStations), JsonStation[].class));
         } catch (Exception e) {
             logger.error("error while fetching all stations: " + e);
-            return null;
+            jsonStations = null;
         }
+
+        return jsonStations;
     }
 
     List<JsonSensor> getAllSensors(int stationId) {
+        List<JsonSensor> jsonSensors;
+
         try {
-            return Arrays.asList(gson.fromJson(get.from(apiGetAllSensors + stationId), JsonSensor[].class));
+            jsonSensors = Arrays.asList(gson.fromJson(get.from(apiGetAllSensors + stationId), JsonSensor[].class));
         } catch (Exception e) {
             logger.error("error while fetching all sensors: " + e);
-            return null;
+
+            jsonSensors = null;
         }
+
+        return jsonSensors;
     }
 
     JsonSensorMeasurements getSensorMeasurements(int sensorId) {
+        JsonSensorMeasurements jsonSensorMeasurements;
+
         try {
-            return gson.fromJson(get.from(apiGetSensorMeasurements + sensorId), JsonSensorMeasurements.class);
+            jsonSensorMeasurements = gson.fromJson(get.from(apiGetSensorMeasurements + sensorId),
+                    JsonSensorMeasurements.class);
         } catch (Exception e) {
             logger.error("error while fetching all sensor measurements: " + e);
-            return null;
+            jsonSensorMeasurements = null;
         }
+
+        return jsonSensorMeasurements;
     }
 
     JsonAirIndex getAirIndex(int stationId) {
+        JsonAirIndex jsonAirIndex;
+
         try {
-            return gson.fromJson(get.from(apiGetAirIndex + stationId), JsonAirIndex.class);
+            jsonAirIndex = gson.fromJson(get.from(apiGetAirIndex + stationId), JsonAirIndex.class);
         } catch (Exception e) {
             logger.error("error while fetching air index: " + e);
-            return null;
+            jsonAirIndex = null;
         }
+
+        return jsonAirIndex;
     }
 }

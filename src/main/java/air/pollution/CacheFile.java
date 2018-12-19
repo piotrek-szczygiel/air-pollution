@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 class CacheFile {
     Logger logger = Logger.getLogger(this);
@@ -35,6 +37,22 @@ class CacheFile {
         }
 
         logger.info("loaded cache from " + Format.file(fileName) + "~ in " + Format.size(stopwatch));
+
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        long minutesDifference = ChronoUnit.MINUTES.between(cache.getLastUpdated(), currentTime);
+
+        logger.debug("loaded cache was updated " + Format.size(minutesDifference) + "~ minutes ago");
+
+        long minutesDifferenceSinceThisHour = currentTime.getMinute() - minutesDifference;
+
+        logger.debug("loaded cache update minutes difference since this hour is "
+                + Format.size(minutesDifferenceSinceThisHour));
+
+        if (minutesDifferenceSinceThisHour < 0) {
+            logger.debug("loaded cache is not up-to-date, refreshing cache...");
+            return null;
+        }
 
         return cache;
     }

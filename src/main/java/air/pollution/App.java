@@ -153,8 +153,6 @@ public class App implements Runnable {
             cache = cacheFile.load();
 
             if (cache == null) {
-                logger.warn("unable to load cache from file, creating new caching object...");
-
                 optionRefreshCache = true;
             }
         }

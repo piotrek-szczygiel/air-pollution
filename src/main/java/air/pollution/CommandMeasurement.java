@@ -30,8 +30,10 @@ class CommandMeasurement implements Runnable {
 
     @Override
     public void run() {
+        logger.info("showing measurements for " + Format.size(stations.size()) + "~ stations");
+
         for (Station station : stations) {
-            logger.info("collecting sensors for " + station.getNameColored());
+            logger.debug("collecting sensors for " + station.getNameColored());
             List<Sensor> sensors = cache.getAllSensors(station.getId());
 
             if (sensors == null || sensors.size() < 1) {
@@ -57,7 +59,7 @@ class CommandMeasurement implements Runnable {
                     + "~ sensors for " + station.getNameColored());
 
             for (Sensor sensor : matchingSensors) {
-                logger.info("collecting measurements for sensor with id " + sensor.getIdColored());
+                logger.debug("collecting measurements for sensor with id " + sensor.getIdColored());
                 List<SensorMeasurement> measurements = cache.getSensorMeasurements(sensor.getId());
 
                 if (measurements == null) {

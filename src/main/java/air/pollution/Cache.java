@@ -54,7 +54,7 @@ class Cache {
                 + ((processors > 1) ? "s" : "") + " with timeout of " + Format.size(2) + "~ minutes...");
 
         logger.setTemporaryLevel(ErrorLevel.INFO);
-        Logger.getLogger(apiObjectCollector).setTemporaryLevel(ErrorLevel.DISABLE);
+        Logger.getLogger(apiObjectCollector).setTemporaryLevel(ErrorLevel.FATAL);
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 

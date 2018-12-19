@@ -39,13 +39,10 @@ class CacheFile {
         logger.info("loaded cache from " + Format.file(fileName) + "~ in " + Format.size(stopwatch));
 
         LocalDateTime currentTime = LocalDateTime.now();
-
         long minutesDifference = ChronoUnit.MINUTES.between(cache.getLastUpdated(), currentTime);
-
         logger.debug("loaded cache was updated " + Format.size(minutesDifference) + "~ minutes ago");
 
         long minutesDifferenceSinceThisHour = currentTime.getMinute() - minutesDifference;
-
         logger.debug("loaded cache update minutes difference since this hour is "
                 + Format.size(minutesDifferenceSinceThisHour));
 

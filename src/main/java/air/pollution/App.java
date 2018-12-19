@@ -146,7 +146,7 @@ public class App implements Runnable {
         logger.debug("initialization complete");
 
         Cache cache = null;
-        CacheFile cacheFile = new CacheFile("cache.json");
+        CacheFile cacheFile = new CacheFile("cache.gz");
 
         // --refresh
         if (!optionRefreshCache) {

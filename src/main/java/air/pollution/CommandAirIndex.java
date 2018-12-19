@@ -18,7 +18,7 @@ class CommandAirIndex implements Runnable {
         logger.debug("displaying air index for " + Format.size(stations.size()) + "~ stations");
 
         for (Station station : stations) {
-            logger.info("collecting air index for " + station.getNameColored());
+            logger.debug("collecting air index for " + station.getNameColored());
             AirIndex airIndex = cache.getAirIndex(station.getId());
 
             logger.info("printing air index for " + station.getNameColored());

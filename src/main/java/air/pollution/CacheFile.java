@@ -4,12 +4,12 @@ import com.google.common.base.Stopwatch;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 class CacheFile {
     Logger logger = Logger.getLogger(this);
@@ -23,8 +23,12 @@ class CacheFile {
         Cache cache;
         Stopwatch stopwatch;
 
-        try (Reader reader = new FileReader(fileName)) {
-            logger.debug("loading cache from " + Format.file(fileName) + "~...");
+        // Open GZIP input stream
+        try (FileInputStream fileInputStream = new FileInputStream(fileName);
+             GZIPInputStream gzipInputStream = new GZIPInputStream(fileInputStream);
+             Reader reader = new InputStreamReader(gzipInputStream, StandardCharsets.UTF_8)) {
+
+            logger.debug("loading cache from " + Format.file(fileName) + "~ compressed archive...");
 
             Gson gson = new GsonBuilder().create();
 
@@ -43,11 +47,9 @@ class CacheFile {
         logger.debug("loaded cache was updated " + Format.size(minutesDifference) + "~ minutes ago");
 
         long minutesDifferenceSinceThisHour = currentTime.getMinute() - minutesDifference;
-        logger.debug("loaded cache update minutes difference since this hour is "
-                + Format.size(minutesDifferenceSinceThisHour));
 
         if (minutesDifferenceSinceThisHour < 0) {
-            logger.debug("loaded cache is not up-to-date, refreshing cache...");
+            logger.info("loaded cache is not up-to-date, refreshing cache...");
             return null;
         }
 
@@ -57,8 +59,12 @@ class CacheFile {
     void save(Cache cache) {
         Stopwatch stopwatch;
 
-        try (Writer writer = new FileWriter(fileName)) {
-            logger.debug("saving cache to " + Format.file(fileName) + "~...");
+        // Open GZIP output stream
+        try (FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+             GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
+             Writer writer = new OutputStreamWriter(gzipOutputStream, StandardCharsets.UTF_8)) {
+
+            logger.debug("saving cache to " + Format.file(fileName) + "~ compressed archive...");
 
             Gson gson = new GsonBuilder().create();
 

@@ -129,9 +129,9 @@ class Format {
     }
 
     static String format(SensorMeasurement measurement) {
-        return getFormattedMeasurementValue(measurement.parameter, measurement.value)
+        return getFormattedMeasurementValue(measurement.getParameter(), measurement.getValue())
                 + "\t"
-                + format(measurement.date);
+                + format(measurement.getDate());
     }
 
     static private String getFormattedMeasurementValue(Parameter parameter, float value) {

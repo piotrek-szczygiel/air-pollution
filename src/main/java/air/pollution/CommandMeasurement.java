@@ -77,11 +77,12 @@ class CommandMeasurement implements Runnable {
 
                 for (SensorMeasurement measurement : measurements) {
                     if (date != null) {
-                        if (!date.isEqual(measurement.date)) {
+                        if (!date.isEqual(measurement.getDate())) {
                             continue;
                         }
                     } else if (since != null && until != null) {
-                        if (!(measurement.date.compareTo(since) >= 0 && measurement.date.compareTo(until) <= 0)) {
+                        if (!(measurement.getDate().compareTo(since) >= 0
+                                && measurement.getDate().compareTo(until) <= 0)) {
                             continue;
                         }
                     } else {

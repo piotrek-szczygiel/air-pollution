@@ -63,8 +63,12 @@ class JsonObjectFactory {
         for (JsonSensorMeasurements.Value value : jsonSensorMeasurements.values) {
             // add only non zero values
             if (value.value != 0.0f) {
-                measurements.add(new SensorMeasurement(
-                        Parameter.fromString(jsonSensorMeasurements.key), value.date, value.value));
+                SensorMeasurement measurement = new SensorMeasurement();
+                measurement.setParameter(Parameter.fromString(jsonSensorMeasurements.key));
+                measurement.setDate(value.date);
+                measurement.setValue(value.value);
+
+                measurements.add(measurement);
             }
         }
 

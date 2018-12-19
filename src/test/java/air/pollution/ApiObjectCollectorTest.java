@@ -15,8 +15,7 @@ import org.mockito.junit.MockitoRule;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -36,8 +35,7 @@ public class ApiObjectCollectorTest {
     private ApiObjectCollector api;
 
     @BeforeClass
-    public static void setupClass() {
-        // disable logging in tests
+    public static void disableLogging() {
         Logger.setGlobalLevel(ErrorLevel.DISABLE);
     }
 
@@ -202,27 +200,27 @@ public class ApiObjectCollectorTest {
     }
 
     @Before
-    public void initialize() {
+    public void setUp() {
         api = new ApiObjectCollector(airPollutionService, jsonObjectFactory);
     }
 
     @Test
     public void getAllStations_SingleStation_SingleStationFromApi() throws IOException {
-        when(airPollutionService.getAllStations()).thenReturn(Collections.singletonList(new JsonStation()));
+        when(airPollutionService.getAllStations()).thenReturn(List.of(new JsonStation()));
 
         assertEquals(1, api.getAllStations().size());
     }
 
     @Test
     public void getAllStations_Null_NoStationsFromApi() throws IOException {
-        when(airPollutionService.getAllStations()).thenReturn(Collections.emptyList());
+        when(airPollutionService.getAllStations()).thenReturn(List.of());
 
         assertNull(api.getAllStations());
     }
 
     @Test
     public void getAllSensors_Null_NoSensorsFromApi() throws IOException {
-        when(airPollutionService.getAllSensors(anyInt())).thenReturn(Collections.emptyList());
+        when(airPollutionService.getAllSensors(anyInt())).thenReturn(List.of());
 
         assertNull(api.getAllSensors(0));
     }
@@ -230,7 +228,7 @@ public class ApiObjectCollectorTest {
     @Test
     @UseDataProvider("dataProviderJsonSensors")
     public void getAllSensors_ThreeSensors_ProvidedSensors(JsonSensor[] jsonSensors) throws IOException {
-        when(airPollutionService.getAllSensors(anyInt())).thenReturn(Arrays.asList(jsonSensors));
+        when(airPollutionService.getAllSensors(anyInt())).thenReturn(List.of(jsonSensors));
 
         assertEquals(3, api.getAllSensors(0).size());
     }

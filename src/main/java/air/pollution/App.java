@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Command(
@@ -37,7 +38,8 @@ public class App implements Runnable {
     private List<String> optionStationNames = new ArrayList<>();
 
     @Option(names = {"--parameters", "-p"}, split = ";", paramLabel = "PARAMETER",
-            description = "Semicolon separated list of parameters. Accepted values: ${COMPLETION-CANDIDATES}.")
+            description = "Semicolon separated list of parameters. If this argument is not provided, "
+                    + "use all parameters. Accepted values: ${COMPLETION-CANDIDATES}.")
     private List<Parameter> optionParameters = new ArrayList<>();
 
     @Option(names = {"--air-index", "-a"}, description = "Show Air Index for provided stations.")
@@ -68,7 +70,7 @@ public class App implements Runnable {
     private boolean optionRefreshCache;
 
     @Option(names = {"--cache-file", "-f"}, description = "Path to cache file.")
-    private File optionCacheFile = new File("cache");
+    private File optionCacheFile = new File("cache.gz");
 
     @Option(names = {"--verbose", "-v"}, description = "Show verbose output. Use -vv for highest verbosity mode.")
     private boolean[] optionVerbosity = new boolean[0];
@@ -221,7 +223,15 @@ public class App implements Runnable {
             }
         }
 
-        // TODO: use all parameters if empty
+        List<Parameter> parameters;
+
+        // If there are none parameters provided, assume usage of all
+        if (optionParameters.size() < 1) {
+            logger.debug("no parameters provided, assuming usage of all parameters");
+            parameters = Arrays.asList(Parameter.values());
+        } else {
+            parameters = optionParameters;
+        }
 
         // --air-index
         if (optionAirIndex) {
@@ -230,8 +240,7 @@ public class App implements Runnable {
 
         // --measurement
         if (optionMeasurement) {
-            new CommandMeasurement(cache, stations, optionParameters, optionTop,
-                    optionDate, optionSince, optionUntil).run();
+            new CommandMeasurement(cache, stations, parameters, optionTop, optionDate, optionSince, optionUntil).run();
         }
     }
 }

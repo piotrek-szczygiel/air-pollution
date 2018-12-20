@@ -44,10 +44,10 @@ public class CacheTest {
         station2.setName("example2");
 
         AirIndex airIndex1 = new AirIndex();
-        airIndex1.setAirQuality("Dobry");
+        airIndex1.setAirQuality(Quality.GOOD);
 
         AirIndex airIndex2 = new AirIndex();
-        airIndex2.setAirQuality("Bardzo dobry");
+        airIndex2.setAirQuality(Quality.EXCELLENT);
 
         Sensor sensor1 = new Sensor();
         sensor1.setId(100);
@@ -290,12 +290,12 @@ public class CacheTest {
     @Test
     public void getAirIndex_CorrectAirIndexes_ProvidedAirIndexes() {
         AirIndex airIndex1 = new AirIndex();
-        airIndex1.setAirQuality("Dobry");
+        airIndex1.setAirQuality(Quality.BAD);
 
         when(apiObjectCollector.getAirIndex(0)).thenReturn(airIndex1);
 
         AirIndex airIndex2 = new AirIndex();
-        airIndex2.setAirQuality("Bardzo dobry");
+        airIndex2.setAirQuality(Quality.POOR);
 
         when(apiObjectCollector.getAirIndex(1)).thenReturn(airIndex2);
 

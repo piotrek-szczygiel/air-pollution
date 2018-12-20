@@ -49,8 +49,9 @@ class CacheFile {
         LocalDateTime currentDate = LocalDateTime.now();
         LocalDateTime lastUpdatedDate = cache.getCacheDate();
 
-        long minutesDifference = ChronoUnit.MINUTES.between(currentDate, lastUpdatedDate);
-        logger.debug("loaded cache was updated " + Format.size(minutesDifference) + "~ minutes ago");
+        long minutesDifference = ChronoUnit.MINUTES.between(lastUpdatedDate, currentDate);
+        logger.debug("loaded cache was last updated at " + Format.timestampDate(lastUpdatedDate)
+                + "~ (" + Format.size(minutesDifference) + "~ minutes ago)");
 
         // Check if last update was done earlier than an hour ago
         // Check also if it wasn't done at the previous hour (17:58 last, 18:03 current => UPDATE)

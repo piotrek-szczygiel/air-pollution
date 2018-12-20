@@ -4,7 +4,6 @@ import org.fusesource.jansi.Ansi;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
@@ -26,7 +25,8 @@ class Format {
             ansi().fgRed()
     };
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd MMMM");
+    private static final DateTimeFormatter MEASUREMENT_DATE_FORMATTER = DateTimeFormatter.ofPattern("HH:mm,  dd MMMM");
+    private static final DateTimeFormatter TIMESTAMP_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM, HH:mm:ss");
 
     static String stationName(String stationName) {
         return ansi().fgYellow().a(stationName).reset().toString();
@@ -56,49 +56,26 @@ class Format {
         return ansi().fgBrightCyan().a(spinner).reset().toString();
     }
 
-    static String format(AirIndex airIndex) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder
-                .append(ansi().fgCyan())
-                .append("Air quality:\t")
-                .append(getColoredIndex(airIndex.getAirQuality()))
-                .append("\n----------------------------");
-
-        for (Parameter parameter : Parameter.values()) {
-            String index = airIndex.getValue(parameter);
-
-            stringBuilder
-                    .append(ansi().fgCyan())
-                    .append("\n")
-                    .append(parameter)
-                    .append(":\t\t")
-                    .append(getColoredIndex(index));
-        }
-
-        return stringBuilder.toString();
-    }
-
-    private static String getColoredIndex(String index) {
+    static String quality(Quality quality) {
         Ansi color;
 
-        switch (index) {
-            case "Bardzo dobry":
+        switch (quality) {
+            case EXCELLENT:
                 color = COLOR_THRESHOLDS[0];
                 break;
-            case "Dobry":
+            case GOOD:
                 color = COLOR_THRESHOLDS[1];
                 break;
-            case "Umiarkowany":
+            case MODERATE:
                 color = COLOR_THRESHOLDS[2];
                 break;
-            case "Dostateczny":
+            case FAIR:
                 color = COLOR_THRESHOLDS[3];
                 break;
-            case "Z\u0142y":
+            case POOR:
                 color = COLOR_THRESHOLDS[4];
                 break;
-            case "Bardzo z\u0142y":
+            case BAD:
                 color = COLOR_THRESHOLDS[5];
                 break;
             default:
@@ -106,46 +83,18 @@ class Format {
                 break;
         }
 
-        return color.toString() + index + ansi().reset().toString();
-    }
-
-    static String format(List<SensorMeasurement> measurements, int top) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        int counter = 0;
-
-        boolean addNewline = false;
-        for (SensorMeasurement measurement : measurements) {
-            if (top != 0) {
-                counter++;
-            }
-
-            if (counter > top) {
-                break;
-            }
-
-            if (addNewline) {
-                stringBuilder.append("\n");
-            } else {
-                addNewline = true;
-            }
-
-            stringBuilder.append(format(measurement));
-        }
-
-        return stringBuilder.toString();
+        return color.toString() + quality + ansi().reset().toString();
     }
 
     static String format(SensorMeasurement measurement) {
-        return getFormattedMeasurementValue(measurement.getParameter(), measurement.getValue())
-                + "\t"
-                + format(measurement.getDate());
+        return measurementValue(measurement.getParameter(), measurement.getValue())
+                + "\t" + measurementDate(measurement.getDate());
     }
 
-    static private String getFormattedMeasurementValue(Parameter parameter, float value) {
+    static private String measurementValue(Parameter parameter, float value) {
         Ansi color = ansi().fgDefault();
 
-        String unit = " ug/m3";
+        String unit = " \u00b5g/m3";
 
         int[] thresholds = null;
 
@@ -196,7 +145,11 @@ class Format {
         return color.toString() + String.format("%6s", String.format("%.2f", value)) + unit + ansi().reset().toString();
     }
 
-    private static String format(LocalDateTime date) {
-        return ansi().fgBrightBlack().a(date.format(DATE_FORMATTER)).reset().toString();
+    private static String measurementDate(LocalDateTime date) {
+        return ansi().fgBrightBlack().a(date.format(MEASUREMENT_DATE_FORMATTER)).reset().toString();
+    }
+
+    static String timestampDate(LocalDateTime date) {
+        return ansi().fgRed().a(date.format(TIMESTAMP_DATE_FORMATTER)).reset().toString();
     }
 }

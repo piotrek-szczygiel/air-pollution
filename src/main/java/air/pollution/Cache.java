@@ -71,10 +71,11 @@ class Cache {
                     synchronized (System.err) {
 
                         // Get spinner animation current character
-                        String dot = Utils.getSpinner(spinnerIndex.incrementAndGet() / 10);
+                        String dot = Utils.getSpinner(spinnerIndex.incrementAndGet() / 8);
 
                         System.err.print(ansi().cursorToColumn(0).toString() + Format.spinner(dot)
-                                + "  fetching " + station.getNameColored() + ansi().eraseLine().toString());
+                                + "  fetching " + Format.stationName(station.getName())
+                                + ansi().eraseLine().toString());
                     }
                 }
 
@@ -101,7 +102,7 @@ class Cache {
 
         stopwatch.stop();
 
-        System.err.print(ansi().cursorToColumn(0).toString());
+        System.err.print(ansi().cursorToColumn(0).eraseLine().toString());
         Utils.showCursor(System.err);
 
         logger.restorePreviousLevel();

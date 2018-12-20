@@ -23,8 +23,4 @@ class Sensor {
     void setParameter(String formula) {
         parameter = Parameter.fromString(formula);
     }
-
-    String getParameterColored() {
-        return Format.parameter(parameter);
-    }
 }

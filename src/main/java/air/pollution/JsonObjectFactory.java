@@ -7,30 +7,15 @@ class JsonObjectFactory {
     AirIndex fromJson(JsonAirIndex jsonAirIndex) {
         AirIndex airIndex = new AirIndex();
 
-        if (jsonAirIndex.pm10IndexLevel != null) {
-            airIndex.setValue(Parameter.PM10, jsonAirIndex.pm10IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.pm25IndexLevel != null) {
-            airIndex.setValue(Parameter.PM25, jsonAirIndex.pm25IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.o3IndexLevel != null) {
-            airIndex.setValue(Parameter.O3, jsonAirIndex.o3IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.no2IndexLevel != null) {
-            airIndex.setValue(Parameter.NO2, jsonAirIndex.no2IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.so2IndexLevel != null) {
-            airIndex.setValue(Parameter.SO2, jsonAirIndex.so2IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.c6h6IndexLevel != null) {
-            airIndex.setValue(Parameter.C6H6, jsonAirIndex.c6h6IndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.coIndexLevel != null) {
-            airIndex.setValue(Parameter.CO, jsonAirIndex.coIndexLevel.indexLevelName);
-        }
-        if (jsonAirIndex.stIndexLevel != null) {
-            airIndex.setAirQuality(jsonAirIndex.stIndexLevel.indexLevelName);
-        }
+        airIndex.setValue(Parameter.PM10, Quality.fromIndexLevel(jsonAirIndex.pm10IndexLevel));
+        airIndex.setValue(Parameter.PM25, Quality.fromIndexLevel(jsonAirIndex.pm25IndexLevel));
+        airIndex.setValue(Parameter.O3, Quality.fromIndexLevel(jsonAirIndex.o3IndexLevel));
+        airIndex.setValue(Parameter.NO2, Quality.fromIndexLevel(jsonAirIndex.no2IndexLevel));
+        airIndex.setValue(Parameter.SO2, Quality.fromIndexLevel(jsonAirIndex.so2IndexLevel));
+        airIndex.setValue(Parameter.C6H6, Quality.fromIndexLevel(jsonAirIndex.c6h6IndexLevel));
+        airIndex.setValue(Parameter.CO, Quality.fromIndexLevel(jsonAirIndex.coIndexLevel));
+
+        airIndex.setAirQuality(Quality.fromIndexLevel(jsonAirIndex.stIndexLevel));
 
         return airIndex;
     }
@@ -61,9 +46,11 @@ class JsonObjectFactory {
         }
 
         for (JsonSensorMeasurements.Value value : jsonSensorMeasurements.values) {
-            // add only non zero values
+
+            // Add only non zero values
             if (value.value != 0.0f) {
                 SensorMeasurement measurement = new SensorMeasurement();
+
                 measurement.setParameter(Parameter.fromString(jsonSensorMeasurements.key));
                 measurement.setDate(value.date);
                 measurement.setValue(value.value);

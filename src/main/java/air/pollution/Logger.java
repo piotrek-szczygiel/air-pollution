@@ -80,10 +80,7 @@ class Logger {
         }
 
         if (errorLevel == ErrorLevel.FATAL) {
-            // Don't exit while printing
-            synchronized (System.err) {
-                System.exit(1);
-            }
+            System.exit(1);
         }
     }
 

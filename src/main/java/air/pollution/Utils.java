@@ -21,20 +21,6 @@ class Utils {
         return stripAccents(input.toLowerCase().trim());
     }
 
-    static void disableStdout() {
-        System.setOut(new PrintStream(new OutputStream() {
-            public void write(int b) {
-            }
-        }));
-    }
-
-    static void disableStderr() {
-        System.setErr(new PrintStream(new OutputStream() {
-            public void write(int b) {
-            }
-        }));
-    }
-
     private static String stripAccents(final String input) {
         if (input == null) {
             return null;
@@ -55,6 +41,13 @@ class Utils {
                 decomposed.insert(i, 'l');
             }
         }
+    }
+
+    static void disableStderr() {
+        System.setErr(new PrintStream(new OutputStream() {
+            public void write(int b) {
+            }
+        }));
     }
 
     static void hideCursor(PrintStream printStream) {

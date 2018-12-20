@@ -30,12 +30,12 @@ class CommandMeasurement implements Runnable {
 
     @Override
     public void run() {
-        logger.info("showing measurements for " + Format.size(stations.size()) + "~ stations");
-
         System.out.println();
 
+        logger.info("showing measurements for " + Format.size(stations.size()) + "~ stations");
+
         for (Station station : stations) {
-            logger.debug("collecting sensors for " + station.getNameColored());
+            logger.debug("collecting sensors for " + Format.stationName(station.getName()));
             List<Sensor> sensors = cache.getAllSensors(station.getId());
 
             if (sensors == null || sensors.size() < 1) {
@@ -53,12 +53,12 @@ class CommandMeasurement implements Runnable {
             }
 
             if (matchingSensors.size() < 1) {
-                logger.warn("unable to match any sensors for " + station.getNameColored());
+                logger.warn("unable to match any sensors for " + Format.stationName(station.getName()));
                 continue;
             }
 
             logger.debug("matched " + Format.size(matchingSensors.size())
-                    + "~ sensors for " + station.getNameColored());
+                    + "~ sensors for " + Format.stationName(station.getName()));
 
             for (Sensor sensor : matchingSensors) {
                 logger.debug("collecting measurements for sensor with id " + sensor.getIdColored());
@@ -116,8 +116,9 @@ class CommandMeasurement implements Runnable {
                         show = Math.min(top, measurementsInRange.size());
                     }
 
-                    System.out.println("Showing " + Format.size(show) + " measurements of "
-                            + sensor.getParameterColored() + " for " + station.getNameColored());
+                    System.out.println("Showing " + Format.size(show) + " measurement" + (show > 1 ? "s" : "")
+                            + " of " + Format.parameter(sensor.getParameter())
+                            + " for " + Format.stationName(station.getName()));
 
                     for (SensorMeasurement measurement : measurementsInRange) {
                         // Stop showing measurements, when we have already shown it top N times
@@ -133,6 +134,7 @@ class CommandMeasurement implements Runnable {
                 // Add new line if these measurements were not the last one
                 if (stations.indexOf(station) != stations.size() - 1
                         || matchingSensors.indexOf(sensor) != matchingSensors.size() - 1) {
+
                     System.out.println();
                 }
             }

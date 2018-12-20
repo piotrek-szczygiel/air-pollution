@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -180,7 +179,7 @@ public class ApiObjectCollectorTest {
                                 indexLevelName = "Bardzo dobry";
                             }};
                         }},
-                        "Bardzo dobry"
+                        Quality.EXCELLENT
                 },
                 {
                         new JsonAirIndex() {{
@@ -188,13 +187,13 @@ public class ApiObjectCollectorTest {
                                 indexLevelName = "Umiarkowany";
                             }};
                         }},
-                        "Umiarkowany"
+                        Quality.MODERATE
                 },
                 {
                         new JsonAirIndex() {{
                             stIndexLevel = new IndexLevel();
                         }},
-                        "-"
+                        Quality.UNKNOWN
                 }
         };
     }
@@ -205,21 +204,21 @@ public class ApiObjectCollectorTest {
     }
 
     @Test
-    public void getAllStations_SingleStation_SingleStationFromApi() throws IOException {
+    public void getAllStations_SingleStation_SingleStationFromApi() {
         when(airPollutionService.getAllStations()).thenReturn(List.of(new JsonStation()));
 
         assertEquals(1, api.getAllStations().size());
     }
 
     @Test
-    public void getAllStations_Null_NoStationsFromApi() throws IOException {
+    public void getAllStations_Null_NoStationsFromApi() {
         when(airPollutionService.getAllStations()).thenReturn(List.of());
 
         assertNull(api.getAllStations());
     }
 
     @Test
-    public void getAllSensors_Null_NoSensorsFromApi() throws IOException {
+    public void getAllSensors_Null_NoSensorsFromApi() {
         when(airPollutionService.getAllSensors(anyInt())).thenReturn(List.of());
 
         assertNull(api.getAllSensors(0));
@@ -227,14 +226,14 @@ public class ApiObjectCollectorTest {
 
     @Test
     @UseDataProvider("dataProviderJsonSensors")
-    public void getAllSensors_ThreeSensors_ProvidedSensors(JsonSensor[] jsonSensors) throws IOException {
+    public void getAllSensors_ThreeSensors_ProvidedSensors(JsonSensor[] jsonSensors) {
         when(airPollutionService.getAllSensors(anyInt())).thenReturn(List.of(jsonSensors));
 
         assertEquals(3, api.getAllSensors(0).size());
     }
 
     @Test
-    public void getSensorData_Null_NoDataFromApi() throws IOException {
+    public void getSensorData_Null_NoDataFromApi() {
         when(airPollutionService.getSensorMeasurements(anyInt())).thenReturn(new JsonSensorMeasurements());
 
         assertEquals(0, api.getSensorMeasurements(0).size());
@@ -242,8 +241,7 @@ public class ApiObjectCollectorTest {
 
     @Test
     @UseDataProvider("dataProviderJsonSensorData")
-    public void getSensorData_ThreeMeasurements_ProvidedData(JsonSensorMeasurements jsonSensorData)
-            throws IOException {
+    public void getSensorData_ThreeMeasurements_ProvidedData(JsonSensorMeasurements jsonSensorData) {
 
         when(airPollutionService.getSensorMeasurements(anyInt())).thenReturn(jsonSensorData);
 
@@ -251,17 +249,15 @@ public class ApiObjectCollectorTest {
     }
 
     @Test
-    public void getAirIndex_Null_NoDataFromApi() throws IOException {
+    public void getAirIndex_Null_NoDataFromApi() {
         when(airPollutionService.getAirIndex(anyInt())).thenReturn(new JsonAirIndex());
 
-        assertEquals("-", api.getAirIndex(0).getAirQuality());
+        assertEquals(Quality.UNKNOWN, api.getAirIndex(0).getAirQuality());
     }
 
     @Test
     @UseDataProvider("dataProviderJsonAirIndex")
-    public void getAirIndex_ExpectedAirIndex_ProvidedAirIndexes(JsonAirIndex jsonAirIndex, String airQuality)
-            throws IOException {
-
+    public void getAirIndex_ExpectedAirIndex_ProvidedAirIndexes(JsonAirIndex jsonAirIndex, Quality airQuality) {
         when(airPollutionService.getAirIndex(anyInt())).thenReturn(jsonAirIndex);
 
         assertEquals(airQuality, api.getAirIndex(0).getAirQuality());

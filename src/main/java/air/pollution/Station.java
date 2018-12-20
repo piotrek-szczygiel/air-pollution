@@ -12,19 +12,11 @@ class Station {
         this.id = id;
     }
 
-    String getIdColored() {
-        return Format.stationId(id);
-    }
-
     String getName() {
         return name;
     }
 
     void setName(String name) {
         this.name = name;
-    }
-
-    String getNameColored() {
-        return Format.stationName(name);
     }
 }

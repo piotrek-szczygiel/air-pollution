@@ -38,8 +38,4 @@ enum Parameter {
 
         return parameter;
     }
-
-    String colored() {
-        return Format.parameter(this);
-    }
 }

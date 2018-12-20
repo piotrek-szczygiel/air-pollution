@@ -5,6 +5,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -65,6 +66,9 @@ public class App implements Runnable {
 
     @Option(names = {"--refresh", "-r"}, description = "Force cache update.")
     private boolean optionRefreshCache;
+
+    @Option(names = {"--cache-file", "-f"}, description = "Path to cache file.")
+    private File optionCacheFile = new File("cache");
 
     @Option(names = {"--verbose", "-v"}, description = "Show verbose output. Use -vv for highest verbosity mode.")
     private boolean[] optionVerbosity = new boolean[0];
@@ -146,7 +150,7 @@ public class App implements Runnable {
         logger.debug("initialization complete");
 
         Cache cache = null;
-        CacheFile cacheFile = new CacheFile("cache.gz");
+        CacheFile cacheFile = new CacheFile(optionCacheFile);
 
         // --refresh
         if (!optionRefreshCache) {
@@ -208,7 +212,7 @@ public class App implements Runnable {
 
             logger.debug("matched " + Format.size(stations.size()) + "~ stations");
         } else {
-            logger.info("no stations provided, assuming usage of all stations");
+            logger.debug("no stations provided, assuming usage of all stations");
 
             stations = cache.getAllStations();
 
@@ -216,6 +220,8 @@ public class App implements Runnable {
                 logger.fatal("unable to fetch any stations");
             }
         }
+
+        // TODO: use all parameters if empty
 
         // --air-index
         if (optionAirIndex) {

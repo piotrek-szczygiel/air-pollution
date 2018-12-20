@@ -10,9 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.fusesource.jansi.Ansi.ansi;
 
 class Cache {
-    private LocalDateTime lastUpdated;
+    private LocalDateTime cacheDate;
 
     private Map<String, Station> stationCache = new ConcurrentHashMap<>();
     private Map<Integer, List<Sensor>> sensorCache = new ConcurrentHashMap<>();
@@ -27,8 +30,8 @@ class Cache {
         this.apiObjectCollector = apiObjectCollector;
     }
 
-    LocalDateTime getLastUpdated() {
-        return lastUpdated;
+    LocalDateTime getCacheDate() {
+        return cacheDate;
     }
 
     void cacheStations(List<Station> stations, int numberOfThreads) {
@@ -56,10 +59,25 @@ class Cache {
         logger.setTemporaryLevel(ErrorLevel.INFO);
         Logger.getLogger(apiObjectCollector).setTemporaryLevel(ErrorLevel.FATAL);
 
+        // Spinner animation
+        AtomicInteger spinnerIndex = new AtomicInteger(0);
+        Utils.hideCursor(System.err);
+
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         for (Station station : stations) {
             executorService.execute(() -> {
+                synchronized (System.out) {
+                    synchronized (System.err) {
+
+                        // Get spinner animation current character
+                        String dot = Utils.getSpinner(spinnerIndex.incrementAndGet() / 10);
+
+                        System.err.print(ansi().cursorToColumn(0).toString() + Format.spinner(dot)
+                                + "  fetching " + station.getNameColored() + ansi().eraseLine().toString());
+                    }
+                }
+
                 List<Sensor> sensors = getAllSensors(station.getId());
 
                 if (sensors != null) {
@@ -69,12 +87,6 @@ class Cache {
                 }
 
                 getAirIndex(station.getId());
-
-                synchronized (System.out) {
-                    synchronized (System.err) {
-                        System.err.print("fetched " + station.getNameColored() + "                                 \r");
-                    }
-                }
             });
         }
 
@@ -89,12 +101,15 @@ class Cache {
 
         stopwatch.stop();
 
+        System.err.print(ansi().cursorToColumn(0).toString());
+        Utils.showCursor(System.err);
+
         logger.restorePreviousLevel();
         Logger.getLogger(apiObjectCollector).restorePreviousLevel();
 
         logger.info("fetching data from api finished in " + Format.size(stopwatch));
 
-        lastUpdated = LocalDateTime.now();
+        cacheDate = LocalDateTime.now();
     }
 
     List<Station> getAllStations() {

@@ -32,6 +32,8 @@ class CommandMeasurement implements Runnable {
     public void run() {
         logger.info("showing measurements for " + Format.size(stations.size()) + "~ stations");
 
+        System.out.println();
+
         for (Station station : stations) {
             logger.debug("collecting sensors for " + station.getNameColored());
             List<Sensor> sensors = cache.getAllSensors(station.getId());

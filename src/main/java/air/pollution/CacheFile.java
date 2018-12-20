@@ -13,22 +13,26 @@ import java.util.zip.GZIPOutputStream;
 
 class CacheFile {
     Logger logger = Logger.getLogger(this);
-    private String fileName;
+    private File file;
 
-    CacheFile(String fileName) {
-        this.fileName = fileName;
+    CacheFile(File file) {
+        this.file = file;
     }
 
     Cache load() {
+        if (file == null) {
+            return null;
+        }
+
         Cache cache;
         Stopwatch stopwatch;
 
-        // Open GZIP input stream
-        try (FileInputStream fileInputStream = new FileInputStream(fileName);
+        // Open GZIP File input stream
+        try (FileInputStream fileInputStream = new FileInputStream(file);
              GZIPInputStream gzipInputStream = new GZIPInputStream(fileInputStream);
              Reader reader = new InputStreamReader(gzipInputStream, StandardCharsets.UTF_8)) {
 
-            logger.debug("loading cache from " + Format.file(fileName) + "~ compressed archive...");
+            logger.debug("loading cache from " + Format.file(file.getPath()) + "~ compressed archive...");
 
             Gson gson = new GsonBuilder().create();
 
@@ -40,15 +44,17 @@ class CacheFile {
             return null;
         }
 
-        logger.info("loaded cache from " + Format.file(fileName) + "~ in " + Format.size(stopwatch));
+        logger.info("loaded cache from " + Format.file(file.getPath()) + "~ in " + Format.size(stopwatch));
 
-        LocalDateTime currentTime = LocalDateTime.now();
-        long minutesDifference = ChronoUnit.MINUTES.between(cache.getLastUpdated(), currentTime);
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime lastUpdatedDate = cache.getCacheDate();
+
+        long minutesDifference = ChronoUnit.MINUTES.between(currentDate, lastUpdatedDate);
         logger.debug("loaded cache was updated " + Format.size(minutesDifference) + "~ minutes ago");
 
-        long minutesDifferenceSinceThisHour = currentTime.getMinute() - minutesDifference;
-
-        if (minutesDifferenceSinceThisHour < 0) {
+        // Check if last update was done earlier than an hour ago
+        // Check also if it wasn't done at the previous hour (17:58 last, 18:03 current => UPDATE)
+        if (minutesDifference >= 60 || currentDate.getHour() != lastUpdatedDate.getHour()) {
             logger.info("loaded cache is not up-to-date, refreshing cache...");
             return null;
         }
@@ -59,12 +65,12 @@ class CacheFile {
     void save(Cache cache) {
         Stopwatch stopwatch;
 
-        // Open GZIP output stream
-        try (FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+        // Open GZIP File output stream
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file);
              GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
              Writer writer = new OutputStreamWriter(gzipOutputStream, StandardCharsets.UTF_8)) {
 
-            logger.debug("saving cache to " + Format.file(fileName) + "~ compressed archive...");
+            logger.debug("saving cache to " + Format.file(file.getPath()) + "~ compressed archive...");
 
             Gson gson = new GsonBuilder().create();
 
@@ -76,6 +82,6 @@ class CacheFile {
             return;
         }
 
-        logger.info("saved cache to " + Format.file(fileName) + "~ in " + Format.size(stopwatch));
+        logger.info("saved cache to " + Format.file(file.getPath()) + "~ in " + Format.size(stopwatch));
     }
 }

@@ -52,6 +52,10 @@ class Format {
         return ansi().fgBrightMagenta().a(fileName).reset().toString();
     }
 
+    static String spinner(String spinner) {
+        return ansi().fgBrightCyan().a(spinner).reset().toString();
+    }
+
     static String format(AirIndex airIndex) {
         StringBuilder stringBuilder = new StringBuilder();
 

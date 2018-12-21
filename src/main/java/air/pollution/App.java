@@ -241,14 +241,14 @@ public class App implements Runnable {
         // If there are none date range provided, assume maximum possible range
         if (optionSince == null) {
             logger.debug("no since option provided, assuming minimum date");
-            since = LocalDateTime.MIN;
+            since = CommandUtils.getLowestDate(cache);
         } else {
             since = optionSince;
         }
 
         if (optionUntil == null) {
             logger.debug("no until option provided, assuming maximum date");
-            until = LocalDateTime.MAX;
+            until = CommandUtils.getHighestDate(cache);
         } else {
             until = optionUntil;
         }
@@ -260,16 +260,12 @@ public class App implements Runnable {
 
         // --measurement
         if (optionMeasurement) {
-            if (optionDate == null) {
-                new CommandMeasurement(cache, stations, parameters, since, until, optionTop).run();
-            } else {
-                new CommandMeasurement(cache, stations, parameters, optionDate, optionDate, optionTop).run();
-            }
+            new CommandMeasurement(cache, stations, parameters, optionDate, since, until, optionTop).run();
         }
 
         // --average
         if (optionAverage) {
-            new CommandAveragePollution(cache, stations, parameters, since, until).run();
+            new CommandAveragePollution(cache, stations, parameters, optionDate, since, until).run();
         }
     }
 }

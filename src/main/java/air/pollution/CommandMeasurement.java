@@ -9,18 +9,20 @@ class CommandMeasurement implements Runnable {
     private List<Parameter> parameters;
     private int top;
 
+    private LocalDateTime date;
     private LocalDateTime since;
     private LocalDateTime until;
 
     private Logger logger = Logger.getLogger(this);
 
     CommandMeasurement(Cache cache, List<Station> stations, List<Parameter> parameters,
-                       LocalDateTime since, LocalDateTime until, int top) {
+                       LocalDateTime date, LocalDateTime since, LocalDateTime until, int top) {
         this.cache = cache;
         this.stations = stations;
         this.parameters = parameters;
         this.top = top;
 
+        this.date = date;
         this.since = since;
         this.until = until;
     }
@@ -30,6 +32,11 @@ class CommandMeasurement implements Runnable {
         System.out.println();
 
         logger.info("showing measurements for " + Format.size(stations.size()) + "~ stations");
+
+        if (date != null) {
+            since = date;
+            until = date;
+        }
 
         for (Station station : stations) {
             for (Parameter parameter : parameters) {

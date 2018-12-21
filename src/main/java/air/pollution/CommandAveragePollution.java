@@ -8,17 +8,19 @@ class CommandAveragePollution implements Runnable {
     private List<Station> stations;
     private List<Parameter> parameters;
 
+    private LocalDateTime date;
     private LocalDateTime since;
     private LocalDateTime until;
 
     private Logger logger = Logger.getLogger(this);
 
     CommandAveragePollution(Cache cache, List<Station> stations, List<Parameter> parameters,
-                            LocalDateTime since, LocalDateTime until) {
+                            LocalDateTime date, LocalDateTime since, LocalDateTime until) {
         this.cache = cache;
         this.stations = stations;
         this.parameters = parameters;
 
+        this.date = date;
         this.since = since;
         this.until = until;
     }
@@ -30,8 +32,16 @@ class CommandAveragePollution implements Runnable {
         logger.info("showing average pollution for " + Format.size(stations.size()) + "~ stations and "
                 + Format.size(parameters.size()) + "~ parameters");
 
-        System.out.println("Average pollution for " + Format.size(stations.size()) + " stations between "
-                + Format.timestampDate(since) + " and " + Format.timestampDate(until));
+        System.out.print("Average pollution for " + Format.size(stations.size()) + " stations ");
+
+        if (date != null) {
+            since = date;
+            until = date;
+
+            System.out.println("at " + Format.timestampDate(date));
+        } else {
+            System.out.println("between " + Format.timestampDate(since) + " and " + Format.timestampDate(until));
+        }
 
         for (Parameter parameter : parameters) {
             float sum = 0.0f;

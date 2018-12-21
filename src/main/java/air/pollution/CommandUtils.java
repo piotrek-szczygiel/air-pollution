@@ -62,4 +62,56 @@ class CommandUtils {
 
         return measurementsInRange;
     }
+
+    static LocalDateTime getLowestDate(Cache cache) {
+        logger.debug("searching for lowest date in measurements...");
+
+        LocalDateTime lowestDate = null;
+
+        for (Station station : cache.getAllStations()) {
+            for (Sensor sensor : cache.getAllSensors(station.getId())) {
+                for (SensorMeasurement measurement : cache.getSensorMeasurements(sensor.getId())) {
+                    if (lowestDate == null) {
+                        lowestDate = measurement.getDate();
+                    } else if (lowestDate.compareTo(measurement.getDate()) > 0) {
+                        lowestDate = measurement.getDate();
+                    }
+                }
+            }
+        }
+
+        if (lowestDate != null) {
+            logger.debug("lowest date found: " + Format.timestampDate(lowestDate));
+        } else {
+            logger.warn("unable to found lowest date");
+        }
+
+        return lowestDate;
+    }
+
+    static LocalDateTime getHighestDate(Cache cache) {
+        logger.debug("searching for highest date in measurements...");
+
+        LocalDateTime highestDate = null;
+
+        for (Station station : cache.getAllStations()) {
+            for (Sensor sensor : cache.getAllSensors(station.getId())) {
+                for (SensorMeasurement measurement : cache.getSensorMeasurements(sensor.getId())) {
+                    if (highestDate == null) {
+                        highestDate = measurement.getDate();
+                    } else if (highestDate.compareTo(measurement.getDate()) < 0) {
+                        highestDate = measurement.getDate();
+                    }
+                }
+            }
+        }
+
+        if (highestDate != null) {
+            logger.debug("highest date found: " + Format.timestampDate(highestDate));
+        } else {
+            logger.warn("unable to find highest date");
+        }
+
+        return highestDate;
+    }
 }

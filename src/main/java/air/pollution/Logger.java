@@ -23,6 +23,12 @@ class Logger {
         LOGGERS.putIfAbsent(loggerObject, this);
     }
 
+    private Logger(Class clazz) {
+        loggerName = clazz.getSimpleName();
+
+        LOGGERS.putIfAbsent(clazz, this);
+    }
+
     static Logger getLogger(Object loggerObject) {
         return LOGGERS.getOrDefault(loggerObject, new Logger(loggerObject));
     }

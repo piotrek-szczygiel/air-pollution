@@ -86,12 +86,12 @@ class Format {
         return color.toString() + quality + ansi().reset().toString();
     }
 
-    static String format(SensorMeasurement measurement) {
+    static String measurement(SensorMeasurement measurement) {
         return measurementValue(measurement.getParameter(), measurement.getValue())
                 + "\t" + measurementDate(measurement.getDate());
     }
 
-    static private String measurementValue(Parameter parameter, float value) {
+    static String measurementValue(Parameter parameter, float value) {
         Ansi color = ansi().fgDefault();
 
         String unit = " \u00b5g/m3";

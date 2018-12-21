@@ -48,7 +48,10 @@ public class App implements Runnable {
     @Option(names = {"--measurements", "-m"}, description = "Show parameter measurements for provided stations.")
     private boolean optionMeasurement;
 
-    @Option(names = {"--date", "-d"}, paramLabel = "DATE", description = "Provides specific date for commands.")
+    @Option(names = {"--average", "-A"}, description = "Show average pollution for provided stations and parameters.")
+    private boolean optionAverage;
+
+    @Option(names = {"--date", "-D"}, paramLabel = "DATE", description = "Provides specific date for commands.")
     private LocalDateTime optionDate;
 
     @Option(names = {"--since", "-S"}, paramLabel = "DATE_SINCE", description = "Provides specific beginning date "
@@ -86,7 +89,7 @@ public class App implements Runnable {
         commandLine.registerConverter(LocalDateTime.class,
                 d -> {
                     DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
-                            .appendPattern("dd, HH:mm")
+                            .appendPattern("dd, H:mm")
                             .parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear())
                             .parseDefaulting(ChronoField.MONTH_OF_YEAR, LocalDate.now().getMonthValue())
                             .toFormatter();
@@ -233,6 +236,23 @@ public class App implements Runnable {
             parameters = optionParameters;
         }
 
+        LocalDateTime since, until;
+
+        // If there are none date range provided, assume maximum possible range
+        if (optionSince == null) {
+            logger.debug("no since option provided, assuming minimum date");
+            since = LocalDateTime.MIN;
+        } else {
+            since = optionSince;
+        }
+
+        if (optionUntil == null) {
+            logger.debug("no until option provided, assuming maximum date");
+            until = LocalDateTime.MAX;
+        } else {
+            until = optionUntil;
+        }
+
         // --air-index
         if (optionAirIndex) {
             new CommandAirIndex(cache, stations).run();
@@ -240,7 +260,16 @@ public class App implements Runnable {
 
         // --measurement
         if (optionMeasurement) {
-            new CommandMeasurement(cache, stations, parameters, optionTop, optionDate, optionSince, optionUntil).run();
+            if (optionDate == null) {
+                new CommandMeasurement(cache, stations, parameters, since, until, optionTop).run();
+            } else {
+                new CommandMeasurement(cache, stations, parameters, optionDate, optionDate, optionTop).run();
+            }
+        }
+
+        // --average
+        if (optionAverage) {
+            new CommandAveragePollution(cache, stations, parameters, since, until).run();
         }
     }
 }

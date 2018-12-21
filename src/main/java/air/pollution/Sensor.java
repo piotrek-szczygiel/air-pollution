@@ -12,10 +12,6 @@ class Sensor {
         this.id = id;
     }
 
-    String getIdColored() {
-        return Format.sensorId(id);
-    }
-
     Parameter getParameter() {
         return parameter;
     }

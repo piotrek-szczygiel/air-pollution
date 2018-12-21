@@ -87,11 +87,11 @@ class Format {
     }
 
     static String measurement(SensorMeasurement measurement) {
-        return measurementValue(measurement.getParameter(), measurement.getValue())
+        return measurementValue(measurement.getParameter(), measurement.getValue(), true)
                 + "\t" + measurementDate(measurement.getDate());
     }
 
-    static String measurementValue(Parameter parameter, float value) {
+    static String measurementValue(Parameter parameter, float value, boolean rightAlign) {
         Ansi color = ansi().fgDefault();
 
         String unit = " \u00b5g/m3";
@@ -142,7 +142,8 @@ class Format {
             unit = " mg/m3";
         }
 
-        return color.toString() + String.format("%6s", String.format("%.2f", value)) + unit + ansi().reset().toString();
+        return color.toString() + String.format(rightAlign ? "%6s" : "%s", String.format("%.2f", value))
+                + unit + ansi().reset().toString();
     }
 
     private static String measurementDate(LocalDateTime date) {

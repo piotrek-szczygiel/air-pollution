@@ -51,6 +51,9 @@ public class App implements Runnable {
     @Option(names = {"--average", "-A"}, description = "Show average pollution for provided stations and parameters.")
     private boolean optionAverage;
 
+    @Option(names = {"--fluctuation", "-F"}, description = "Show highest fluctuating parameter for provided stations.")
+    private boolean optionFluctuation;
+
     @Option(names = {"--date", "-D"}, paramLabel = "DATE", description = "Provides specific date for commands.")
     private LocalDateTime optionDate;
 
@@ -204,6 +207,10 @@ public class App implements Runnable {
 
             for (Station station : allStations) {
                 for (String stationName : optionStationNames) {
+                    if (stationName.equals("xmas")) {
+                        logger.fatal("Santa Claus is coming to town!");
+                    }
+
                     String compared = Utils.normalizeString(station.getName());
                     String searched = Utils.normalizeString(stationName);
 
@@ -269,6 +276,11 @@ public class App implements Runnable {
         // --average
         if (optionAverage) {
             new CommandAveragePollution(cache, stations, parameters, optionDate, since, until).run();
+        }
+
+        // --fluctuation
+        if (optionFluctuation) {
+            new CommandHighestFluctuation(cache, stations, parameters, optionDate, since, until).run();
         }
     }
 }

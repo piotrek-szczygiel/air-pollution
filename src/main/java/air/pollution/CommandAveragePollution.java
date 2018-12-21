@@ -32,44 +32,22 @@ class CommandAveragePollution implements Runnable {
         logger.info("showing average pollution for " + Format.size(stations.size()) + "~ stations and "
                 + Format.size(parameters.size()) + "~ parameters");
 
-        System.out.print("Average pollution for " + Format.size(stations.size()) + " stations ");
+        System.out.println("Average pollution for " + Format.size(stations.size()) + " station"
+                + (stations.size() > 1 ? "s" : ""));
 
         if (date != null) {
             since = date;
             until = date;
-
-            System.out.println("at " + Format.timestampDate(date));
-        } else {
-            System.out.println("between " + Format.timestampDate(since) + " and " + Format.timestampDate(until));
         }
 
         for (Parameter parameter : parameters) {
-            float sum = 0.0f;
-            int count = 0;
+            Float average = CommandUtils.getAveragePollution(cache, stations, parameter, since, until);
 
-            logger.info("calculating average " + Format.parameter(parameter) + "~ pollution for "
-                    + Format.size(stations.size()) + "~ stations...");
-
-            for (Station station : stations) {
-
-                List<SensorMeasurement> measurements =
-                        CommandUtils.getMeasurementsInRange(cache, station, parameter, since, until);
-
-                if (measurements == null) {
-                    continue;
-                }
-
-                for (SensorMeasurement measurement : measurements) {
-                    sum += measurement.getValue();
-                    count++;
-                }
-            }
-
-            if (count > 0) {
-                float average = sum / count;
-                System.out.println(Format.parameter(parameter) + ":\t" + Format.measurementValue(parameter, average));
-            } else {
+            if (average == null) {
                 System.out.println(Format.parameter(parameter) + ":\t-");
+            } else {
+                System.out.println(Format.parameter(parameter) + ":\t"
+                        + Format.measurementValue(parameter, average, false));
             }
         }
     }

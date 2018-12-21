@@ -90,7 +90,9 @@ class Logger {
         }
 
         if (errorLevel == ErrorLevel.FATAL) {
-            System.exit(1);
+            synchronized (System.err) {
+                System.exit(1);
+            }
         }
     }
 

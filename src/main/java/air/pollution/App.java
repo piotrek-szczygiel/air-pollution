@@ -130,7 +130,6 @@ public class App implements Runnable {
         }
 
         Logger logger = Logger.getLogger(app);
-
         logger.debug("starting application...");
 
         // Start the application
@@ -163,6 +162,10 @@ public class App implements Runnable {
 
             if (cache == null) {
                 optionRefreshCache = true;
+            } else {
+                // Even if we won't download anything from internet when we have up-to-date cache
+                // Some methods might rely on apiObjectCollector being not-null
+                cache.setApiObjectCollector(apiObjectCollector);
             }
         }
 

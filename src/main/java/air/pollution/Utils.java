@@ -50,14 +50,6 @@ class Utils {
         }));
     }
 
-    static void hideCursor(PrintStream printStream) {
-        printStream.print("\u001b[?25l");
-    }
-
-    static void showCursor(PrintStream printStream) {
-        printStream.print("\u001b[?25h");
-    }
-
     static String getSpinner(int iteration) {
         return spinner[iteration % spinner.length];
     }

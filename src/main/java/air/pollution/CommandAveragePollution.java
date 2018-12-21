@@ -48,8 +48,7 @@ class CommandAveragePollution implements Runnable {
             int count = 0;
 
             logger.info("calculating average " + Format.parameter(parameter) + "~ pollution for "
-                    + Format.size(stations.size()) + "~ stations between "
-                    + Format.timestampDate(since) + "~ and " + Format.timestampDate(until) + "~...");
+                    + Format.size(stations.size()) + "~ stations...");
 
             for (Station station : stations) {
 

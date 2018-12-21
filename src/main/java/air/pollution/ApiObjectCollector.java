@@ -15,8 +15,6 @@ class ApiObjectCollector {
     }
 
     List<Station> getAllStations() {
-        logger.debug("fetching all stations...");
-
         List<JsonStation> jsonStations = airPollutionService.getAllStations();
 
         if (jsonStations == null) {
@@ -40,8 +38,6 @@ class ApiObjectCollector {
     }
 
     List<Sensor> getAllSensors(int stationId) {
-        logger.debug("fetching all sensors for station with id " + Format.stationId(stationId) + "~...");
-
         List<JsonSensor> jsonSensors = airPollutionService.getAllSensors(stationId);
 
         if (jsonSensors == null) {
@@ -61,8 +57,6 @@ class ApiObjectCollector {
     }
 
     List<SensorMeasurement> getSensorMeasurements(int sensorId) {
-        logger.debug("fetching sensor data for sensor with id " + Format.sensorId(sensorId) + "~...");
-
         JsonSensorMeasurements jsonSensorMeasurements = airPollutionService.getSensorMeasurements(sensorId);
 
         if (jsonSensorMeasurements == null) {
@@ -78,8 +72,6 @@ class ApiObjectCollector {
     }
 
     AirIndex getAirIndex(int stationId) {
-        logger.debug("fetching air index for station with id " + Format.stationId(stationId) + "~...");
-
         JsonAirIndex jsonAirIndex = airPollutionService.getAirIndex(stationId);
 
         if (jsonAirIndex == null) {

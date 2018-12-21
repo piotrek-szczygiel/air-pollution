@@ -26,14 +26,6 @@ class Cache {
 
     private transient Logger logger = Logger.getLogger(this);
 
-    void setApiObjectCollector(ApiObjectCollector apiObjectCollector) {
-        this.apiObjectCollector = apiObjectCollector;
-    }
-
-    LocalDateTime getCacheDate() {
-        return cacheDate;
-    }
-
     void cacheStations(List<Station> stations, int numberOfThreads) {
         if (stations == null || stations.size() < 1) {
             logger.warn("there are no stations to fill cache for");
@@ -56,12 +48,10 @@ class Cache {
         logger.info("fetching data from api using " + Format.size(processors) + "~ thread"
                 + ((processors > 1) ? "s" : "") + " with timeout of " + Format.size(2) + "~ minutes...");
 
-        logger.setTemporaryLevel(ErrorLevel.INFO);
-        Logger.getLogger(apiObjectCollector).setTemporaryLevel(ErrorLevel.FATAL);
-
         // Spinner animation
         AtomicInteger spinnerIndex = new AtomicInteger(0);
-        Utils.hideCursor(System.err);
+
+        suppressDebug();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -96,21 +86,35 @@ class Cache {
         try {
             executorService.awaitTermination(2, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
-            logger.restorePreviousLevel();
-            logger.error("executing tasks interrupted: " + e);
+            restoreDebug();
+            logger.fatal("executing tasks interrupted: " + e);
         }
 
         stopwatch.stop();
 
         System.err.print(ansi().cursorToColumn(0).eraseLine().toString());
-        Utils.showCursor(System.err);
 
-        logger.restorePreviousLevel();
-        Logger.getLogger(apiObjectCollector).restorePreviousLevel();
+        restoreDebug();
 
         logger.info("fetching data from api finished in " + Format.size(stopwatch));
 
         cacheDate = LocalDateTime.now();
+    }
+
+    void suppressDebug() {
+        logger.setTemporaryLevel(ErrorLevel.INFO);
+    }
+
+    void setApiObjectCollector(ApiObjectCollector apiObjectCollector) {
+        this.apiObjectCollector = apiObjectCollector;
+    }
+
+    LocalDateTime getCacheDate() {
+        return cacheDate;
+    }
+
+    void restoreDebug() {
+        logger.restorePreviousLevel();
     }
 
     List<Station> getAllStations() {

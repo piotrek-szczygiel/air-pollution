@@ -23,14 +23,18 @@ class Logger {
         LOGGERS.putIfAbsent(loggerObject, this);
     }
 
-    private Logger(Class clazz) {
-        loggerName = clazz.getSimpleName();
+    private Logger(Class loggerClass) {
+        loggerName = loggerClass.getSimpleName();
 
-        LOGGERS.putIfAbsent(clazz, this);
+        LOGGERS.putIfAbsent(loggerClass, this);
     }
 
     static Logger getLogger(Object loggerObject) {
         return LOGGERS.getOrDefault(loggerObject, new Logger(loggerObject));
+    }
+
+    static Logger getLogger(Class loggerClass) {
+        return LOGGERS.getOrDefault(loggerClass, new Logger(loggerClass));
     }
 
     static void setGlobalLevel(ErrorLevel errorLevel) {

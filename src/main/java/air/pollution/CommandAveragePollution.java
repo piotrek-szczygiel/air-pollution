@@ -47,7 +47,7 @@ class CommandAveragePollution implements Runnable {
                 System.out.printf("%s:\t-%n", format(parameter));
             } else {
                 System.out.printf("%s:\t%s%n", format(parameter),
-                        format(parameter, average, false));
+                        format(average, parameter, false));
             }
         }
     }

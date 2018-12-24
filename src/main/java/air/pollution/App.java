@@ -62,6 +62,10 @@ public class App implements Runnable {
     @Option(names = {"--find-min-max-parameter", "-M"}, description = "Find parameter with lowest and highest value.")
     private boolean optionFindMinMaxParameter;
 
+    @Option(names = {"--find-min-max-value", "-x"}, description = "Find lowest and highest value for provided "
+            + "parameters and stations.")
+    private boolean optionFindMinMaxValue;
+
     @Option(names = {"--date", "-D"}, paramLabel = "DATE", description = "Provides specific date for commands.")
     private LocalDateTime optionDate;
 
@@ -297,6 +301,11 @@ public class App implements Runnable {
         // --find-min-max-parameter
         if (optionFindMinMaxParameter) {
             new CommandFindMinMaxParameter(cache, stations, optionDate, since, until).run();
+        }
+
+        // --find-min-max-value
+        if (optionFindMinMaxValue) {
+            new CommandFindMinMaxValue(cache, stations, parameters, optionDate, since, until).run();
         }
 
         // --worst-stations

@@ -66,7 +66,7 @@ class CommandMeasurement implements Runnable {
                         break;
                     }
 
-                    System.out.printf("%s\t%s%n", format(measurement.getParameter(), measurement.getValue(), true),
+                    System.out.printf("%s\t%s%n", format(measurement.getValue(), measurement.getParameter(), true),
                             ansi().fgBrightBlack().a(measurement.getDate().format(MEASUREMENT_DATE_FORMATTER)).reset());
 
                     counter++;

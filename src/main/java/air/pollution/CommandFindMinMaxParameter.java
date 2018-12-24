@@ -1,6 +1,7 @@
 package air.pollution;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static air.pollution.Format.format;
@@ -26,6 +27,7 @@ class CommandFindMinMaxParameter implements Runnable {
     }
 
     @Override
+    @SuppressWarnings("Duplicates")
     public void run() {
         logger.info("looking for lowest and highest parameter values in %s stations...", format(stations.size()));
 
@@ -46,20 +48,21 @@ class CommandFindMinMaxParameter implements Runnable {
                 List<SensorMeasurement> measurements =
                         CommandUtils.getMeasurementsInRange(cache, station, sensor.getParameter(), since, until);
 
-                if (measurements == null) {
+                if (measurements == null || measurements.size() < 1) {
                     continue;
                 }
 
-                for (SensorMeasurement measurement : measurements) {
-                    if (minMeasurement == null || measurement.getValue() < minMeasurement.getValue()) {
-                        minStation = station;
-                        minMeasurement = measurement;
-                    }
+                SensorMeasurement currentMaxMeasurement = Collections.max(measurements);
+                SensorMeasurement currentMinMeasurement = Collections.min(measurements);
 
-                    if (maxMeasurement == null || measurement.getValue() > maxMeasurement.getValue()) {
-                        maxStation = station;
-                        maxMeasurement = measurement;
-                    }
+                if (minStation == null || currentMinMeasurement.getValue() < minMeasurement.getValue()) {
+                    minStation = station;
+                    minMeasurement = currentMinMeasurement;
+                }
+
+                if (maxStation == null || currentMaxMeasurement.getValue() > maxMeasurement.getValue()) {
+                    maxStation = station;
+                    maxMeasurement = currentMaxMeasurement;
                 }
             }
         }
@@ -67,7 +70,7 @@ class CommandFindMinMaxParameter implements Runnable {
         if (minMeasurement != null) {
             System.out.printf("%nParameter with lowest value is %s measured in %s: %s",
                     format(minMeasurement.getParameter()), format(minStation),
-                    format(minMeasurement.getParameter(), minMeasurement.getValue(), false));
+                    format(minMeasurement.getValue(), minMeasurement.getParameter(), false));
         } else {
             logger.error("unable to find parameter with lowest value");
         }
@@ -75,7 +78,7 @@ class CommandFindMinMaxParameter implements Runnable {
         if (maxMeasurement != null) {
             System.out.printf("%nParameter with highest value is %s measured in %s: %s",
                     format(maxMeasurement.getParameter()), format(maxStation),
-                    format(maxMeasurement.getParameter(), maxMeasurement.getValue(), false));
+                    format(maxMeasurement.getValue(), maxMeasurement.getParameter(), false));
         } else {
             logger.error("unable to find parameter with highest value");
         }

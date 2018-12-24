@@ -203,4 +203,12 @@ class CommandUtils {
 
         return Math.min(top, size);
     }
+
+    static class MinMaxMeasurement {
+        Station minStation = null;
+        SensorMeasurement minMeasurement = null;
+
+        Station maxStation = null;
+        SensorMeasurement maxMeasurement = null;
+    }
 }

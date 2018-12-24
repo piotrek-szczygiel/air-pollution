@@ -83,8 +83,8 @@ class CommandHighestFluctuation implements Runnable {
                     format(highestParameter), format(highestFluctuation));
 
             System.out.printf("%s oscillated between %s and %s.%n", format(highestParameter),
-                    format(highestParameter, highestMinimal, false),
-                    format(highestParameter, highestMaximal, false));
+                    format(highestMinimal, highestParameter, false),
+                    format(highestMaximal, highestParameter, false));
         }
     }
 }

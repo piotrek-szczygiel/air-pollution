@@ -65,7 +65,7 @@ class Format {
         return ansi().fgBrightCyan().a(character).reset().toString();
     }
 
-    static String format(Parameter parameter, float value, boolean rightAlign) {
+    static String format(float value, Parameter parameter, boolean rightAlign) {
         Ansi color = ansi().fgDefault();
 
         String unit = " \u00b5g/m3";

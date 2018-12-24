@@ -89,7 +89,7 @@ class CommandWorstStations implements Runnable {
                 Station station = entry.getKey();
                 SensorMeasurement measurement = entry.getValue();
 
-                System.out.printf("%s %s: %s%n", format(measurement.getParameter(), measurement.getValue(), true),
+                System.out.printf("%s %s: %s%n", format(measurement.getValue(), measurement.getParameter(), true),
                         format(measurement.getDate()), format(station));
 
                 counter++;

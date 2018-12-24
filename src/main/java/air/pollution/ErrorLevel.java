@@ -6,7 +6,7 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 enum ErrorLevel {
     DEBUG(0, ansi().fgBrightBlack()),
-    INFO(1, ansi().fgDefault()),
+    INFO(1, ansi().fgBrightBlack()),
     WARN(2, ansi().fgYellow()),
     ERROR(3, ansi().fgBrightRed()),
     FATAL(4, ansi().bgBrightRed().fgBlack()),

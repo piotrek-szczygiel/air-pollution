@@ -56,7 +56,7 @@ public class App implements Runnable {
     @Option(names = {"--fluctuation", "-F"}, description = "Show highest fluctuating parameter for provided stations.")
     private boolean optionFluctuation;
 
-    @Option(names = {"--find-min-max-parameter"}, description = "Find parameter with lowest and highest value.")
+    @Option(names = {"--find-min-max-parameter", "-M"}, description = "Find parameter with lowest and highest value.")
     private boolean optionFindMinMaxParameter;
 
     @Option(names = {"--date", "-D"}, paramLabel = "DATE", description = "Provides specific date for commands.")
@@ -79,6 +79,9 @@ public class App implements Runnable {
 
     @Option(names = {"--refresh", "-r"}, description = "Force cache update.")
     private boolean optionRefreshCache;
+
+    @Option(names = {"--refresh-disable", "-R"}, description = "Don't refresh cache even when it's outdated.")
+    private boolean optionRefreshCacheDisable;
 
     @Option(names = {"--cache-file", "-f"}, description = "Path to cache file.")
     private File optionCacheFile = new File("cache.gz");
@@ -166,7 +169,7 @@ public class App implements Runnable {
 
         // --refresh
         if (!optionRefreshCache) {
-            cache = cacheFile.load();
+            cache = cacheFile.load(optionRefreshCacheDisable);
 
             if (cache == null) {
                 optionRefreshCache = true;
@@ -178,7 +181,7 @@ public class App implements Runnable {
         }
 
         if (optionRefreshCache) {
-            logger.debug("creating new caching object...");
+            logger.debug("refreshing cache...");
 
             cache = new Cache();
             cache.setApiObjectCollector(apiObjectCollector);

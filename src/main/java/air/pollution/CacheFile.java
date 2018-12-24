@@ -21,7 +21,7 @@ class CacheFile {
         this.file = file;
     }
 
-    Cache load() {
+    Cache load(boolean disableRefresh) {
         if (file == null) {
             return null;
         }
@@ -58,8 +58,11 @@ class CacheFile {
         // Check if last update was done earlier than an hour ago
         // Check also if it wasn't done at the previous hour (17:58 last, 18:03 current => UPDATE)
         if (minutesDifference >= 60 || currentDate.getHour() != lastUpdatedDate.getHour()) {
-            logger.info("loaded cache is not up-to-date, refreshing cache...");
-            return null;
+            logger.warn("loaded cache is not up-to-date");
+
+            if (!disableRefresh) {
+                return null;
+            }
         }
 
         return cache;

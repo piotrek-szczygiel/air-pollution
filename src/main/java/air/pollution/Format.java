@@ -65,36 +65,6 @@ class Format {
         return ansi().fgBrightCyan().a(character).reset().toString();
     }
 
-    static String format(Quality quality) {
-        Ansi color;
-
-        switch (quality) {
-            case EXCELLENT:
-                color = COLOR_THRESHOLDS[0];
-                break;
-            case GOOD:
-                color = COLOR_THRESHOLDS[1];
-                break;
-            case MODERATE:
-                color = COLOR_THRESHOLDS[2];
-                break;
-            case FAIR:
-                color = COLOR_THRESHOLDS[3];
-                break;
-            case POOR:
-                color = COLOR_THRESHOLDS[4];
-                break;
-            case BAD:
-                color = COLOR_THRESHOLDS[5];
-                break;
-            default:
-                color = ansi().fgDefault();
-                break;
-        }
-
-        return color.toString() + quality + ansi().reset().toString();
-    }
-
     static String format(Parameter parameter, float value, boolean rightAlign) {
         Ansi color = ansi().fgDefault();
 
@@ -151,6 +121,59 @@ class Format {
     }
 
     static String format(LocalDateTime date) {
-        return ansi().fgRed().a(date.format(TIMESTAMP_DATE_FORMATTER)).reset().toString();
+        return ansi().fgCyan().a(date.format(TIMESTAMP_DATE_FORMATTER)).reset().toString();
+    }
+
+    static String format(AirIndex airIndex) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder
+                .append(ansi().fgCyan())
+                .append("Overall air quality: ")
+                .append(format(airIndex.getAirQuality()))
+                .append("\n----------------------------------");
+
+        for (Parameter parameter : Parameter.values()) {
+            Quality quality = airIndex.getValue(parameter);
+
+            stringBuilder
+                    .append(ansi().fgCyan())
+                    .append("\n")
+                    .append(parameter)
+                    .append(":\t")
+                    .append(format(quality));
+        }
+
+        return stringBuilder.toString();
+    }
+
+    static String format(Quality quality) {
+        Ansi color;
+
+        switch (quality) {
+            case EXCELLENT:
+                color = COLOR_THRESHOLDS[0];
+                break;
+            case GOOD:
+                color = COLOR_THRESHOLDS[1];
+                break;
+            case MODERATE:
+                color = COLOR_THRESHOLDS[2];
+                break;
+            case FAIR:
+                color = COLOR_THRESHOLDS[3];
+                break;
+            case POOR:
+                color = COLOR_THRESHOLDS[4];
+                break;
+            case BAD:
+                color = COLOR_THRESHOLDS[5];
+                break;
+            default:
+                color = ansi().fgDefault();
+                break;
+        }
+
+        return color.toString() + quality + ansi().reset().toString();
     }
 }

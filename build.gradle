@@ -16,9 +16,6 @@ repositories {
 }
 
 dependencies {
-    // This dependency is found on compile classpath of this component and consumers.
-    implementation 'com.google.guava:guava:26.0-jre'
-
     // JSON parsing, serialization
     implementation 'com.google.code.gson:gson:2.8.5'
 
@@ -32,6 +29,11 @@ dependencies {
 
     // Use Mockito for unit tests
     testImplementation 'org.mockito:mockito-core:2.23.4'
+
+    // Other
+    implementation 'com.google.guava:guava:26.0-jre'
+    implementation 'org.jetbrains:annotations:16.0.3'
+
 
 }
 

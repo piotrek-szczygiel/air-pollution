@@ -29,12 +29,10 @@ class CommandAveragePollution implements Runnable {
 
     @Override
     public void run() {
-        System.out.println();
-
         logger.info("showing average pollution for %s stations and %s parameters",
                 format(stations.size()), format(parameters.size()));
 
-        System.out.printf("Average pollution for %s station%s%n",
+        System.out.printf("%nAverage pollution for %s station%s%n",
                 format(stations.size()), (stations.size() > 1 ? "s" : ""));
 
         if (date != null) {

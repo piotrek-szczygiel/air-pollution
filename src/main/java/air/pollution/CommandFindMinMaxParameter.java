@@ -27,8 +27,6 @@ class CommandFindMinMaxParameter implements Runnable {
 
     @Override
     public void run() {
-        System.out.println();
-
         logger.info("looking for lowest and highest parameter values in %s stations...", format(stations.size()));
 
         if (date != null) {
@@ -67,7 +65,7 @@ class CommandFindMinMaxParameter implements Runnable {
         }
 
         if (minMeasurement != null) {
-            System.out.printf("Parameter with lowest value is %s measured in %s: %s%n",
+            System.out.printf("%nParameter with lowest value is %s measured in %s: %s",
                     format(minMeasurement.getParameter()), format(minStation),
                     format(minMeasurement.getParameter(), minMeasurement.getValue(), false));
         } else {
@@ -75,11 +73,13 @@ class CommandFindMinMaxParameter implements Runnable {
         }
 
         if (maxMeasurement != null) {
-            System.out.printf("Parameter with highest value is %s measured in %s: %s%n",
+            System.out.printf("%nParameter with highest value is %s measured in %s: %s",
                     format(maxMeasurement.getParameter()), format(maxStation),
                     format(maxMeasurement.getParameter(), maxMeasurement.getValue(), false));
         } else {
             logger.error("unable to find parameter with highest value");
         }
+
+        System.out.printf("%n");
     }
 }

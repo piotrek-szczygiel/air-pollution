@@ -67,9 +67,6 @@ class CommandUtils {
         float sum = 0.0f;
         int count = 0;
 
-        logger.debug("calculating average %s pollution for %s stations",
-                format(parameter), format(stations.size()));
-
         for (Station station : stations) {
 
             List<SensorMeasurement> measurements =
@@ -197,5 +194,13 @@ class CommandUtils {
         }
 
         return maximal;
+    }
+
+    static int howManyToShow(int top, int size) {
+        if (top == 0) {
+            return size;
+        }
+
+        return Math.min(top, size);
     }
 }

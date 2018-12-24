@@ -23,17 +23,16 @@ class CommandMeasurement implements Runnable {
         this.cache = cache;
         this.stations = stations;
         this.parameters = parameters;
-        this.top = top;
 
         this.date = date;
         this.since = since;
         this.until = until;
+
+        this.top = top;
     }
 
     @Override
     public void run() {
-        System.out.println();
-
         logger.info("showing measurements for %s stations", format(stations.size()));
 
         if (date != null) {
@@ -56,17 +55,9 @@ class CommandMeasurement implements Runnable {
                 int counter = 0;
 
                 // How many measurements are we supposed to show
-                int show;
+                int show = CommandUtils.howManyToShow(top, measurements.size());
 
-                if (top == 0) {
-                    // If there was no top option specified, show all measurements
-                    show = measurements.size();
-                } else {
-                    // Otherwise, show at most top N measurements, without showing more than it is possible
-                    show = Math.min(top, measurements.size());
-                }
-
-                System.out.printf("Showing %s measurement%s of %s for %s%n", format(show), (show > 1 ? "s" : ""),
+                System.out.printf("%nShowing %s measurement%s of %s for %s%n", format(show), (show > 1 ? "s" : ""),
                         format(parameter), format(station));
 
                 for (SensorMeasurement measurement : measurements) {
@@ -79,13 +70,6 @@ class CommandMeasurement implements Runnable {
                             ansi().fgBrightBlack().a(measurement.getDate().format(MEASUREMENT_DATE_FORMATTER)).reset());
 
                     counter++;
-                }
-
-                // Add new line if these measurements were not the last
-                if (stations.indexOf(station) != stations.size() - 1
-                        || parameters.indexOf(parameter) != parameters.size() - 1) {
-
-                    System.out.println();
                 }
             }
         }

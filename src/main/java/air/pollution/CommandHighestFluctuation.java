@@ -32,8 +32,6 @@ class CommandHighestFluctuation implements Runnable {
         logger.info("showing highest fluctuating parameter for %s stations and %s parameters",
                 format(stations.size()), format(parameters.size()));
 
-        System.out.println();
-
         if (date != null) {
             since = date;
             until = date;
@@ -80,7 +78,7 @@ class CommandHighestFluctuation implements Runnable {
         if (highestFluctuation == null) {
             logger.error("no highest fluctuation found");
         } else {
-            System.out.printf("Highest fluctuating parameter for %s station%s is %s with fluctuation ratio of %s.%n",
+            System.out.printf("%nHighest fluctuating parameter for %s station%s is %s with fluctuation ratio of %s.%n",
                     format(stations.size()), (stations.size() > 1 ? "s" : ""),
                     format(highestParameter), format(highestFluctuation));
 

@@ -29,6 +29,9 @@ class CommandHighestFluctuation implements Runnable {
 
     @Override
     public void run() {
+        logger.info("showing highest fluctuating parameter for %s stations and %s parameters",
+                format(stations.size()), format(parameters.size()));
+
         System.out.println();
 
         if (date != null) {
@@ -64,8 +67,8 @@ class CommandHighestFluctuation implements Runnable {
                 highestMaximal = maximal;
 
                 highestParameter = parameter;
-            } else {
-                highestFluctuation = Math.max(highestFluctuation, fluctuation);
+            } else if (fluctuation > highestFluctuation) {
+                highestFluctuation = fluctuation;
 
                 highestMinimal = minimal;
                 highestMaximal = maximal;

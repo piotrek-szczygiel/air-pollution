@@ -14,8 +14,6 @@ class CommandUtils {
 
         LocalDateTime lowestDate = null;
 
-        Logger.suppress();
-
         for (Station station : cache.getAllStations()) {
             for (Sensor sensor : cache.getAllSensors(station.getId())) {
                 for (SensorMeasurement measurement : cache.getSensorMeasurements(sensor.getId())) {
@@ -27,8 +25,6 @@ class CommandUtils {
                 }
             }
         }
-
-        Logger.restore();
 
         if (lowestDate != null) {
             logger.debug("lowest date found: %s", format(lowestDate));
@@ -44,8 +40,6 @@ class CommandUtils {
 
         LocalDateTime highestDate = null;
 
-        Logger.suppress();
-
         for (Station station : cache.getAllStations()) {
             for (Sensor sensor : cache.getAllSensors(station.getId())) {
                 for (SensorMeasurement measurement : cache.getSensorMeasurements(sensor.getId())) {
@@ -57,8 +51,6 @@ class CommandUtils {
                 }
             }
         }
-
-        Logger.restore();
 
         if (highestDate != null) {
             logger.debug("highest date found: %s", format(highestDate));
@@ -103,56 +95,48 @@ class CommandUtils {
     static List<SensorMeasurement> getMeasurementsInRange(Cache cache, Station station, Parameter parameter,
                                                           LocalDateTime since, LocalDateTime until) {
 
-        // Usage of try is only needed to make sure we always restore logging to cache using finally clause
-        try {
-            Logger.suppress();
+        List<Sensor> sensors = cache.getAllSensors(station.getId());
 
-            List<Sensor> sensors = cache.getAllSensors(station.getId());
-
-            if (sensors == null || sensors.size() < 1) {
-                return null;
-            }
-
-            Sensor sensor = null;
-
-            for (Sensor searchSensor : sensors) {
-                if (searchSensor.getParameter() == parameter) {
-                    sensor = searchSensor;
-                }
-            }
-
-            if (sensor == null) {
-                return null;
-            }
-
-            List<SensorMeasurement> measurements = cache.getSensorMeasurements(sensor.getId());
-
-            if (measurements == null) {
-                logger.warn("there are no measurements for sensor with id %s", format(sensor));
-                return null;
-            }
-
-            List<SensorMeasurement> measurementsInRange = new ArrayList<>();
-
-            for (SensorMeasurement measurement : measurements) {
-                if (since != null && until != null) {
-                    if (!(measurement.getDate().compareTo(since) >= 0
-                            && measurement.getDate().compareTo(until) <= 0)) {
-                        continue;
-                    }
-                } else {
-                    logger.error("invalid date objects");
-                    return null;
-                }
-
-                measurementsInRange.add(measurement);
-            }
-
-            return measurementsInRange;
-
-        } finally {
-            Logger.restore();
+        if (sensors == null || sensors.size() < 1) {
+            return null;
         }
+
+        Sensor sensor = null;
+
+        for (Sensor searchSensor : sensors) {
+            if (searchSensor.getParameter() == parameter) {
+                sensor = searchSensor;
+            }
+        }
+
+        if (sensor == null) {
+            return null;
+        }
+
+        List<SensorMeasurement> measurements = cache.getSensorMeasurements(sensor.getId());
+
+        if (measurements == null) {
+            logger.warn("there are no measurements for sensor with id %s", format(sensor));
+            return null;
+        }
+
+        List<SensorMeasurement> measurementsInRange = new ArrayList<>();
+
+        for (SensorMeasurement measurement : measurements) {
+            if (since != null && until != null) {
+                if (!(measurement.getDate().compareTo(since) >= 0
+                        && measurement.getDate().compareTo(until) <= 0)) {
+                    continue;
+                }
+            } else {
+                logger.error("invalid date objects");
+                return null;
+            }
+
+            measurementsInRange.add(measurement);
+        }
+
+        return measurementsInRange;
     }
 
     static Float getMinimalPollution(Cache cache, List<Station> stations, Parameter parameter,

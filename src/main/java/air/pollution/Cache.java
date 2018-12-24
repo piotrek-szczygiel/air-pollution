@@ -55,8 +55,6 @@ class Cache {
         // Spinner animation
         AtomicInteger spinnerIndex = new AtomicInteger(0);
 
-        Logger.suppress();
-
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         for (Station station : stations) {
@@ -91,16 +89,12 @@ class Cache {
         try {
             executorService.awaitTermination(timeout, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
-            Logger.restore();
-
             logger.fatal("executing tasks interrupted: %s", e);
         }
 
         stopwatch.stop();
 
         System.err.print(ansi().cursorToColumn(0).eraseLine().toString());
-
-        Logger.restore();
 
         logger.info("fetching data from api finished in %s", format(stopwatch));
 

@@ -30,7 +30,7 @@ class Format {
     private static final DateTimeFormatter TIMESTAMP_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM, HH:mm:ss");
 
     static String format(Station station) {
-        return ansi().fgYellow().a(station.getName()).a(" ").fgGreen().a(station.getId()).reset().toString();
+        return ansi().fgYellow().a(station.getName()).a(" ").fgBlue().a(station.getId()).reset().toString();
     }
 
     static String format(Sensor sensor) {

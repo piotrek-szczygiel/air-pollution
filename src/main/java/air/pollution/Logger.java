@@ -12,12 +12,16 @@ class Logger {
 
     private static ErrorLevel ERROR_LEVEL = ErrorLevel.DEBUG;
     private static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SSS");
-    private static boolean SUPPRESS = false;
     private ErrorLevel localErrorLevel = ERROR_LEVEL;
     private String loggerName;
 
     private Logger(Object loggerObject) {
         loggerName = loggerObject.getClass().getSimpleName();
+
+        // Disable logging for fetching classes because of useless spam
+        if (loggerName.equals("Cache") || loggerName.equals("ApiObjectCollector")) {
+            localErrorLevel = ErrorLevel.DISABLE;
+        }
 
         LOGGERS.putIfAbsent(loggerObject, this);
     }
@@ -40,14 +44,6 @@ class Logger {
         ERROR_LEVEL = errorLevel;
     }
 
-    static void suppress() {
-        SUPPRESS = true;
-    }
-
-    static void restore() {
-        SUPPRESS = false;
-    }
-
     void debug(String format, Object... args) {
         log(ErrorLevel.DEBUG, format, args);
     }
@@ -64,10 +60,6 @@ class Logger {
         }
 
         if (localErrorLevel.contains(errorLevel)) {
-            if (!(SUPPRESS && ErrorLevel.ERROR.contains(errorLevel))) {
-                return;
-            }
-
             String[] strings = new String[args.length];
             for (int i = 0; i < args.length; i++) {
                 strings[i] = (String) args[i] + errorLevel.color;

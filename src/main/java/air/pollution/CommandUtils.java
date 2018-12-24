@@ -14,7 +14,7 @@ class CommandUtils {
 
         LocalDateTime lowestDate = null;
 
-        cache.suppressDebug();
+        Logger.suppress();
 
         for (Station station : cache.getAllStations()) {
             for (Sensor sensor : cache.getAllSensors(station.getId())) {
@@ -28,7 +28,7 @@ class CommandUtils {
             }
         }
 
-        cache.restoreDebug();
+        Logger.restore();
 
         if (lowestDate != null) {
             logger.debug("lowest date found: %s", format(lowestDate));
@@ -44,7 +44,7 @@ class CommandUtils {
 
         LocalDateTime highestDate = null;
 
-        cache.suppressDebug();
+        Logger.suppress();
 
         for (Station station : cache.getAllStations()) {
             for (Sensor sensor : cache.getAllSensors(station.getId())) {
@@ -58,7 +58,7 @@ class CommandUtils {
             }
         }
 
-        cache.restoreDebug();
+        Logger.restore();
 
         if (highestDate != null) {
             logger.debug("highest date found: %s", format(highestDate));
@@ -105,7 +105,7 @@ class CommandUtils {
 
         // Usage of try is only needed to make sure we always restore logging to cache using finally clause
         try {
-            cache.suppressDebug();
+            Logger.suppress();
 
             List<Sensor> sensors = cache.getAllSensors(station.getId());
 
@@ -151,7 +151,7 @@ class CommandUtils {
             return measurementsInRange;
 
         } finally {
-            cache.restoreDebug();
+            Logger.restore();
         }
     }
 

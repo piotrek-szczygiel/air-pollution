@@ -55,7 +55,7 @@ class Cache {
         // Spinner animation
         AtomicInteger spinnerIndex = new AtomicInteger(0);
 
-        suppressDebug();
+        Logger.suppress();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -91,7 +91,8 @@ class Cache {
         try {
             executorService.awaitTermination(timeout, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
-            restoreDebug();
+            Logger.restore();
+
             logger.fatal("executing tasks interrupted: %s", e);
         }
 
@@ -99,16 +100,11 @@ class Cache {
 
         System.err.print(ansi().cursorToColumn(0).eraseLine().toString());
 
-        restoreDebug();
+        Logger.restore();
 
         logger.info("fetching data from api finished in %s", format(stopwatch));
 
         cacheDate = LocalDateTime.now();
-    }
-
-    void suppressDebug() {
-        logger.setTemporaryLevel(ErrorLevel.INFO);
-        Logger.getLogger(apiObjectCollector).setTemporaryLevel(ErrorLevel.INFO);
     }
 
     void setApiObjectCollector(ApiObjectCollector apiObjectCollector) {
@@ -117,11 +113,6 @@ class Cache {
 
     LocalDateTime getCacheDate() {
         return cacheDate;
-    }
-
-    void restoreDebug() {
-        logger.restorePreviousLevel();
-        Logger.getLogger(apiObjectCollector).restorePreviousLevel();
     }
 
     List<Station> getAllStations() {

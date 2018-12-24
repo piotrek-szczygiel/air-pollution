@@ -12,9 +12,8 @@ class Logger {
 
     private static ErrorLevel ERROR_LEVEL = ErrorLevel.DEBUG;
     private static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SSS");
-
+    private static boolean SUPPRESS = false;
     private ErrorLevel localErrorLevel = ERROR_LEVEL;
-    private ErrorLevel lastErrorLevel = null;
     private String loggerName;
 
     private Logger(Object loggerObject) {
@@ -41,16 +40,12 @@ class Logger {
         ERROR_LEVEL = errorLevel;
     }
 
-    void setTemporaryLevel(ErrorLevel errorLevel) {
-        lastErrorLevel = localErrorLevel;
-        localErrorLevel = errorLevel;
+    static void suppress() {
+        SUPPRESS = true;
     }
 
-    void restorePreviousLevel() {
-        if (lastErrorLevel != null) {
-            localErrorLevel = lastErrorLevel;
-            lastErrorLevel = null;
-        }
+    static void restore() {
+        SUPPRESS = false;
     }
 
     void debug(String format, Object... args) {
@@ -69,6 +64,10 @@ class Logger {
         }
 
         if (localErrorLevel.contains(errorLevel)) {
+            if (!(SUPPRESS && ErrorLevel.ERROR.contains(errorLevel))) {
+                return;
+            }
+
             String[] strings = new String[args.length];
             for (int i = 0; i < args.length; i++) {
                 strings[i] = (String) args[i] + errorLevel.color;

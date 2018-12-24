@@ -1,7 +1,9 @@
 package air.pollution;
 
+import com.google.common.base.Stopwatch;
 import org.fusesource.jansi.Ansi;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -25,38 +27,45 @@ class Format {
             ansi().fgRed()
     };
 
-    private static final DateTimeFormatter MEASUREMENT_DATE_FORMATTER = DateTimeFormatter.ofPattern("HH:mm,  dd MMMM");
     private static final DateTimeFormatter TIMESTAMP_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM, HH:mm:ss");
 
-    static String stationName(String stationName) {
-        return ansi().fgYellow().a(stationName).reset().toString();
+    static String format(Station station) {
+        return ansi().fgYellow().a(station.getName()).a(" ").fgGreen().a(station.getId()).reset().toString();
     }
 
-    static String stationId(int stationId) {
-        return ansi().fgGreen().a(stationId).reset().toString();
+    static String format(Sensor sensor) {
+        return ansi().fgCyan().a(sensor.getId()).a(" ").fgMagenta().a(sensor.getParameter()).reset().toString();
     }
 
-    static String sensorId(int sensorId) {
-        return ansi().fgCyan().a(sensorId).reset().toString();
+    static String format(Parameter parameter) {
+        return ansi().fgMagenta().a(parameter.toString()).reset().toString();
     }
 
-    static String parameter(Parameter parameter) {
-        return ansi().fgMagenta().a(parameter).reset().toString();
+    static String format(int integer) {
+        return format((long) integer);
     }
 
-    static String size(Object size) {
-        return ansi().fgBrightBlue().a(size).reset().toString();
+    static String format(long integer) {
+        return ansi().fgBrightBlue().a(integer).reset().toString();
     }
 
-    static String file(String fileName) {
-        return ansi().fgBrightMagenta().a(fileName).reset().toString();
+    static String format(float floating) {
+        return ansi().fgBrightBlue().a(String.format("%.2f", floating)).reset().toString();
     }
 
-    static String spinner(String spinner) {
-        return ansi().fgBrightCyan().a(spinner).reset().toString();
+    static String format(Stopwatch stopwatch) {
+        return ansi().fgBrightRed().a(stopwatch).reset().toString();
     }
 
-    static String quality(Quality quality) {
+    static String format(File filename) {
+        return ansi().fgBrightMagenta().a(filename.getPath()).reset().toString();
+    }
+
+    static String format(char character) {
+        return ansi().fgBrightCyan().a(character).reset().toString();
+    }
+
+    static String format(Quality quality) {
         Ansi color;
 
         switch (quality) {
@@ -86,12 +95,7 @@ class Format {
         return color.toString() + quality + ansi().reset().toString();
     }
 
-    static String measurement(SensorMeasurement measurement) {
-        return measurementValue(measurement.getParameter(), measurement.getValue(), true)
-                + "\t" + measurementDate(measurement.getDate());
-    }
-
-    static String measurementValue(Parameter parameter, float value, boolean rightAlign) {
+    static String format(Parameter parameter, float value, boolean rightAlign) {
         Ansi color = ansi().fgDefault();
 
         String unit = " \u00b5g/m3";
@@ -146,11 +150,7 @@ class Format {
                 + unit + ansi().reset().toString();
     }
 
-    private static String measurementDate(LocalDateTime date) {
-        return ansi().fgBrightBlack().a(date.format(MEASUREMENT_DATE_FORMATTER)).reset().toString();
-    }
-
-    static String timestampDate(LocalDateTime date) {
+    static String format(LocalDateTime date) {
         return ansi().fgRed().a(date.format(TIMESTAMP_DATE_FORMATTER)).reset().toString();
     }
 }

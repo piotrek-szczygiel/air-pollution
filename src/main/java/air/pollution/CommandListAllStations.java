@@ -2,6 +2,8 @@ package air.pollution;
 
 import java.util.List;
 
+import static air.pollution.Format.format;
+
 class CommandListAllStations implements Runnable {
     private Cache cache;
 
@@ -23,7 +25,7 @@ class CommandListAllStations implements Runnable {
             return;
         }
 
-        logger.info("listing %s stations...", Format.size(stations.size()));
+        logger.info("listing %s stations...", format(stations.size()));
 
         for (Station station : stations) {
             System.out.println(station.getName());

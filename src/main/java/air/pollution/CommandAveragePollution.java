@@ -3,6 +3,8 @@ package air.pollution;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static air.pollution.Format.format;
+
 class CommandAveragePollution implements Runnable {
     private Cache cache;
     private List<Station> stations;
@@ -30,10 +32,10 @@ class CommandAveragePollution implements Runnable {
         System.out.println();
 
         logger.info("showing average pollution for %s stations and %s parameters",
-                Format.size(stations.size()), Format.size(parameters.size()));
+                format(stations.size()), format(parameters.size()));
 
         System.out.printf("Average pollution for %s station%s%n",
-                Format.size(stations.size()), (stations.size() > 1 ? "s" : ""));
+                format(stations.size()), (stations.size() > 1 ? "s" : ""));
 
         if (date != null) {
             since = date;
@@ -44,10 +46,10 @@ class CommandAveragePollution implements Runnable {
             Float average = CommandUtils.getAveragePollution(cache, stations, parameter, since, until);
 
             if (average == null) {
-                System.out.printf("%s:\t-%n", Format.parameter(parameter));
+                System.out.printf("%s:\t-%n", format(parameter));
             } else {
-                System.out.printf("%s:\t%s%n", Format.parameter(parameter),
-                        Format.measurementValue(parameter, average, false));
+                System.out.printf("%s:\t%s%n", format(parameter),
+                        format(parameter, average, false));
             }
         }
     }

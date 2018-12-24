@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static air.pollution.Format.format;
+
 @Command(
         name = "air-pollution",
         mixinStandardHelpOptions = true,
@@ -225,7 +227,7 @@ public class App implements Runnable {
                 return;
             }
 
-            logger.debug("matched %s stations", Format.size(stations.size()));
+            logger.debug("matched %s stations", format(stations.size()));
         } else {
             logger.debug("no stations provided, assuming usage of all stations");
 

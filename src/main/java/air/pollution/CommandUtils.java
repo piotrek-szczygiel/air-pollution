@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static air.pollution.Format.format;
+
 class CommandUtils {
     static private Logger logger = Logger.getLogger(CommandUtils.class);
 
@@ -29,7 +31,7 @@ class CommandUtils {
         cache.restoreDebug();
 
         if (lowestDate != null) {
-            logger.debug("lowest date found: %s", Format.timestampDate(lowestDate));
+            logger.debug("lowest date found: %s", format(lowestDate));
         } else {
             logger.warn("unable to found lowest date");
         }
@@ -59,7 +61,7 @@ class CommandUtils {
         cache.restoreDebug();
 
         if (highestDate != null) {
-            logger.debug("highest date found: %s", Format.timestampDate(highestDate));
+            logger.debug("highest date found: %s", format(highestDate));
         } else {
             logger.warn("unable to find highest date");
         }
@@ -74,7 +76,7 @@ class CommandUtils {
         int count = 0;
 
         logger.debug("calculating average %s pollution for %s stations",
-                Format.parameter(parameter), Format.size(stations.size()));
+                format(parameter), format(stations.size()));
 
         for (Station station : stations) {
 
@@ -126,7 +128,7 @@ class CommandUtils {
             List<SensorMeasurement> measurements = cache.getSensorMeasurements(sensor.getId());
 
             if (measurements == null) {
-                logger.warn("there are no measurements for sensor with id %s", Format.sensorId(sensor.getId()));
+                logger.warn("there are no measurements for sensor with id %s", format(sensor));
                 return null;
             }
 
@@ -177,7 +179,7 @@ class CommandUtils {
         }
 
         if (minimal == null) {
-            logger.warn("unable to find minimal value for %s", Format.parameter(parameter));
+            logger.warn("unable to find minimal value for %s", format(parameter));
         }
 
         return minimal;
@@ -207,7 +209,7 @@ class CommandUtils {
         }
 
         if (maximal == null) {
-            logger.warn("unable to find maximal value for %s", Format.parameter(parameter));
+            logger.warn("unable to find maximal value for %s", format(parameter));
         }
 
         return maximal;

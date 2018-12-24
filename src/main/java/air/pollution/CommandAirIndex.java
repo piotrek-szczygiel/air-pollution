@@ -2,6 +2,7 @@ package air.pollution;
 
 import java.util.List;
 
+import static air.pollution.Format.format;
 import static org.fusesource.jansi.Ansi.ansi;
 
 class CommandAirIndex implements Runnable {
@@ -19,16 +20,16 @@ class CommandAirIndex implements Runnable {
     public void run() {
         System.out.println();
 
-        logger.debug("displaying air index for %s stations", Format.size(stations.size()));
+        logger.debug("displaying air index for %s stations", format(stations.size()));
 
         for (Station station : stations) {
-            logger.debug("collecting air index for %s", Format.stationName(station.getName()));
+            logger.debug("collecting air index for %s", format(station));
             AirIndex airIndex = cache.getAirIndex(station.getId());
 
-            logger.info("printing air index for %s", Format.stationName(station.getName()));
+            logger.info("printing air index for %s", format(station));
 
-            System.out.println(Format.stationName(station.getName()));
-            System.out.println(format(airIndex));
+            System.out.println(format(station));
+            System.out.println(formatOutput(airIndex));
 
             // Add newline if current station is not the last one
             if (stations.indexOf(station) != stations.size() - 1) {
@@ -37,13 +38,13 @@ class CommandAirIndex implements Runnable {
         }
     }
 
-    private String format(AirIndex airIndex) {
+    private String formatOutput(AirIndex airIndex) {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder
                 .append(ansi().fgCyan())
                 .append("Overall air quality: ")
-                .append(Format.quality(airIndex.getAirQuality()))
+                .append(format(airIndex.getAirQuality()))
                 .append("\n----------------------------------");
 
         for (Parameter parameter : Parameter.values()) {
@@ -54,7 +55,7 @@ class CommandAirIndex implements Runnable {
                     .append("\n")
                     .append(parameter)
                     .append(":\t")
-                    .append(Format.quality(quality));
+                    .append(format(quality));
         }
 
         return stringBuilder.toString();

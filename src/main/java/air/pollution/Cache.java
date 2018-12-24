@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static air.pollution.Format.format;
 import static org.fusesource.jansi.Ansi.ansi;
 
 class Cache {
@@ -33,7 +34,7 @@ class Cache {
             return;
         }
 
-        logger.debug("filling cache for %s stations...", Format.size(stations.size()));
+        logger.debug("filling cache for %s stations...", format(stations.size()));
 
         int processors;
 
@@ -49,7 +50,7 @@ class Cache {
         final int timeout = 2;
 
         logger.info("fetching data from api using %s thread%s with timeout of %s minutes...",
-                Format.size(processors), ((processors > 1) ? "s" : ""), Format.size(timeout));
+                format(processors), ((processors > 1) ? "s" : ""), format(timeout));
 
         // Spinner animation
         AtomicInteger spinnerIndex = new AtomicInteger(0);
@@ -60,15 +61,16 @@ class Cache {
 
         for (Station station : stations) {
             executorService.execute(() -> {
+
+                // Synchronize output because this portion will be called from withing multiple threads
                 synchronized (System.out) {
                     synchronized (System.err) {
 
                         // Get spinner animation current character
-                        String spinner = Utils.getSpinner(spinnerIndex.incrementAndGet() / ((processors / 10) + 1));
+                        char spinner = Utils.getSpinner(spinnerIndex.incrementAndGet() / ((processors / 10) + 1));
 
-                        System.err.print(ansi().cursorToColumn(0).toString() + Format.spinner(spinner)
-                                + "  fetching " + Format.stationName(station.getName())
-                                + ansi().eraseLine().toString());
+                        System.err.printf("\r%s fetching %s%s", format(spinner),
+                                format(station), ansi().eraseLine().toString());
                     }
                 }
 
@@ -99,7 +101,7 @@ class Cache {
 
         restoreDebug();
 
-        logger.info("fetching data from api finished in %s", Format.size(stopwatch));
+        logger.info("fetching data from api finished in %s", format(stopwatch));
 
         cacheDate = LocalDateTime.now();
     }
@@ -147,17 +149,17 @@ class Cache {
             List<Sensor> sensors = sensorCache.get(stationId);
 
             logger.debug("fetched %s sensors for station with id %s from cache",
-                    Format.size(sensors.size()), Format.stationId(stationId));
+                    format(sensors.size()), format(stationId));
 
             return sensors;
         }
 
-        logger.debug("filling sensor cache for station with id %s...", Format.stationId(stationId));
+        logger.debug("filling sensor cache for station with id %s...", format(stationId));
 
         List<Sensor> sensors = apiObjectCollector.getAllSensors(stationId);
 
         if (sensors == null || sensors.size() < 1) {
-            logger.warn("unable to fetch sensors for station with id %s from api", Format.stationId(stationId));
+            logger.warn("unable to fetch sensors for station with id %s from api", format(stationId));
             return null;
         }
 
@@ -170,17 +172,17 @@ class Cache {
             List<SensorMeasurement> measurements = measurementCache.get(sensorId);
 
             logger.debug("fetched %s measurements for sensor with id %s from cache",
-                    Format.size(measurements.size()), Format.sensorId(sensorId));
+                    format(measurements.size()), format(sensorId));
 
             return measurements;
         }
 
-        logger.debug("filling measurements cache for sensor with id %s...", Format.sensorId(sensorId));
+        logger.debug("filling measurements cache for sensor with id %s...", format(sensorId));
 
         List<SensorMeasurement> measurements = apiObjectCollector.getSensorMeasurements(sensorId);
 
         if (measurements == null) {
-            logger.warn("unable to fetch measurements for sensor with id %s from api", Format.sensorId(sensorId));
+            logger.warn("unable to fetch measurements for sensor with id %s from api", format(sensorId));
             return null;
         }
 
@@ -190,17 +192,17 @@ class Cache {
 
     AirIndex getAirIndex(int stationId) {
         if (airIndexCache.containsKey(stationId)) {
-            logger.debug("fetched air index for station with id %s from cache", Format.stationId(stationId));
+            logger.debug("fetched air index for station with id %s from cache", format(stationId));
 
             return airIndexCache.get(stationId);
         }
 
-        logger.debug("filling air index cache for station with id %s...", Format.stationId(stationId));
+        logger.debug("filling air index cache for station with id %s...", format(stationId));
 
         AirIndex airIndex = apiObjectCollector.getAirIndex(stationId);
 
         if (airIndex == null) {
-            logger.warn("unable to fetch air index for station with id %s from api", Format.stationId(stationId));
+            logger.warn("unable to fetch air index for station with id %s from api", format(stationId));
             return null;
         }
 

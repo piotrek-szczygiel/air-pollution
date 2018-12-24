@@ -11,6 +11,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import static air.pollution.Format.format;
+
 class CacheFile {
     Logger logger = Logger.getLogger(this);
     private File file;
@@ -32,7 +34,7 @@ class CacheFile {
              GZIPInputStream gzipInputStream = new GZIPInputStream(fileInputStream);
              Reader reader = new InputStreamReader(gzipInputStream, StandardCharsets.UTF_8)) {
 
-            logger.debug("loading cache from compressed archive %s...", Format.file(file.getPath()));
+            logger.debug("loading cache from compressed archive %s...", format(file));
 
             Gson gson = new GsonBuilder().create();
 
@@ -44,14 +46,14 @@ class CacheFile {
             return null;
         }
 
-        logger.info("loaded cache from %s in %s", Format.file(file.getPath()), Format.size(stopwatch));
+        logger.info("loaded cache from %s in %s", format(file), format(stopwatch));
 
         LocalDateTime currentDate = LocalDateTime.now();
         LocalDateTime lastUpdatedDate = cache.getCacheDate();
 
         long minutesDifference = ChronoUnit.MINUTES.between(lastUpdatedDate, currentDate);
         logger.debug("loaded cache was last updated at %s (%s minutes ago)",
-                Format.timestampDate(lastUpdatedDate), Format.size(minutesDifference));
+                format(lastUpdatedDate), format(minutesDifference));
 
         // Check if last update was done earlier than an hour ago
         // Check also if it wasn't done at the previous hour (17:58 last, 18:03 current => UPDATE)
@@ -71,7 +73,7 @@ class CacheFile {
              GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
              Writer writer = new OutputStreamWriter(gzipOutputStream, StandardCharsets.UTF_8)) {
 
-            logger.debug("saving cache to compressed archive %s...", Format.file(file.getPath()));
+            logger.debug("saving cache to compressed archive %s...", format(file));
 
             Gson gson = new GsonBuilder().create();
 
@@ -83,6 +85,6 @@ class CacheFile {
             return;
         }
 
-        logger.info("saved cache to %s in %s", Format.file(file.getPath()), Format.size(stopwatch));
+        logger.info("saved cache to %s in %s", format(file), format(stopwatch));
     }
 }

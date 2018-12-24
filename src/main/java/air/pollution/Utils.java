@@ -6,11 +6,11 @@ import java.text.Normalizer;
 import java.util.regex.Pattern;
 
 class Utils {
-    static private String[] spinner = {
-            "-",
-            "\\",
-            "|",
-            "/"
+    static private char[] spinner = {
+            '-',
+            '\\',
+            '|',
+            '/'
     };
 
     static String normalizeString(final String input) {
@@ -46,7 +46,7 @@ class Utils {
         }));
     }
 
-    static String getSpinner(int iteration) {
+    static char getSpinner(int iteration) {
         return spinner[iteration % spinner.length];
     }
 }

@@ -3,6 +3,8 @@ package air.pollution;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static air.pollution.Format.format;
+
 class ApiObjectCollector {
     private AirPollutionService airPollutionService;
     private JsonObjectFactory jsonObjectFactory;
@@ -32,7 +34,7 @@ class ApiObjectCollector {
             return null;
         }
 
-        logger.debug("%s stations fetched", Format.size(stations.size()));
+        logger.debug("%s stations fetched", format(stations.size()));
 
         return stations;
     }
@@ -41,12 +43,12 @@ class ApiObjectCollector {
         List<JsonSensor> jsonSensors = airPollutionService.getAllSensors(stationId);
 
         if (jsonSensors == null) {
-            logger.fatal("unable to fetch sensors for station with id %s", Format.stationId(stationId));
+            logger.fatal("unable to fetch sensors for station with id %s", format(stationId));
             return null;
         }
 
         if (jsonSensors.size() < 1) {
-            logger.fatal("unable to fetch sensors for station with id %s", Format.stationId(stationId));
+            logger.fatal("unable to fetch sensors for station with id %s", format(stationId));
             return null;
         }
 
@@ -60,13 +62,13 @@ class ApiObjectCollector {
         JsonSensorMeasurements jsonSensorMeasurements = airPollutionService.getSensorMeasurements(sensorId);
 
         if (jsonSensorMeasurements == null) {
-            logger.fatal("unable to fetch sensor measurements for sensor with id %s", Format.sensorId(sensorId));
+            logger.fatal("unable to fetch sensor measurements for sensor with id %s", format(sensorId));
             return null;
         }
 
         List<SensorMeasurement> sensorMeasurements = jsonObjectFactory.fromJson(jsonSensorMeasurements);
 
-        logger.debug("fetched %s measurements", Format.size(sensorMeasurements.size()));
+        logger.debug("fetched %s measurements", format(sensorMeasurements.size()));
 
         return sensorMeasurements;
     }
@@ -75,7 +77,7 @@ class ApiObjectCollector {
         JsonAirIndex jsonAirIndex = airPollutionService.getAirIndex(stationId);
 
         if (jsonAirIndex == null) {
-            logger.fatal("unable to fetch air index for station with id %s", Format.stationId(stationId));
+            logger.fatal("unable to fetch air index for station with id %s", format(stationId));
             return null;
         }
 

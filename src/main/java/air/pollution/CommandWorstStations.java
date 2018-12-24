@@ -41,6 +41,11 @@ class CommandWorstStations implements Runnable {
         logger.info("showing most polluted stations for %s stations and %s parameters",
                 format(stations.size()), format(parameters.size()));
 
+        if (date != null) {
+            since = date;
+            until = date;
+        }
+
         for (Parameter parameter : parameters) {
             Map<Station, SensorMeasurement> highestPollution = new HashMap<>();
 

@@ -23,7 +23,7 @@ class CommandListAllStations implements Runnable {
             return;
         }
 
-        logger.info("listing " + Format.size(stations.size()) + "~ stations...");
+        logger.info("listing %s stations...", Format.size(stations.size()));
 
         for (Station station : stations) {
             System.out.println(station.getName());

@@ -225,7 +225,7 @@ public class App implements Runnable {
                 return;
             }
 
-            logger.debug("matched " + Format.size(stations.size()) + "~ stations");
+            logger.debug("matched %s stations", Format.size(stations.size()));
         } else {
             logger.debug("no stations provided, assuming usage of all stations");
 

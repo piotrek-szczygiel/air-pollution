@@ -32,7 +32,7 @@ class ApiObjectCollector {
             return null;
         }
 
-        logger.debug(Format.size(stations.size()) + "~ stations fetched");
+        logger.debug("%s stations fetched", Format.size(stations.size()));
 
         return stations;
     }
@@ -41,12 +41,12 @@ class ApiObjectCollector {
         List<JsonSensor> jsonSensors = airPollutionService.getAllSensors(stationId);
 
         if (jsonSensors == null) {
-            logger.fatal("unable to fetch sensors for station with id " + Format.stationId(stationId));
+            logger.fatal("unable to fetch sensors for station with id %s", Format.stationId(stationId));
             return null;
         }
 
         if (jsonSensors.size() < 1) {
-            logger.fatal("unable to fetch sensors for station with id " + Format.stationId(stationId));
+            logger.fatal("unable to fetch sensors for station with id %s", Format.stationId(stationId));
             return null;
         }
 
@@ -60,13 +60,13 @@ class ApiObjectCollector {
         JsonSensorMeasurements jsonSensorMeasurements = airPollutionService.getSensorMeasurements(sensorId);
 
         if (jsonSensorMeasurements == null) {
-            logger.fatal("unable to fetch sensor measurements for sensor with id " + Format.sensorId(sensorId));
+            logger.fatal("unable to fetch sensor measurements for sensor with id %s", Format.sensorId(sensorId));
             return null;
         }
 
         List<SensorMeasurement> sensorMeasurements = jsonObjectFactory.fromJson(jsonSensorMeasurements);
 
-        logger.debug("fetched " + Format.size(sensorMeasurements.size()) + "~ measurements");
+        logger.debug("fetched %s measurements", Format.size(sensorMeasurements.size()));
 
         return sensorMeasurements;
     }
@@ -75,7 +75,7 @@ class ApiObjectCollector {
         JsonAirIndex jsonAirIndex = airPollutionService.getAirIndex(stationId);
 
         if (jsonAirIndex == null) {
-            logger.fatal("unable to fetch air index for station with id " + Format.stationId(stationId));
+            logger.fatal("unable to fetch air index for station with id %s", Format.stationId(stationId));
             return null;
         }
 

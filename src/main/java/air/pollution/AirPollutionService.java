@@ -29,7 +29,7 @@ class AirPollutionService {
         try {
             jsonStations = Arrays.asList(gson.fromJson(get.from(apiGetAllStations), JsonStation[].class));
         } catch (Exception e) {
-            logger.error("error while fetching all stations: " + e);
+            logger.error("error while fetching all stations: %s", e);
             jsonStations = null;
         }
 
@@ -42,7 +42,7 @@ class AirPollutionService {
         try {
             jsonSensors = Arrays.asList(gson.fromJson(get.from(apiGetAllSensors + stationId), JsonSensor[].class));
         } catch (Exception e) {
-            logger.error("error while fetching all sensors: " + e);
+            logger.error("error while fetching all sensors: %s", e);
 
             jsonSensors = null;
         }
@@ -57,7 +57,7 @@ class AirPollutionService {
             jsonSensorMeasurements = gson.fromJson(get.from(apiGetSensorMeasurements + sensorId),
                     JsonSensorMeasurements.class);
         } catch (Exception e) {
-            logger.error("error while fetching all sensor measurements: " + e);
+            logger.error("error while fetching all sensor measurements: %s", e);
             jsonSensorMeasurements = null;
         }
 
@@ -70,7 +70,7 @@ class AirPollutionService {
         try {
             jsonAirIndex = gson.fromJson(get.from(apiGetAirIndex + stationId), JsonAirIndex.class);
         } catch (Exception e) {
-            logger.error("error while fetching air index: " + e);
+            logger.error("error while fetching air index: %s", e);
             jsonAirIndex = null;
         }
 

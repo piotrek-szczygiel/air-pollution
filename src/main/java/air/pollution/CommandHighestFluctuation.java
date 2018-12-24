@@ -48,7 +48,7 @@ class CommandHighestFluctuation implements Runnable {
             Float maximal = CommandUtils.getMaximalPollution(cache, stations, parameter, since, until);
 
             if (average == null || minimal == null || maximal == null) {
-                logger.warn("unable to calculate fluctuation for " + Format.parameter(parameter));
+                logger.warn("unable to calculate fluctuation for %s", Format.parameter(parameter));
 
                 continue;
             }
@@ -75,13 +75,13 @@ class CommandHighestFluctuation implements Runnable {
         if (highestFluctuation == null) {
             logger.error("no highest fluctuation found");
         } else {
-            System.out.println("Highest fluctuating parameter for " + Format.size(stations.size())
-                    + " station" + (stations.size() > 1 ? "s" : "") + " is " + Format.parameter(highestParameter)
-                    + " with fluctuation ratio of " + Format.size(String.format("%.2f", highestFluctuation)) + ".");
+            System.out.printf("Highest fluctuating parameter for %s station%s is %s with fluctuation ratio of %s.%n",
+                    Format.size(stations.size()), (stations.size() > 1 ? "s" : ""), Format.parameter(highestParameter),
+                    Format.size(String.format("%.2f", highestFluctuation)));
 
-            System.out.println(Format.parameter(highestParameter) + " oscillated between "
-                    + Format.measurementValue(highestParameter, highestMinimal, false) + " and "
-                    + Format.measurementValue(highestParameter, highestMaximal, false) + ".");
+            System.out.printf("%s oscillated between %s and %s.%n", Format.parameter(highestParameter),
+                    Format.measurementValue(highestParameter, highestMinimal, false),
+                    Format.measurementValue(highestParameter, highestMaximal, false));
         }
     }
 }

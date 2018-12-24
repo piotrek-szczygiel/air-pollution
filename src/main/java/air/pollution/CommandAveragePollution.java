@@ -29,11 +29,11 @@ class CommandAveragePollution implements Runnable {
     public void run() {
         System.out.println();
 
-        logger.info("showing average pollution for " + Format.size(stations.size()) + "~ stations and "
-                + Format.size(parameters.size()) + "~ parameters");
+        logger.info("showing average pollution for %s stations and %s parameters",
+                Format.size(stations.size()), Format.size(parameters.size()));
 
-        System.out.println("Average pollution for " + Format.size(stations.size()) + " station"
-                + (stations.size() > 1 ? "s" : ""));
+        System.out.printf("Average pollution for %s station%s%n",
+                Format.size(stations.size()), (stations.size() > 1 ? "s" : ""));
 
         if (date != null) {
             since = date;
@@ -44,10 +44,10 @@ class CommandAveragePollution implements Runnable {
             Float average = CommandUtils.getAveragePollution(cache, stations, parameter, since, until);
 
             if (average == null) {
-                System.out.println(Format.parameter(parameter) + ":\t-");
+                System.out.printf("%s:\t-%n", Format.parameter(parameter));
             } else {
-                System.out.println(Format.parameter(parameter) + ":\t"
-                        + Format.measurementValue(parameter, average, false));
+                System.out.printf("%s:\t%s%n", Format.parameter(parameter),
+                        Format.measurementValue(parameter, average, false));
             }
         }
     }

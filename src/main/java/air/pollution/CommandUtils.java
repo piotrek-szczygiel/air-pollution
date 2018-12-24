@@ -29,7 +29,7 @@ class CommandUtils {
         cache.restoreDebug();
 
         if (lowestDate != null) {
-            logger.debug("lowest date found: " + Format.timestampDate(lowestDate));
+            logger.debug("lowest date found: %s", Format.timestampDate(lowestDate));
         } else {
             logger.warn("unable to found lowest date");
         }
@@ -59,7 +59,7 @@ class CommandUtils {
         cache.restoreDebug();
 
         if (highestDate != null) {
-            logger.debug("highest date found: " + Format.timestampDate(highestDate));
+            logger.debug("highest date found: %s", Format.timestampDate(highestDate));
         } else {
             logger.warn("unable to find highest date");
         }
@@ -73,8 +73,8 @@ class CommandUtils {
         float sum = 0.0f;
         int count = 0;
 
-        logger.debug("calculating average " + Format.parameter(parameter) + "~ pollution for "
-                + Format.size(stations.size()) + "~ stations...");
+        logger.debug("calculating average %s pollution for %s stations",
+                Format.parameter(parameter), Format.size(stations.size()));
 
         for (Station station : stations) {
 
@@ -126,7 +126,7 @@ class CommandUtils {
             List<SensorMeasurement> measurements = cache.getSensorMeasurements(sensor.getId());
 
             if (measurements == null) {
-                logger.warn("there are no measurements for sensor with id " + Format.sensorId(sensor.getId()));
+                logger.warn("there are no measurements for sensor with id %s", Format.sensorId(sensor.getId()));
                 return null;
             }
 
@@ -177,7 +177,7 @@ class CommandUtils {
         }
 
         if (minimal == null) {
-            logger.warn("unable to find minimal value for " + Format.parameter(parameter));
+            logger.warn("unable to find minimal value for %s", Format.parameter(parameter));
         }
 
         return minimal;
@@ -207,7 +207,7 @@ class CommandUtils {
         }
 
         if (maximal == null) {
-            logger.warn("unable to find maximal value for " + Format.parameter(parameter));
+            logger.warn("unable to find maximal value for %s", Format.parameter(parameter));
         }
 
         return maximal;

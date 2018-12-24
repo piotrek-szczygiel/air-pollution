@@ -31,7 +31,7 @@ class CommandMeasurement implements Runnable {
     public void run() {
         System.out.println();
 
-        logger.info("showing measurements for " + Format.size(stations.size()) + "~ stations");
+        logger.info("showing measurements for %s stations", Format.size(stations.size()));
 
         if (date != null) {
             since = date;
@@ -63,9 +63,8 @@ class CommandMeasurement implements Runnable {
                     show = Math.min(top, measurements.size());
                 }
 
-                System.out.println("Showing " + Format.size(show) + " measurement" + (show > 1 ? "s" : "")
-                        + " of " + Format.parameter(parameter)
-                        + " for " + Format.stationName(station.getName()));
+                System.out.printf("Showing %s measurement%s of %s for %s", Format.size(show), (show > 1 ? "s" : ""),
+                        Format.parameter(parameter), Format.stationName(station.getName()));
 
                 for (SensorMeasurement measurement : measurements) {
                     // Stop showing measurements, when we have already shown it top N times

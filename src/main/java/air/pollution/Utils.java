@@ -7,14 +7,10 @@ import java.util.regex.Pattern;
 
 class Utils {
     static private String[] spinner = {
-            "\u2801",
-            "\u2802",
-            "\u2804",
-            "\u2840",
-            "\u2880",
-            "\u2820",
-            "\u2810",
-            "\u2808"
+            "-",
+            "\\",
+            "|",
+            "/"
     };
 
     static String normalizeString(final String input) {

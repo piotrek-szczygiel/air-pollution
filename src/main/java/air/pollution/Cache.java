@@ -33,7 +33,7 @@ class Cache {
             return;
         }
 
-        logger.debug("filling cache for " + Format.size(stations.size()) + "~ stations...");
+        logger.debug("filling cache for %s stations...", Format.size(stations.size()));
 
         int processors;
 
@@ -45,8 +45,11 @@ class Cache {
 
         ExecutorService executorService = Executors.newFixedThreadPool(processors);
 
-        logger.info("fetching data from api using " + Format.size(processors) + "~ thread"
-                + ((processors > 1) ? "s" : "") + " with timeout of " + Format.size(2) + "~ minutes...");
+        // fetching timeout in minutes
+        final int timeout = 2;
+
+        logger.info("fetching data from api using %s thread%s with timeout of %s minutes...",
+                Format.size(processors), ((processors > 1) ? "s" : ""), Format.size(timeout));
 
         // Spinner animation
         AtomicInteger spinnerIndex = new AtomicInteger(0);
@@ -61,9 +64,9 @@ class Cache {
                     synchronized (System.err) {
 
                         // Get spinner animation current character
-                        String dot = Utils.getSpinner(spinnerIndex.incrementAndGet() / 8);
+                        String spinner = Utils.getSpinner(spinnerIndex.incrementAndGet() / ((processors / 10) + 1));
 
-                        System.err.print(ansi().cursorToColumn(0).toString() + Format.spinner(dot)
+                        System.err.print(ansi().cursorToColumn(0).toString() + Format.spinner(spinner)
                                 + "  fetching " + Format.stationName(station.getName())
                                 + ansi().eraseLine().toString());
                     }
@@ -84,10 +87,10 @@ class Cache {
         executorService.shutdown();
 
         try {
-            executorService.awaitTermination(2, TimeUnit.MINUTES);
+            executorService.awaitTermination(timeout, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
             restoreDebug();
-            logger.fatal("executing tasks interrupted: " + e);
+            logger.fatal("executing tasks interrupted: %s", e);
         }
 
         stopwatch.stop();
@@ -96,13 +99,14 @@ class Cache {
 
         restoreDebug();
 
-        logger.info("fetching data from api finished in " + Format.size(stopwatch));
+        logger.info("fetching data from api finished in %s", Format.size(stopwatch));
 
         cacheDate = LocalDateTime.now();
     }
 
     void suppressDebug() {
         logger.setTemporaryLevel(ErrorLevel.INFO);
+        Logger.getLogger(apiObjectCollector).setTemporaryLevel(ErrorLevel.INFO);
     }
 
     void setApiObjectCollector(ApiObjectCollector apiObjectCollector) {
@@ -115,6 +119,7 @@ class Cache {
 
     void restoreDebug() {
         logger.restorePreviousLevel();
+        Logger.getLogger(apiObjectCollector).restorePreviousLevel();
     }
 
     List<Station> getAllStations() {
@@ -141,18 +146,18 @@ class Cache {
         if (sensorCache.containsKey(stationId)) {
             List<Sensor> sensors = sensorCache.get(stationId);
 
-            logger.debug("fetched " + Format.size(sensors.size()) + "~ sensors for station with id "
-                    + Format.stationId(stationId) + "~ from cache");
+            logger.debug("fetched %s sensors for station with id %s from cache",
+                    Format.size(sensors.size()), Format.stationId(stationId));
 
             return sensors;
         }
 
-        logger.debug("filling sensor cache for station with id " + Format.stationId(stationId) + "~...");
+        logger.debug("filling sensor cache for station with id %s...", Format.stationId(stationId));
 
         List<Sensor> sensors = apiObjectCollector.getAllSensors(stationId);
 
         if (sensors == null || sensors.size() < 1) {
-            logger.warn("unable to fetch sensors for station with id " + Format.stationId(stationId) + "~ from API");
+            logger.warn("unable to fetch sensors for station with id %s from api", Format.stationId(stationId));
             return null;
         }
 
@@ -164,18 +169,18 @@ class Cache {
         if (measurementCache.containsKey(sensorId)) {
             List<SensorMeasurement> measurements = measurementCache.get(sensorId);
 
-            logger.debug("fetched " + Format.size(measurements.size()) + "~ measurements for sensor with id "
-                    + Format.sensorId(sensorId) + "~ from cache");
+            logger.debug("fetched %s measurements for sensor with id %s from cache",
+                    Format.size(measurements.size()), Format.sensorId(sensorId));
 
             return measurements;
         }
 
-        logger.debug("filling measurements cache for sensor with id " + Format.sensorId(sensorId) + "~...");
+        logger.debug("filling measurements cache for sensor with id %s...", Format.sensorId(sensorId));
 
         List<SensorMeasurement> measurements = apiObjectCollector.getSensorMeasurements(sensorId);
 
         if (measurements == null) {
-            logger.warn("unable to fetch measurements for sensor with id " + Format.sensorId(sensorId) + "~ from API");
+            logger.warn("unable to fetch measurements for sensor with id %s from api", Format.sensorId(sensorId));
             return null;
         }
 
@@ -185,17 +190,17 @@ class Cache {
 
     AirIndex getAirIndex(int stationId) {
         if (airIndexCache.containsKey(stationId)) {
-            logger.debug("fetched air index for station with id " + Format.stationId(stationId) + "~ from cache");
+            logger.debug("fetched air index for station with id %s from cache", Format.stationId(stationId));
 
             return airIndexCache.get(stationId);
         }
 
-        logger.debug("filling air index cache for station with id " + Format.stationId(stationId) + "~...");
+        logger.debug("filling air index cache for station with id %s...", Format.stationId(stationId));
 
         AirIndex airIndex = apiObjectCollector.getAirIndex(stationId);
 
         if (airIndex == null) {
-            logger.warn("unable to fetch air index for station with id " + Format.stationId(stationId) + "~ from API");
+            logger.warn("unable to fetch air index for station with id %s from api", Format.stationId(stationId));
             return null;
         }
 

@@ -53,62 +53,63 @@ class Logger {
         }
     }
 
-    void debug(Object message) {
-        log(ErrorLevel.DEBUG, message);
+    void debug(String format, Object... args) {
+        log(ErrorLevel.DEBUG, format, args);
     }
 
-    private void log(ErrorLevel errorLevel, Object message) {
+    private void log(ErrorLevel errorLevel, String format, Object... args) {
         String methodName = Thread.currentThread().getStackTrace()[3].getMethodName();
 
-        log(errorLevel, message.toString(), methodName);
+        log(errorLevel, methodName, format, args);
     }
 
-    private void log(ErrorLevel errorLevel, String message, String methodName) {
+    private void log(ErrorLevel errorLevel, String methodName, String format, Object... args) {
         if (localErrorLevel == ErrorLevel.DISABLE) {
             return;
         }
 
         if (localErrorLevel.contains(errorLevel)) {
-            // '~' in logging message resets color to default for current error level
-            message = message.replace("~", ansi().reset().a(errorLevel.color).toString());
+            String[] strings = new String[args.length];
+            for (int i = 0; i < args.length; i++) {
+                strings[i] = (String) args[i] + errorLevel.color;
+            }
+
+            String message = String.format(format, (Object[]) strings);
 
             // Synchronization on System.err enables us to do multithreaded logging
             synchronized (System.err) {
-                System.err.println(ansi()
-                        .a(errorLevel.color)
-                        .a(ZonedDateTime.now().format(TIME_FORMATTER))
-                        .a(" ")
-                        .a(errorLevel)
-                        .a(" [")
-                        .a(loggerName)
-                        .a(".")
-                        .a(methodName)
-                        .a("]: ")
-                        .a(message)
-                        .reset());
+                System.err.printf("%s%s %s [%s.%s]: %s%s%n",
+                        errorLevel.color,
+                        ZonedDateTime.now().format(TIME_FORMATTER),
+                        errorLevel,
+                        loggerName,
+                        methodName,
+                        message,
+                        ansi().reset());
             }
         }
 
         if (errorLevel == ErrorLevel.FATAL) {
+            // Synchronization, because we don't want to exit in the middle of logging maybe important message
             synchronized (System.err) {
                 System.exit(1);
             }
         }
     }
 
-    void info(Object message) {
-        log(ErrorLevel.INFO, message);
+    void info(String format, Object... args) {
+        log(ErrorLevel.INFO, format, args);
     }
 
-    void warn(Object message) {
-        log(ErrorLevel.WARN, message);
+    void warn(String format, Object... args) {
+        log(ErrorLevel.WARN, format, args);
     }
 
-    void error(Object message) {
-        log(ErrorLevel.ERROR, message);
+    void error(String format, Object... args) {
+        log(ErrorLevel.ERROR, format, args);
     }
 
-    void fatal(Object message) {
-        log(ErrorLevel.FATAL, message);
+    void fatal(String format, Object... args) {
+        log(ErrorLevel.FATAL, format, args);
     }
 }

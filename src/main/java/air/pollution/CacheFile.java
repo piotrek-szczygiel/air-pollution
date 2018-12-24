@@ -32,7 +32,7 @@ class CacheFile {
              GZIPInputStream gzipInputStream = new GZIPInputStream(fileInputStream);
              Reader reader = new InputStreamReader(gzipInputStream, StandardCharsets.UTF_8)) {
 
-            logger.debug("loading cache from " + Format.file(file.getPath()) + "~ compressed archive...");
+            logger.debug("loading cache from compressed archive %s...", Format.file(file.getPath()));
 
             Gson gson = new GsonBuilder().create();
 
@@ -40,18 +40,18 @@ class CacheFile {
             cache = gson.fromJson(reader, Cache.class);
             stopwatch.stop();
         } catch (Exception e) {
-            logger.warn("error while loading cache: " + e);
+            logger.warn("error while loading cache: %s", e);
             return null;
         }
 
-        logger.info("loaded cache from " + Format.file(file.getPath()) + "~ in " + Format.size(stopwatch));
+        logger.info("loaded cache from %s in %s", Format.file(file.getPath()), Format.size(stopwatch));
 
         LocalDateTime currentDate = LocalDateTime.now();
         LocalDateTime lastUpdatedDate = cache.getCacheDate();
 
         long minutesDifference = ChronoUnit.MINUTES.between(lastUpdatedDate, currentDate);
-        logger.debug("loaded cache was last updated at " + Format.timestampDate(lastUpdatedDate)
-                + "~ (" + Format.size(minutesDifference) + "~ minutes ago)");
+        logger.debug("loaded cache was last updated at %s (%s minutes ago)",
+                Format.timestampDate(lastUpdatedDate), Format.size(minutesDifference));
 
         // Check if last update was done earlier than an hour ago
         // Check also if it wasn't done at the previous hour (17:58 last, 18:03 current => UPDATE)
@@ -71,7 +71,7 @@ class CacheFile {
              GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
              Writer writer = new OutputStreamWriter(gzipOutputStream, StandardCharsets.UTF_8)) {
 
-            logger.debug("saving cache to " + Format.file(file.getPath()) + "~ compressed archive...");
+            logger.debug("saving cache to compressed archive %s...", Format.file(file.getPath()));
 
             Gson gson = new GsonBuilder().create();
 
@@ -79,10 +79,10 @@ class CacheFile {
             gson.toJson(cache, writer);
             stopwatch.stop();
         } catch (Exception e) {
-            logger.warn("error while saving cache: " + e);
+            logger.warn("error while saving cache: %s", e);
             return;
         }
 
-        logger.info("saved cache to " + Format.file(file.getPath()) + "~ in " + Format.size(stopwatch));
+        logger.info("saved cache to %s in %s", Format.file(file.getPath()), Format.size(stopwatch));
     }
 }

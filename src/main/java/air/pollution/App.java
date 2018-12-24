@@ -56,6 +56,9 @@ public class App implements Runnable {
     @Option(names = {"--fluctuation", "-F"}, description = "Show highest fluctuating parameter for provided stations.")
     private boolean optionFluctuation;
 
+    @Option(names = {"--find-min-max-parameter"}, description = "Find parameter with lowest and highest value.")
+    private boolean optionFindMinMaxParameter;
+
     @Option(names = {"--date", "-D"}, paramLabel = "DATE", description = "Provides specific date for commands.")
     private LocalDateTime optionDate;
 
@@ -283,6 +286,11 @@ public class App implements Runnable {
         // --fluctuation
         if (optionFluctuation) {
             new CommandHighestFluctuation(cache, stations, parameters, optionDate, since, until).run();
+        }
+
+        // --find-min-max-parameter
+        if (optionFindMinMaxParameter) {
+            new CommandFindMinMaxParameter(cache, stations, optionDate, since, until).run();
         }
     }
 }

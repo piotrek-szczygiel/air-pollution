@@ -1,10 +1,7 @@
 package air.pollution;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static air.pollution.Format.format;
 import static java.util.Collections.reverseOrder;
@@ -81,6 +78,9 @@ class CommandWorstStations implements Runnable {
             System.out.printf("%nTop %s most polluted station%s for %s parameter%n",
                     format(show), (show > 1 ? "s" : ""), format(parameter));
 
+            List<String> printLines = new ArrayList<>();
+
+            // Print results to temporary print storage
             for (Map.Entry<Station, SensorMeasurement> entry : sorted.entrySet()) {
                 if (counter >= show) {
                     break;
@@ -89,10 +89,17 @@ class CommandWorstStations implements Runnable {
                 Station station = entry.getKey();
                 SensorMeasurement measurement = entry.getValue();
 
-                System.out.printf("%s %s: %s%n", format(measurement.getValue(), measurement.getParameter(), true),
-                        format(measurement.getDate()), format(station));
+                printLines.add(String.format("%s %s: %s%n", format(measurement.getValue(),
+                        measurement.getParameter(), true), format(measurement.getDate()), format(station)));
 
                 counter++;
+            }
+
+            // Now reverse this storage to show results in ascending order
+            Collections.reverse(printLines);
+
+            for (String line : printLines) {
+                System.out.print(line);
             }
         }
     }

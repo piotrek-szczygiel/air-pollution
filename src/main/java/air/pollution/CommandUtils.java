@@ -70,7 +70,12 @@ class CommandUtils {
         for (Station station : stations) {
 
             List<SensorMeasurement> measurements =
-                    CommandUtils.getMeasurementsInRange(cache, station, parameter, since, until);
+                    CommandUtils.getMeasurementsInRange(
+                            cache,
+                            station,
+                            parameter,
+                            since,
+                            until);
 
             if (measurements == null) {
                 continue;
@@ -144,7 +149,12 @@ class CommandUtils {
         for (Station station : stations) {
 
             List<SensorMeasurement> measurements =
-                    CommandUtils.getMeasurementsInRange(cache, station, parameter, since, until);
+                    CommandUtils.getMeasurementsInRange(
+                            cache,
+                            station,
+                            parameter,
+                            since,
+                            until);
 
             if (measurements == null) {
                 continue;
@@ -174,7 +184,12 @@ class CommandUtils {
         for (Station station : stations) {
 
             List<SensorMeasurement> measurements =
-                    CommandUtils.getMeasurementsInRange(cache, station, parameter, since, until);
+                    CommandUtils.getMeasurementsInRange(
+                            cache,
+                            station,
+                            parameter,
+                            since,
+                            until);
 
             if (measurements == null) {
                 continue;
@@ -202,13 +217,5 @@ class CommandUtils {
         }
 
         return Math.min(top, size);
-    }
-
-    static class MinMaxMeasurement {
-        Station minStation = null;
-        SensorMeasurement minMeasurement = null;
-
-        Station maxStation = null;
-        SensorMeasurement maxMeasurement = null;
     }
 }

@@ -42,7 +42,7 @@ class CacheFile {
             cache = gson.fromJson(reader, Cache.class);
             stopwatch.stop();
         } catch (Exception e) {
-            logger.warn("error while loading cache: %s", e);
+            logger.warn("error while loading cache: %s", e.toString());
             return null;
         }
 
@@ -84,7 +84,7 @@ class CacheFile {
             gson.toJson(cache, writer);
             stopwatch.stop();
         } catch (Exception e) {
-            logger.warn("error while saving cache: %s", e);
+            logger.warn("error while saving cache: %s", e.toString());
             return;
         }
 

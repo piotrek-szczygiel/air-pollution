@@ -1,54 +1,36 @@
 package air.pollution;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
 import static air.pollution.Format.format;
 
-class CommandFindMinMaxValue implements Runnable {
-    private Cache cache;
-    private List<Station> stations;
-    private List<Parameter> parameters;
-
-    private LocalDateTime date;
-    private LocalDateTime since;
-    private LocalDateTime until;
-
+class CommandFindMinMaxValue implements Command {
     private Logger logger = Logger.getLogger(this);
-
-    CommandFindMinMaxValue(Cache cache, List<Station> stations, List<Parameter> parameters,
-                           LocalDateTime date, LocalDateTime since, LocalDateTime until) {
-        this.cache = cache;
-        this.stations = stations;
-        this.parameters = parameters;
-
-        this.date = date;
-        this.since = since;
-        this.until = until;
-    }
 
     @Override
     @SuppressWarnings("Duplicates")
-    public void run() {
+    public void execute(Cache cache, Options options) {
+
         logger.info("looking for lowest and highest value for %s parameters in %s stations...",
-                format(parameters.size()), format(stations.size()));
+                format(options.parameters.size()),
+                format(options.stations.size()));
 
-        if (date != null) {
-            since = date;
-            until = date;
-        }
-
-        for (Parameter parameter : parameters) {
+        for (Parameter parameter : options.parameters) {
             Station minStation = null;
             SensorMeasurement minMeasurement = null;
 
             Station maxStation = null;
             SensorMeasurement maxMeasurement = null;
 
-            for (Station station : stations) {
+            for (Station station : options.stations) {
                 List<SensorMeasurement> measurements =
-                        CommandUtils.getMeasurementsInRange(cache, station, parameter, since, until);
+                        CommandUtils.getMeasurementsInRange(
+                                cache,
+                                station,
+                                parameter,
+                                options.since,
+                                options.until);
 
                 if (measurements == null || measurements.size() < 1) {
                     continue;
@@ -68,19 +50,31 @@ class CommandFindMinMaxValue implements Runnable {
                 }
             }
 
+            boolean printed = false;
+
             if (minMeasurement != null) {
                 System.out.printf("%nLowest measurement for %s parameter is %s in %s at %s",
-                        format(parameter), format(minMeasurement.getValue(), minMeasurement.getParameter(), false),
-                        format(minStation), format(minMeasurement.getDate()));
+                        format(parameter),
+                        format(minMeasurement.getValue(), minMeasurement.getParameter(), false),
+                        format(minStation),
+                        format(minMeasurement.getDate()));
+
+                printed = true;
             }
 
             if (maxMeasurement != null) {
                 System.out.printf("%nHighest measurement for %s parameter is %s in %s at %s",
-                        format(parameter), format(maxMeasurement.getValue(), maxMeasurement.getParameter(), false),
-                        format(maxStation), format(maxMeasurement.getDate()));
+                        format(parameter),
+                        format(maxMeasurement.getValue(), maxMeasurement.getParameter(), false),
+                        format(maxStation),
+                        format(maxMeasurement.getDate()));
+
+                printed = true;
             }
 
-            System.out.printf("%n");
+            if (printed) {
+                System.out.printf("%n");
+            }
         }
     }
 }

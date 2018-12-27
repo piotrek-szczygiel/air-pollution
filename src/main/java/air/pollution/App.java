@@ -2,7 +2,6 @@ package air.pollution;
 
 import org.fusesource.jansi.AnsiConsole;
 import picocli.CommandLine;
-import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import java.io.File;
@@ -17,7 +16,7 @@ import java.util.List;
 
 import static air.pollution.Format.format;
 
-@Command(
+@CommandLine.Command(
         name = "air-pollution",
         mixinStandardHelpOptions = true,
         sortOptions = false,
@@ -70,15 +69,26 @@ public class App implements Runnable {
     private LocalDateTime optionDate;
 
     @Option(names = {"--since", "-S"}, paramLabel = "DATE_SINCE", description = "Provides specific beginning date "
-            + "for commands. If this argument is not provided, assume it as the lowest possible.")
+            + "for commands in format 'dd, h:MM'. If this argument is not provided, assume it as the lowest possible.")
     private LocalDateTime optionSince;
 
     @Option(names = {"--until", "-U"}, paramLabel = "DATE_UNTIL", description = "Provides specific ending date "
-            + "for commands. If this argument is not provided, assume it as the highest possible.")
+            + "for commands in format 'dd, h:MM'. If this argument is not provided, assume it as the highest possible.")
     private LocalDateTime optionUntil;
 
     @Option(names = {"--top", "-t"}, paramLabel = "TOP", description = "Display only the first N values.")
     private int optionTop = 0;
+
+    @Option(names = {"--graph", "-g"}, description = "Show graph of pollution for specified hours.")
+    private boolean optionGraph;
+
+    @Option(names = {"--hour-since", "-i"}, paramLabel = "HOUR_SINCE", description = "Provides beginning hour "
+            + "for graph command.")
+    private int optionHourSince;
+
+    @Option(names = {"--hour-until", "-I"}, paramLabel = "HOUR_UNTIL", description = "Provides ending hour "
+            + "for graph command.")
+    private int optionHourUntil;
 
     @Option(names = {"--threads", "-T"}, description = "Number of threads used while fetching data. "
             + "If this argument is not provided, use one thread for every station.")
@@ -97,6 +107,8 @@ public class App implements Runnable {
     private boolean[] optionVerbosity = new boolean[0];
 
     public static void main(String[] args) {
+        AnsiConsole.systemInstall();
+
         // Create new instance of this application
         App app = new App();
 
@@ -120,8 +132,6 @@ public class App implements Runnable {
             CommandLine.usage(app, System.out);
             return;
         }
-
-        AnsiConsole.systemInstall();
 
         // Parse application arguments
         commandLine.parse(args);
@@ -171,6 +181,7 @@ public class App implements Runnable {
 
         logger.debug("initialization complete");
 
+
         Cache cache = null;
         CacheFile cacheFile = new CacheFile(optionCacheFile);
 
@@ -181,8 +192,6 @@ public class App implements Runnable {
             if (cache == null) {
                 optionRefreshCache = true;
             } else {
-                // Even if we won't download anything from internet when we have up-to-date cache
-                // Some methods might rely on apiObjectCollector being not-null
                 cache.setApiObjectCollector(apiObjectCollector);
             }
         }
@@ -200,11 +209,6 @@ public class App implements Runnable {
             cacheFile.save(cache);
         }
 
-        // --list
-        if (optionListStations) {
-            new CommandListAllStations(cache).run();
-            return;
-        }
 
         List<Station> stations = new ArrayList<>();
 
@@ -251,6 +255,7 @@ public class App implements Runnable {
             }
         }
 
+
         List<Parameter> parameters;
 
         // If there are none parameters provided, assume usage of all
@@ -261,56 +266,57 @@ public class App implements Runnable {
             parameters = optionParameters;
         }
 
+
         LocalDateTime since, until;
 
-        // If there are none date range provided, assume maximum possible range
-        if (optionSince == null) {
-            logger.debug("no since option provided, assuming minimum date");
-            since = CommandUtils.getLowestDate(cache);
+        if (optionDate != null) {
+            since = optionDate;
+            until = optionDate;
         } else {
-            since = optionSince;
+            logger.debug("specific date not specified, considering date ranges...");
+
+            // If there are none date range provided, assume maximum possible range
+            if (optionSince == null) {
+                logger.debug("no since option provided, assuming minimum date");
+                since = CommandUtils.getLowestDate(cache);
+            } else {
+                since = optionSince;
+            }
+
+            if (optionUntil == null) {
+                logger.debug("no until option provided, assuming maximum date");
+                until = CommandUtils.getHighestDate(cache);
+            } else {
+                until = optionUntil;
+            }
         }
 
-        if (optionUntil == null) {
-            logger.debug("no until option provided, assuming maximum date");
-            until = CommandUtils.getHighestDate(cache);
-        } else {
-            until = optionUntil;
-        }
+        // Prepare command line options
+        Options options =
+                new Options(
+                        stations,
+                        parameters,
+                        since,
+                        until,
+                        optionTop,
+                        optionHourSince,
+                        optionHourUntil
+                );
 
-        // --air-index
-        if (optionAirIndex) {
-            new CommandAirIndex(cache, stations).run();
-        }
+        // Prepare execution strategy
+        OptionStrategy strategy =
+                new OptionStrategy(
+                        optionListStations,
+                        optionAirIndex,
+                        optionMeasurement,
+                        optionAverage,
+                        optionFluctuation,
+                        optionFindMinMaxParameter,
+                        optionFindMinMaxValue,
+                        optionWorstStations,
+                        optionGraph
+                );
 
-        // --measurement
-        if (optionMeasurement) {
-            new CommandMeasurement(cache, stations, parameters, optionDate, since, until, optionTop).run();
-        }
-
-        // --average
-        if (optionAverage) {
-            new CommandAveragePollution(cache, stations, parameters, optionDate, since, until).run();
-        }
-
-        // --fluctuation
-        if (optionFluctuation) {
-            new CommandHighestFluctuation(cache, stations, parameters, optionDate, since, until).run();
-        }
-
-        // --find-min-max-parameter
-        if (optionFindMinMaxParameter) {
-            new CommandFindMinMaxParameter(cache, stations, optionDate, since, until).run();
-        }
-
-        // --find-min-max-value
-        if (optionFindMinMaxValue) {
-            new CommandFindMinMaxValue(cache, stations, parameters, optionDate, since, until).run();
-        }
-
-        // --worst-stations
-        if (optionWorstStations) {
-            new CommandWorstStations(cache, stations, parameters, optionDate, since, until, optionTop).run();
-        }
+        strategy.execute(cache, options);
     }
 }

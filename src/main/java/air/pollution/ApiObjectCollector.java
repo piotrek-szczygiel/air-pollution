@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 import static air.pollution.Format.format;
 
 class ApiObjectCollector {
+    // How many times do we retry API request before giving up
+    private static final int RETRY_COUNT = 5;
+
     private AirPollutionService airPollutionService;
     private JsonObjectFactory jsonObjectFactory;
 
@@ -17,10 +20,14 @@ class ApiObjectCollector {
     }
 
     List<Station> getAllStations() {
-        List<JsonStation> jsonStations = airPollutionService.getAllStations();
+        List<JsonStation> jsonStations = null;
 
-        if (jsonStations == null) {
-            logger.fatal("unable to fetch stations");
+        for (int i = 0; jsonStations == null && i < RETRY_COUNT; i++) {
+            jsonStations = airPollutionService.fetchAllStations();
+        }
+
+        if (jsonStations == null || jsonStations.size() < 1) {
+            logger.fatal("unable to fetch any station");
             return null;
         }
 
@@ -29,25 +36,19 @@ class ApiObjectCollector {
                 .map(jsonObjectFactory::fromJson)
                 .collect(Collectors.toList());
 
-        if (stations.size() < 1) {
-            logger.fatal("no stations fetched");
-            return null;
-        }
-
         logger.debug("%s stations fetched", format(stations.size()));
 
         return stations;
     }
 
     List<Sensor> getAllSensors(int stationId) {
-        List<JsonSensor> jsonSensors = airPollutionService.getAllSensors(stationId);
+        List<JsonSensor> jsonSensors = null;
 
-        if (jsonSensors == null) {
-            logger.fatal("unable to fetch sensors for station with id %s", format(stationId));
-            return null;
+        for (int i = 0; jsonSensors == null && i < RETRY_COUNT; i++) {
+            jsonSensors = airPollutionService.fetchAllSensors(stationId);
         }
 
-        if (jsonSensors.size() < 1) {
+        if (jsonSensors == null || jsonSensors.size() < 1) {
             logger.fatal("unable to fetch sensors for station with id %s", format(stationId));
             return null;
         }
@@ -59,7 +60,11 @@ class ApiObjectCollector {
     }
 
     List<SensorMeasurement> getSensorMeasurements(int sensorId) {
-        JsonSensorMeasurements jsonSensorMeasurements = airPollutionService.getSensorMeasurements(sensorId);
+        JsonSensorMeasurements jsonSensorMeasurements = null;
+
+        for (int i = 0; jsonSensorMeasurements == null && i < RETRY_COUNT; i++) {
+            jsonSensorMeasurements = airPollutionService.fetchSensorMeasurements(sensorId);
+        }
 
         if (jsonSensorMeasurements == null) {
             logger.fatal("unable to fetch sensor measurements for sensor with id %s", format(sensorId));
@@ -74,7 +79,11 @@ class ApiObjectCollector {
     }
 
     AirIndex getAirIndex(int stationId) {
-        JsonAirIndex jsonAirIndex = airPollutionService.getAirIndex(stationId);
+        JsonAirIndex jsonAirIndex = null;
+
+        for (int i = 0; jsonAirIndex == null && i < RETRY_COUNT; i++) {
+            jsonAirIndex = airPollutionService.fetchAirIndex(stationId);
+        }
 
         if (jsonAirIndex == null) {
             logger.fatal("unable to fetch air index for station with id %s", format(stationId));

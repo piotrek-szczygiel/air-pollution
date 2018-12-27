@@ -1,6 +1,5 @@
 package air.pollution;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static air.pollution.Format.format;
@@ -8,48 +7,27 @@ import static java.util.Collections.reverseOrder;
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toMap;
 
-class CommandWorstStations implements Runnable {
-    private Cache cache;
-    private List<Station> stations;
-    private List<Parameter> parameters;
-    private int top;
-
-    private LocalDateTime date;
-    private LocalDateTime since;
-    private LocalDateTime until;
-
+class CommandWorstStations implements Command {
     private Logger logger = Logger.getLogger(this);
 
-    CommandWorstStations(Cache cache, List<Station> stations, List<Parameter> parameters,
-                         LocalDateTime date, LocalDateTime since, LocalDateTime until, int top) {
-        this.cache = cache;
-        this.stations = stations;
-        this.parameters = parameters;
-
-        this.date = date;
-        this.since = since;
-        this.until = until;
-
-        this.top = top;
-    }
-
     @Override
-    public void run() {
+    public void execute(Cache cache, Options options) {
+
         logger.info("showing most polluted stations for %s stations and %s parameters",
-                format(stations.size()), format(parameters.size()));
+                format(options.stations.size()), format(options.parameters.size()));
 
-        if (date != null) {
-            since = date;
-            until = date;
-        }
-
-        for (Parameter parameter : parameters) {
+        for (Parameter parameter : options.parameters) {
             Map<Station, SensorMeasurement> highestPollution = new HashMap<>();
 
-            for (Station station : stations) {
+            for (Station station : options.stations) {
 
                 List<SensorMeasurement> measurements =
-                        CommandUtils.getMeasurementsInRange(cache, station, parameter, since, until);
+                        CommandUtils.getMeasurementsInRange(
+                                cache,
+                                station,
+                                parameter,
+                                options.since,
+                                options.until);
 
                 if (measurements == null) {
                     continue;
@@ -66,17 +44,28 @@ class CommandWorstStations implements Runnable {
                 }
             }
 
+            if (highestPollution.size() < 1) {
+                continue;
+            }
+
             Map<Station, SensorMeasurement> sorted = highestPollution
                     .entrySet()
                     .stream()
                     .sorted(reverseOrder(comparingByValue()))
-                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+                    .collect(
+                            toMap(
+                                    Map.Entry::getKey,
+                                    Map.Entry::getValue,
+                                    (e1, e2) -> e2,
+                                    LinkedHashMap::new));
 
             int counter = 0;
-            int show = CommandUtils.howManyToShow(top, sorted.size());
+            int show = CommandUtils.howManyToShow(options.top, sorted.size());
 
             System.out.printf("%nTop %s most polluted station%s for %s parameter%n",
-                    format(show), (show > 1 ? "s" : ""), format(parameter));
+                    format(show),
+                    (show > 1 ? "s" : ""),
+                    format(parameter));
 
             List<String> printLines = new ArrayList<>();
 
@@ -89,8 +78,10 @@ class CommandWorstStations implements Runnable {
                 Station station = entry.getKey();
                 SensorMeasurement measurement = entry.getValue();
 
-                printLines.add(String.format("%s %s: %s%n", format(measurement.getValue(),
-                        measurement.getParameter(), true), format(measurement.getDate()), format(station)));
+                printLines.add(String.format("%s %s: %s%n",
+                        format(measurement.getValue(), measurement.getParameter(), true),
+                        format(measurement.getDate()),
+                        format(station)));
 
                 counter++;
             }

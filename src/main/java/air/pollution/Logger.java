@@ -18,9 +18,9 @@ class Logger {
     private Logger(Object loggerObject) {
         loggerName = loggerObject.getClass().getSimpleName();
 
-        // Disable logging for fetching classes because of useless spam
+        // Disable verbose logging for fetching classes because of useless spam
         if (loggerName.equals("Cache") || loggerName.equals("ApiObjectCollector")) {
-            localErrorLevel = ErrorLevel.DISABLE;
+            localErrorLevel = ErrorLevel.ERROR;
         }
 
         LOGGERS.putIfAbsent(loggerObject, this);

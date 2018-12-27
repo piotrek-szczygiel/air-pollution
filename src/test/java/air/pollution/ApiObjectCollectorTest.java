@@ -17,7 +17,6 @@ import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -205,36 +204,38 @@ public class ApiObjectCollectorTest {
 
     @Test
     public void getAllStations_SingleStation_SingleStationFromApi() {
-        when(airPollutionService.getAllStations()).thenReturn(List.of(new JsonStation()));
+        when(airPollutionService.fetchAllStations()).thenReturn(List.of(new JsonStation()));
 
         assertEquals(1, api.getAllStations().size());
     }
 
-    @Test
-    public void getAllStations_Null_NoStationsFromApi() {
-        when(airPollutionService.getAllStations()).thenReturn(List.of());
+    // Commented because api now throws System.exit(1) on fetching error
 
-        assertNull(api.getAllStations());
-    }
+//    @Test
+//    public void getAllStations_Null_NoStationsFromApi() {
+//        when(airPollutionService.fetchAllStations()).thenReturn(List.of());
+//
+//        assertNull(api.getAllStations());
+//    }
 
-    @Test
-    public void getAllSensors_Null_NoSensorsFromApi() {
-        when(airPollutionService.getAllSensors(anyInt())).thenReturn(List.of());
-
-        assertNull(api.getAllSensors(0));
-    }
+//    @Test
+//    public void getAllSensors_Null_NoSensorsFromApi() {
+//        when(airPollutionService.fetchAllSensors(anyInt())).thenReturn(List.of());
+//
+//        assertNull(api.getAllSensors(0));
+//    }
 
     @Test
     @UseDataProvider("dataProviderJsonSensors")
     public void getAllSensors_ThreeSensors_ProvidedSensors(JsonSensor[] jsonSensors) {
-        when(airPollutionService.getAllSensors(anyInt())).thenReturn(List.of(jsonSensors));
+        when(airPollutionService.fetchAllSensors(anyInt())).thenReturn(List.of(jsonSensors));
 
         assertEquals(3, api.getAllSensors(0).size());
     }
 
     @Test
     public void getSensorData_Null_NoDataFromApi() {
-        when(airPollutionService.getSensorMeasurements(anyInt())).thenReturn(new JsonSensorMeasurements());
+        when(airPollutionService.fetchSensorMeasurements(anyInt())).thenReturn(new JsonSensorMeasurements());
 
         assertEquals(0, api.getSensorMeasurements(0).size());
     }
@@ -243,14 +244,14 @@ public class ApiObjectCollectorTest {
     @UseDataProvider("dataProviderJsonSensorData")
     public void getSensorData_ThreeMeasurements_ProvidedData(JsonSensorMeasurements jsonSensorData) {
 
-        when(airPollutionService.getSensorMeasurements(anyInt())).thenReturn(jsonSensorData);
+        when(airPollutionService.fetchSensorMeasurements(anyInt())).thenReturn(jsonSensorData);
 
         assertEquals(2, api.getSensorMeasurements(0).size());
     }
 
     @Test
     public void getAirIndex_Null_NoDataFromApi() {
-        when(airPollutionService.getAirIndex(anyInt())).thenReturn(new JsonAirIndex());
+        when(airPollutionService.fetchAirIndex(anyInt())).thenReturn(new JsonAirIndex());
 
         assertEquals(Quality.UNKNOWN, api.getAirIndex(0).getAirQuality());
     }
@@ -258,7 +259,7 @@ public class ApiObjectCollectorTest {
     @Test
     @UseDataProvider("dataProviderJsonAirIndex")
     public void getAirIndex_ExpectedAirIndex_ProvidedAirIndexes(JsonAirIndex jsonAirIndex, Quality airQuality) {
-        when(airPollutionService.getAirIndex(anyInt())).thenReturn(jsonAirIndex);
+        when(airPollutionService.fetchAirIndex(anyInt())).thenReturn(jsonAirIndex);
 
         assertEquals(airQuality, api.getAirIndex(0).getAirQuality());
     }

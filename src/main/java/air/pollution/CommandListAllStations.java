@@ -4,17 +4,12 @@ import java.util.List;
 
 import static air.pollution.Format.format;
 
-class CommandListAllStations implements Runnable {
-    private Cache cache;
-
+class CommandListAllStations implements Command {
     private Logger logger = Logger.getLogger(this);
 
-    CommandListAllStations(Cache cache) {
-        this.cache = cache;
-    }
-
     @Override
-    public void run() {
+    public void execute(Cache cache, Options options) {
+
         logger.info("collecting stations...");
 
         List<Station> stations = cache.getAllStations();

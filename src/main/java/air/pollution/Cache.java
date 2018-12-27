@@ -16,6 +16,9 @@ import static air.pollution.Format.format;
 import static org.fusesource.jansi.Ansi.ansi;
 
 class Cache {
+    // Timeout in minutes for cacheStations
+    private final static int CACHE_STATIONS_TIMEOUT = 5;
+
     private LocalDateTime cacheDate;
 
     private Map<String, Station> stationCache = new ConcurrentHashMap<>();
@@ -46,11 +49,10 @@ class Cache {
 
         ExecutorService executorService = Executors.newFixedThreadPool(processors);
 
-        // fetching timeout in minutes
-        final int timeout = 2;
-
         logger.info("fetching data from api using %s thread%s with timeout of %s minutes...",
-                format(processors), ((processors > 1) ? "s" : ""), format(timeout));
+                format(processors),
+                ((processors > 1) ? "s" : ""),
+                format(CACHE_STATIONS_TIMEOUT));
 
         // Spinner animation
         AtomicInteger spinnerIndex = new AtomicInteger(0);
@@ -67,7 +69,7 @@ class Cache {
                         // Get spinner animation current character
                         char spinner = Utils.getSpinner(spinnerIndex.incrementAndGet() / ((processors / 10) + 1));
 
-                        System.err.printf("\r%s fetching %s%s", format(spinner),
+                        System.err.printf("%s fetching %s%s\r", format(spinner),
                                 format(station), ansi().eraseLine().toString());
                     }
                 }
@@ -87,9 +89,9 @@ class Cache {
         executorService.shutdown();
 
         try {
-            executorService.awaitTermination(timeout, TimeUnit.MINUTES);
+            executorService.awaitTermination(CACHE_STATIONS_TIMEOUT, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
-            logger.fatal("executing tasks interrupted: %s", e);
+            logger.fatal("executing tasks interrupted: %s", e.toString());
         }
 
         stopwatch.stop();

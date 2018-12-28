@@ -31,7 +31,7 @@ class OptionStrategy {
         this.graph = graph;
     }
 
-    void execute(Cache cache, Options options) {
+    void invoke(Cache cache, Options options) {
         List<Command> commands = new LinkedList<>();
 
         // --list

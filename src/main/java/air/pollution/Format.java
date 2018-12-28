@@ -66,9 +66,22 @@ class Format {
     }
 
     static String format(float value, Parameter parameter, boolean rightAlign) {
-        Ansi color = ansi().fgDefault();
-
         String unit = " \u00b5g/m3";
+
+
+        if (value >= 1000.f) {
+            value /= 1000.f;
+            unit = " mg/m3";
+        }
+
+        return getMeasurementColor(value, parameter)
+                + String.format(rightAlign ? "%6s" : "%s", String.format("%.2f", value))
+                + unit
+                + ansi().reset();
+    }
+
+    static String getMeasurementColor(float value, Parameter parameter) {
+        Ansi color = ansi().fgDefault();
 
         int[] thresholds = null;
 
@@ -111,13 +124,7 @@ class Format {
             }
         }
 
-        if (value >= 1000.f) {
-            value /= 1000.f;
-            unit = " mg/m3";
-        }
-
-        return color.toString() + String.format(rightAlign ? "%6s" : "%s", String.format("%.2f", value))
-                + unit + ansi().reset().toString();
+        return color.toString();
     }
 
     static String format(LocalDateTime date) {

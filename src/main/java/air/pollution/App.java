@@ -76,19 +76,20 @@ public class App implements Runnable {
             + "for commands in format 'dd, h:MM'. If this argument is not provided, assume it as the highest possible.")
     private LocalDateTime optionUntil;
 
-    @Option(names = {"--top", "-t"}, paramLabel = "TOP", description = "Display only the first N values.")
-    private int optionTop = 0;
+    @Option(names = {"--top", "-t"}, paramLabel = "TOP", description = "Display only the first N values. "
+            + "If this argument is not provided, display first 5 values.")
+    private int optionTop = 5;
 
     @Option(names = {"--graph", "-g"}, description = "Show graph of pollution for specified hours.")
     private boolean optionGraph;
 
     @Option(names = {"--hour-since", "-i"}, paramLabel = "HOUR_SINCE", description = "Provides beginning hour "
             + "for graph command.")
-    private int optionHourSince;
+    private int optionHourSince = 0;
 
     @Option(names = {"--hour-until", "-I"}, paramLabel = "HOUR_UNTIL", description = "Provides ending hour "
             + "for graph command.")
-    private int optionHourUntil;
+    private int optionHourUntil = 23;
 
     @Option(names = {"--threads", "-T"}, description = "Number of threads used while fetching data. "
             + "If this argument is not provided, use one thread for every station.")
@@ -119,7 +120,7 @@ public class App implements Runnable {
         commandLine.registerConverter(LocalDateTime.class,
                 d -> {
                     DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
-                            .appendPattern("dd, H:mm")
+                            .appendPattern("d, H:mm")
                             .parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear())
                             .parseDefaulting(ChronoField.MONTH_OF_YEAR, LocalDate.now().getMonthValue())
                             .toFormatter();
@@ -317,6 +318,6 @@ public class App implements Runnable {
                         optionGraph
                 );
 
-        strategy.execute(cache, options);
+        strategy.invoke(cache, options);
     }
 }

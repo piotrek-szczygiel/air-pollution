@@ -86,8 +86,8 @@ class CommandWorstStations implements Command {
                 counter++;
             }
 
-            // Now reverse this storage to show results in ascending order
-            Collections.reverse(printLines);
+//             Now reverse this storage to show results in ascending order
+//            Collections.reverse(printLines);
 
             for (String line : printLines) {
                 System.out.print(line);

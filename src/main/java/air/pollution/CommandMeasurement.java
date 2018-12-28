@@ -26,7 +26,7 @@ class CommandMeasurement implements Command {
                                 options.since,
                                 options.until);
 
-                if (measurements == null) {
+                if (measurements == null || measurements.size() < 1) {
                     continue;
                 }
 

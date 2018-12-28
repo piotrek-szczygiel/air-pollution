@@ -9,6 +9,16 @@ import static air.pollution.Format.format;
 class CommandUtils {
     static private Logger logger = Logger.getLogger(CommandUtils.class);
 
+    static String repeatString(String string, int count) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < count; i++) {
+            stringBuilder.append(string);
+        }
+
+        return stringBuilder.toString();
+    }
+
     static LocalDateTime getLowestDate(Cache cache) {
         logger.debug("searching for lowest date in measurements...");
 

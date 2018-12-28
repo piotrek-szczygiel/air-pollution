@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 import static air.pollution.CommandUtils.repeatString;
 import static air.pollution.Format.format;
+import static air.pollution.Format.getMeasurementColor;
 import static org.fusesource.jansi.Ansi.ansi;
 
 class CommandGraph implements Command {
@@ -116,9 +117,11 @@ class CommandGraph implements Command {
                                 parameter));
                     }
 
-                    System.out.printf("%s %.2f%s%n",
-                            ansi().fgBrightBlack(),
+                    System.out.printf(" %s%.2f %s(%s)%s%n",
+                            getMeasurementColor(value, parameter),
                             value,
+                            ansi().fgBrightBlack(),
+                            measurementEntry.getKey().getName(),
                             ansi().reset());
 
                     i++;

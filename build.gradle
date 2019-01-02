@@ -15,6 +15,10 @@ repositories {
     jcenter()
 }
 
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
 dependencies {
     // JSON parsing, serialization
     implementation 'com.google.code.gson:gson:2.8.5'
@@ -35,6 +39,12 @@ dependencies {
     implementation 'org.jetbrains:annotations:16.0.3'
 
 
+}
+
+test {
+    systemProperty "file.encoding", "utf-8"
+    systemProperty "user.language", "en"
+    systemProperty "user.country", "US"
 }
 
 // Define the main class for the application

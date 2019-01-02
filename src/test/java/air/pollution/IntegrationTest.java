@@ -9,7 +9,11 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +22,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 public class IntegrationTest {
+    private final static String integrationTestResultPath =
+            "src/test/resources/integration_test_expected_result.txt";
+
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
@@ -96,92 +103,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void integrationTest() {
-        final String expectedResult = "" +
-                "example1\n" +
-                "\n" +
-                "\u001B[33mexample1 \u001B[34m1\u001B[m\n" +
-                "\u001B[36mOverall air quality: \u001B[92mGood\u001B[m\n" +
-                "----------------------------------\u001B[36m\n" +
-                "PM10:\t\u001B[32mExcellent\u001B[m\u001B[36m\n" +
-                "PM25:\t\u001B[92mGood\u001B[m\u001B[36m\n" +
-                "O3:\t\u001B[39m-\u001B[m\u001B[36m\n" +
-                "NO2:\t\u001B[39m-\u001B[m\u001B[36m\n" +
-                "SO2:\t\u001B[39m-\u001B[m\u001B[36m\n" +
-                "C6H6:\t\u001B[39m-\u001B[m\u001B[36m\n" +
-                "CO:\t\u001B[39m-\u001B[m\n" +
-                "\n" +
-                "Showing \u001B[94m2\u001B[m measurements of \u001B[35mPM10\u001B[m for \u001B[33mexample1 " +
-                "\u001B[34m1\u001B[m\n" +
-                "\u001B[32m 10,00 µg/m3\u001B[m\t\u001B[90m00:00,  01 stycznia\u001B[m\n" +
-                "\u001B[32m 12,00 µg/m3\u001B[m\t\u001B[90m01:00,  01 stycznia\u001B[m\n" +
-                "\n" +
-                "Showing \u001B[94m2\u001B[m measurements of \u001B[35mPM25\u001B[m for \u001B[33mexample1 " +
-                "\u001B[34m1\u001B[m\n" +
-                "\u001B[32m  5,00 µg/m3\u001B[m\t\u001B[90m00:00,  01 stycznia\u001B[m\n" +
-                "\u001B[32m  7,00 µg/m3\u001B[m\t\u001B[90m01:00,  01 stycznia\u001B[m\n" +
-                "\n" +
-                "Average pollution for \u001B[94m1\u001B[m station\n" +
-                "\u001B[35mPM10\u001B[m:\t\u001B[32m11,00 µg/m3\u001B[m\n" +
-                "\u001B[35mPM25\u001B[m:\t\u001B[32m6,00 µg/m3\u001B[m\n" +
-                "\u001B[35mO3\u001B[m:\t-\n" +
-                "\u001B[35mNO2\u001B[m:\t-\n" +
-                "\u001B[35mSO2\u001B[m:\t-\n" +
-                "\u001B[35mC6H6\u001B[m:\t-\n" +
-                "\u001B[35mCO\u001B[m:\t-\n" +
-                "\n" +
-                "Highest fluctuating parameter for \u001B[94m1\u001B[m station is \u001B[35mPM10\u001B[m with" +
-                " " +
-                "fluctuation ratio of \u001B[94m2,00\u001B[m.\n" +
-                "\u001B[35mPM10\u001B[m oscillated between \u001B[32m10,00 µg/m3\u001B[m and \u001B[32m12,00 " +
-                "µg/m3\u001B[m.\n" +
-                "\n" +
-                "Parameter with lowest value is \u001B[35mPM25\u001B[m measured in \u001B[33mexample1 " +
-                "\u001B[34m1\u001B[m: \u001B[32m5,00 µg/m3\u001B[m\n" +
-                "Parameter with highest value is \u001B[35mPM10\u001B[m measured in \u001B[33mexample1 " +
-                "\u001B[34m1\u001B[m: \u001B[32m12,00 µg/m3\u001B[m\n" +
-                "\n" +
-                "Lowest measurement for \u001B[35mPM10\u001B[m parameter is \u001B[32m10,00 µg/m3\u001B[m in " +
-                "\u001B[33mexample1 \u001B[34m1\u001B[m at \u001B[36m01 stycznia, 00:00:00\u001B[m\n" +
-                "Highest measurement for \u001B[35mPM10\u001B[m parameter is \u001B[32m12,00 µg/m3\u001B[m in" +
-                " " +
-                "\u001B[33mexample1 \u001B[34m1\u001B[m at \u001B[36m01 stycznia, 01:00:00\u001B[m\n" +
-                "\n" +
-                "Lowest measurement for \u001B[35mPM25\u001B[m parameter is \u001B[32m5,00 µg/m3\u001B[m in " +
-                "\u001B[33mexample1 \u001B[34m1\u001B[m at \u001B[36m01 stycznia, 00:00:00\u001B[m\n" +
-                "Highest measurement for \u001B[35mPM25\u001B[m parameter is \u001B[32m7,00 µg/m3\u001B[m in " +
-                "\u001B[33mexample1 \u001B[34m1\u001B[m at \u001B[36m01 stycznia, 01:00:00\u001B[m\n" +
-                "\n" +
-                "Top \u001B[94m1\u001B[m most polluted station for \u001B[35mPM10\u001B[m parameter\n" +
-                "\u001B[32m 12,00 µg/m3\u001B[m \u001B[36m01 stycznia, 01:00:00\u001B[m: \u001B[33mexample1 " +
-                "\u001B[34m1\u001B[m\n" +
-                "\n" +
-                "Top \u001B[94m1\u001B[m most polluted station for \u001B[35mPM25\u001B[m parameter\n" +
-                "\u001B[32m  7,00 µg/m3\u001B[m \u001B[36m01 stycznia, 01:00:00\u001B[m: \u001B[33mexample1 " +
-                "\u001B[34m1\u001B[m\n" +
-                "\n" +
-                "Graphing \u001B[35mPM10\u001B[m hourly pollution for \u001B[94m1\u001B[m station\n" +
-                "\n" +
-                "                                          6                                  12 [µg/m3]\n" +
-                "      ┌───────────────────────────────────┼───────────────────────────────────┤\n" +
-                "00:00 ┼ \u001B[32m██████████████████████████████████████████████████████████ \u001B[32m10,00" +
-                " " +
-                "\u001B[90m(example1)\u001B[m\n" +
-                "01:00 ┼ \u001B[32m██████████████████████████████████████████████████████████████████████ " +
-                "\u001B[32m12,00 \u001B[90m(example1)\u001B[m\n" +
-                "      ┴\n" +
-                "\n" +
-                "Graphing \u001B[35mPM25\u001B[m hourly pollution for \u001B[94m1\u001B[m station\n" +
-                "\n" +
-                "                                          3                                  7 [µg/m3]\n" +
-                "      ┌───────────────────────────────────┼───────────────────────────────────┤\n" +
-                "00:00 ┼ \u001B[32m██████████████████████████████████████████████████ \u001B[32m5,00 " +
-                "\u001B[90m" +
-                "(example1)\u001B[m\n" +
-                "01:00 ┼ \u001B[32m██████████████████████████████████████████████████████████████████████ " +
-                "\u001B[32m7,00 \u001B[90m(example1)\u001B[m\n" +
-                "      ┴\n";
-
+    public void integrationTest() throws IOException {
         Options options =
                 new Options(
                         cache.getAllStations(),
@@ -197,11 +119,17 @@ public class IntegrationTest {
                 new OptionStrategy(true, true, true, true, true, true, true, true, true);
 
         strategy.invoke(cache, options);
-        String actualResult = outContent.toString().replace("\r\n", "\n");
+
+        String actualResult = outContent.toString()
+                .replace("\r\n", "\n");
+
+        String expectedResult =
+                new String(Files.readAllBytes(Paths.get(integrationTestResultPath)),
+                        StandardCharsets.UTF_8);
 
         assertEquals(expectedResult, actualResult);
 
-//        try (PrintWriter out = new PrintWriter("integrationTestOutput.txt")) {
+//        try (PrintWriter out = new PrintWriter(integrationTestResultPath)) {
 //            out.print(actualResult);
 //        }
     }

@@ -1,0 +1,63 @@
+example1
+
+[33mexample1 [34m1[m
+[36mOverall air quality: [92mGood[m
+----------------------------------[36m
+PM10:	[32mExcellent[m[36m
+PM25:	[92mGood[m[36m
+O3:	[39m-[m[36m
+NO2:	[39m-[m[36m
+SO2:	[39m-[m[36m
+C6H6:	[39m-[m[36m
+CO:	[39m-[m
+
+Showing [94m2[m measurements of [35mPM10[m for [33mexample1 [34m1[m
+[32m 10.00 µg/m3[m	[90m00:00,  01 January[m
+[32m 12.00 µg/m3[m	[90m01:00,  01 January[m
+
+Showing [94m2[m measurements of [35mPM25[m for [33mexample1 [34m1[m
+[32m  5.00 µg/m3[m	[90m00:00,  01 January[m
+[32m  7.00 µg/m3[m	[90m01:00,  01 January[m
+
+Average pollution for [94m1[m station
+[35mPM10[m:	[32m11.00 µg/m3[m
+[35mPM25[m:	[32m6.00 µg/m3[m
+[35mO3[m:	-
+[35mNO2[m:	-
+[35mSO2[m:	-
+[35mC6H6[m:	-
+[35mCO[m:	-
+
+Highest fluctuating parameter for [94m1[m station is [35mPM10[m with fluctuation ratio of [94m2.00[m.
+[35mPM10[m oscillated between [32m10.00 µg/m3[m and [32m12.00 µg/m3[m.
+
+Parameter with lowest value is [35mPM25[m measured in [33mexample1 [34m1[m: [32m5.00 µg/m3[m
+Parameter with highest value is [35mPM10[m measured in [33mexample1 [34m1[m: [32m12.00 µg/m3[m
+
+Lowest measurement for [35mPM10[m parameter is [32m10.00 µg/m3[m in [33mexample1 [34m1[m at [36m01 January, 00:00:00[m
+Highest measurement for [35mPM10[m parameter is [32m12.00 µg/m3[m in [33mexample1 [34m1[m at [36m01 January, 01:00:00[m
+
+Lowest measurement for [35mPM25[m parameter is [32m5.00 µg/m3[m in [33mexample1 [34m1[m at [36m01 January, 00:00:00[m
+Highest measurement for [35mPM25[m parameter is [32m7.00 µg/m3[m in [33mexample1 [34m1[m at [36m01 January, 01:00:00[m
+
+Top [94m1[m most polluted station for [35mPM10[m parameter
+[32m 12.00 µg/m3[m [36m01 January, 01:00:00[m: [33mexample1 [34m1[m
+
+Top [94m1[m most polluted station for [35mPM25[m parameter
+[32m  7.00 µg/m3[m [36m01 January, 01:00:00[m: [33mexample1 [34m1[m
+
+Graphing [35mPM10[m hourly pollution for [94m1[m station
+
+                                          6                                  12 [µg/m3]
+      ┌───────────────────────────────────┼───────────────────────────────────┤
+00:00 ┼ [32m██████████████████████████████████████████████████████████ [32m10.00 [90m(example1)[m
+01:00 ┼ [32m██████████████████████████████████████████████████████████████████████ [32m12.00 [90m(example1)[m
+      ┴
+
+Graphing [35mPM25[m hourly pollution for [94m1[m station
+
+                                          3                                  7 [µg/m3]
+      ┌───────────────────────────────────┼───────────────────────────────────┤
+00:00 ┼ [32m██████████████████████████████████████████████████ [32m5.00 [90m(example1)[m
+01:00 ┼ [32m██████████████████████████████████████████████████████████████████████ [32m7.00 [90m(example1)[m
+      ┴

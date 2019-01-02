@@ -1,6 +1,8 @@
-example1
+Example station, 1
+Example station, 2
+Example station, 3
 
-[33mexample1 [34m1[m
+[33mExample station, 1 [34m1[m
 [36mOverall air quality: [92mGood[m
 ----------------------------------[36m
 PM10:	[32mExcellent[m[36m
@@ -11,53 +13,190 @@ SO2:	[39m-[m[36m
 C6H6:	[39m-[m[36m
 CO:	[39m-[m
 
-Showing [94m2[m measurements of [35mPM10[m for [33mexample1 [34m1[m
+[33mExample station, 2 [34m2[m
+[36mOverall air quality: [93mModerate[m
+----------------------------------[36m
+PM10:	[93mModerate[m[36m
+PM25:	[33mFair[m[36m
+O3:	[39m-[m[36m
+NO2:	[39m-[m[36m
+SO2:	[32mExcellent[m[36m
+C6H6:	[32mExcellent[m[36m
+CO:	[39m-[m
+
+[33mExample station, 3 [34m3[m
+[36mOverall air quality: [93mModerate[m
+----------------------------------[36m
+PM10:	[31mBad[m[36m
+PM25:	[39m-[m[36m
+O3:	[32mExcellent[m[36m
+NO2:	[33mFair[m[36m
+SO2:	[39m-[m[36m
+C6H6:	[39m-[m[36m
+CO:	[92mGood[m
+
+Showing [94m2[m measurements of [35mPM10[m for [33mExample station, 1 [34m1[m
 [32m 10.00 µg/m3[m	[90m00:00,  01 January[m
 [32m 12.00 µg/m3[m	[90m01:00,  01 January[m
 
-Showing [94m2[m measurements of [35mPM25[m for [33mexample1 [34m1[m
+Showing [94m2[m measurements of [35mPM25[m for [33mExample station, 1 [34m1[m
 [32m  5.00 µg/m3[m	[90m00:00,  01 January[m
 [32m  7.00 µg/m3[m	[90m01:00,  01 January[m
 
-Average pollution for [94m1[m station
-[35mPM10[m:	[32m11.00 µg/m3[m
-[35mPM25[m:	[32m6.00 µg/m3[m
-[35mO3[m:	-
-[35mNO2[m:	-
-[35mSO2[m:	-
-[35mC6H6[m:	-
-[35mCO[m:	-
+Showing [94m2[m measurements of [35mPM10[m for [33mExample station, 2 [34m2[m
+[93m 70.12 µg/m3[m	[90m00:00,  01 January[m
+[93m 67.50 µg/m3[m	[90m01:00,  01 January[m
 
-Highest fluctuating parameter for [94m1[m station is [35mPM10[m with fluctuation ratio of [94m2.00[m.
-[35mPM10[m oscillated between [32m10.00 µg/m3[m and [32m12.00 µg/m3[m.
+Showing [94m2[m measurements of [35mPM25[m for [33mExample station, 2 [34m2[m
+[33m 66.77 µg/m3[m	[90m00:00,  01 January[m
+[93m 56.10 µg/m3[m	[90m01:00,  01 January[m
 
-Parameter with lowest value is [35mPM25[m measured in [33mexample1 [34m1[m: [32m5.00 µg/m3[m
-Parameter with highest value is [35mPM10[m measured in [33mexample1 [34m1[m: [32m12.00 µg/m3[m
+Showing [94m2[m measurements of [35mSO2[m for [33mExample station, 2 [34m2[m
+[32m  3.13 µg/m3[m	[90m00:00,  01 January[m
+[32m  6.98 µg/m3[m	[90m01:00,  01 January[m
 
-Lowest measurement for [35mPM10[m parameter is [32m10.00 µg/m3[m in [33mexample1 [34m1[m at [36m01 January, 00:00:00[m
-Highest measurement for [35mPM10[m parameter is [32m12.00 µg/m3[m in [33mexample1 [34m1[m at [36m01 January, 01:00:00[m
+Showing [94m3[m measurements of [35mC6H6[m for [33mExample station, 2 [34m2[m
+[32m  3.20 µg/m3[m	[90m00:00,  01 January[m
+[32m  4.73 µg/m3[m	[90m01:00,  01 January[m
+[32m  4.28 µg/m3[m	[90m02:00,  01 January[m
 
-Lowest measurement for [35mPM25[m parameter is [32m5.00 µg/m3[m in [33mexample1 [34m1[m at [36m01 January, 00:00:00[m
-Highest measurement for [35mPM25[m parameter is [32m7.00 µg/m3[m in [33mexample1 [34m1[m at [36m01 January, 01:00:00[m
+Showing [94m2[m measurements of [35mPM10[m for [33mExample station, 3 [34m3[m
+[91m160.42 µg/m3[m	[90m00:00,  01 January[m
+[91m155.75 µg/m3[m	[90m01:00,  01 January[m
 
-Top [94m1[m most polluted station for [35mPM10[m parameter
-[32m 12.00 µg/m3[m [36m01 January, 01:00:00[m: [33mexample1 [34m1[m
+Showing [94m2[m measurements of [35mO3[m for [33mExample station, 3 [34m3[m
+[32m 70.77 µg/m3[m	[90m00:00,  01 January[m
+[32m 69.32 µg/m3[m	[90m01:00,  01 January[m
 
-Top [94m1[m most polluted station for [35mPM25[m parameter
-[32m  7.00 µg/m3[m [36m01 January, 01:00:00[m: [33mexample1 [34m1[m
+Showing [94m2[m measurements of [35mNO2[m for [33mExample station, 3 [34m3[m
+[33m172.13 µg/m3[m	[90m00:00,  01 January[m
+[33m175.98 µg/m3[m	[90m01:00,  01 January[m
 
-Graphing [35mPM10[m hourly pollution for [94m1[m station
+Showing [94m3[m measurements of [35mCO[m for [33mExample station, 3 [34m3[m
+[92m  3.00 mg/m3[m	[90m00:00,  01 January[m
+[92m  3.15 mg/m3[m	[90m01:00,  01 January[m
+[92m  3.13 mg/m3[m	[90m02:00,  01 January[m
 
-                                          6                                  12 [µg/m3]
+Average pollution for [94m3[m stations
+[35mPM10[m:	[93m79.30 µg/m3[m
+[35mPM25[m:	[92m33.72 µg/m3[m
+[35mO3[m:	[32m70.04 µg/m3[m
+[35mNO2[m:	[33m174.05 µg/m3[m
+[35mSO2[m:	[32m5.06 µg/m3[m
+[35mC6H6[m:	[32m4.07 µg/m3[m
+[35mCO[m:	[92m3.09 mg/m3[m
+
+Highest fluctuating parameter for [94m3[m stations is [35mPM10[m with fluctuation ratio of [94m2.15[m.
+[35mPM10[m oscillated between [32m10.00 µg/m3[m and [91m160.42 µg/m3[m.
+
+Parameter with lowest value is [35mSO2[m measured in [33mExample station, 2 [34m2[m: [32m3.13 µg/m3[m
+Parameter with highest value is [35mCO[m measured in [33mExample station, 3 [34m3[m: [92m3.15 mg/m3[m
+
+Lowest measurement for [35mPM10[m parameter is [32m10.00 µg/m3[m in [33mExample station, 1 [34m1[m at [36m01 January, 00:00:00[m
+Highest measurement for [35mPM10[m parameter is [91m160.42 µg/m3[m in [33mExample station, 3 [34m3[m at [36m01 January, 00:00:00[m
+
+Lowest measurement for [35mPM25[m parameter is [32m5.00 µg/m3[m in [33mExample station, 1 [34m1[m at [36m01 January, 00:00:00[m
+Highest measurement for [35mPM25[m parameter is [33m66.77 µg/m3[m in [33mExample station, 2 [34m2[m at [36m01 January, 00:00:00[m
+
+Lowest measurement for [35mO3[m parameter is [32m69.32 µg/m3[m in [33mExample station, 3 [34m3[m at [36m01 January, 01:00:00[m
+Highest measurement for [35mO3[m parameter is [32m70.77 µg/m3[m in [33mExample station, 3 [34m3[m at [36m01 January, 00:00:00[m
+
+Lowest measurement for [35mNO2[m parameter is [33m172.13 µg/m3[m in [33mExample station, 3 [34m3[m at [36m01 January, 00:00:00[m
+Highest measurement for [35mNO2[m parameter is [33m175.98 µg/m3[m in [33mExample station, 3 [34m3[m at [36m01 January, 01:00:00[m
+
+Lowest measurement for [35mSO2[m parameter is [32m3.13 µg/m3[m in [33mExample station, 2 [34m2[m at [36m01 January, 00:00:00[m
+Highest measurement for [35mSO2[m parameter is [32m6.98 µg/m3[m in [33mExample station, 2 [34m2[m at [36m01 January, 01:00:00[m
+
+Lowest measurement for [35mC6H6[m parameter is [32m3.20 µg/m3[m in [33mExample station, 2 [34m2[m at [36m01 January, 00:00:00[m
+Highest measurement for [35mC6H6[m parameter is [32m4.73 µg/m3[m in [33mExample station, 2 [34m2[m at [36m01 January, 01:00:00[m
+
+Lowest measurement for [35mCO[m parameter is [92m3.00 mg/m3[m in [33mExample station, 3 [34m3[m at [36m01 January, 00:00:00[m
+Highest measurement for [35mCO[m parameter is [92m3.15 mg/m3[m in [33mExample station, 3 [34m3[m at [36m01 January, 01:00:00[m
+
+Top [94m3[m most polluted stations for [35mPM10[m parameter
+[91m160.42 µg/m3[m [36m01 January, 00:00:00[m: [33mExample station, 3 [34m3[m
+[93m 70.12 µg/m3[m [36m01 January, 00:00:00[m: [33mExample station, 2 [34m2[m
+[32m 12.00 µg/m3[m [36m01 January, 01:00:00[m: [33mExample station, 1 [34m1[m
+
+Top [94m2[m most polluted stations for [35mPM25[m parameter
+[33m 66.77 µg/m3[m [36m01 January, 00:00:00[m: [33mExample station, 2 [34m2[m
+[32m  7.00 µg/m3[m [36m01 January, 01:00:00[m: [33mExample station, 1 [34m1[m
+
+Top [94m1[m most polluted station for [35mO3[m parameter
+[32m 70.77 µg/m3[m [36m01 January, 00:00:00[m: [33mExample station, 3 [34m3[m
+
+Top [94m1[m most polluted station for [35mNO2[m parameter
+[33m175.98 µg/m3[m [36m01 January, 01:00:00[m: [33mExample station, 3 [34m3[m
+
+Top [94m1[m most polluted station for [35mSO2[m parameter
+[32m  6.98 µg/m3[m [36m01 January, 01:00:00[m: [33mExample station, 2 [34m2[m
+
+Top [94m1[m most polluted station for [35mC6H6[m parameter
+[32m  4.73 µg/m3[m [36m01 January, 01:00:00[m: [33mExample station, 2 [34m2[m
+
+Top [94m1[m most polluted station for [35mCO[m parameter
+[92m  3.15 mg/m3[m [36m01 January, 01:00:00[m: [33mExample station, 3 [34m3[m
+
+Graphing [35mPM10[m hourly pollution for [94m3[m stations
+
+                                          80                                  160 [µg/m3]
       ┌───────────────────────────────────┼───────────────────────────────────┤
-00:00 ┼ [32m██████████████████████████████████████████████████████████ [32m10.00 [90m(example1)[m
-01:00 ┼ [32m██████████████████████████████████████████████████████████████████████ [32m12.00 [90m(example1)[m
+00:00 ┼ [32m████ [32m10.00 [90m(Example station, 1)[m
+      │ [93m██████████████████████████████ [93m70.12 [90m(Example station, 2)[m
+      │ [91m██████████████████████████████████████████████████████████████████████ [91m160.42 [90m(Example station, 3)[m
+01:00 ┼ [32m█████ [32m12.00 [90m(Example station, 1)[m
+      │ [93m█████████████████████████████ [93m67.50 [90m(Example station, 2)[m
+      │ [91m███████████████████████████████████████████████████████████████████ [91m155.75 [90m(Example station, 3)[m
       ┴
 
-Graphing [35mPM25[m hourly pollution for [94m1[m station
+Graphing [35mPM25[m hourly pollution for [94m3[m stations
 
-                                          3                                  7 [µg/m3]
+                                          33                                  66 [µg/m3]
       ┌───────────────────────────────────┼───────────────────────────────────┤
-00:00 ┼ [32m██████████████████████████████████████████████████ [32m5.00 [90m(example1)[m
-01:00 ┼ [32m██████████████████████████████████████████████████████████████████████ [32m7.00 [90m(example1)[m
+00:00 ┼ [32m█████ [32m5.00 [90m(Example station, 1)[m
+      │ [33m██████████████████████████████████████████████████████████████████████ [33m66.77 [90m(Example station, 2)[m
+01:00 ┼ [32m███████ [32m7.00 [90m(Example station, 1)[m
+      │ [93m██████████████████████████████████████████████████████████ [93m56.10 [90m(Example station, 2)[m
+      ┴
+
+Graphing [35mO3[m hourly pollution for [94m3[m stations
+
+                                          35                                  70 [µg/m3]
+      ┌───────────────────────────────────┼───────────────────────────────────┤
+00:00 ┼ [32m██████████████████████████████████████████████████████████████████████ [32m70.77 [90m(Example station, 3)[m
+01:00 ┼ [32m████████████████████████████████████████████████████████████████████ [32m69.32 [90m(Example station, 3)[m
+      ┴
+
+Graphing [35mNO2[m hourly pollution for [94m3[m stations
+
+                                          87                                  175 [µg/m3]
+      ┌───────────────────────────────────┼───────────────────────────────────┤
+00:00 ┼ [33m████████████████████████████████████████████████████████████████████ [33m172.13 [90m(Example station, 3)[m
+01:00 ┼ [33m██████████████████████████████████████████████████████████████████████ [33m175.98 [90m(Example station, 3)[m
+      ┴
+
+Graphing [35mSO2[m hourly pollution for [94m3[m stations
+
+                                          3                                  6 [µg/m3]
+      ┌───────────────────────────────────┼───────────────────────────────────┤
+00:00 ┼ [32m███████████████████████████████ [32m3.13 [90m(Example station, 2)[m
+01:00 ┼ [32m██████████████████████████████████████████████████████████████████████ [32m6.98 [90m(Example station, 2)[m
+      ┴
+
+Graphing [35mC6H6[m hourly pollution for [94m3[m stations
+
+                                          2                                  4 [µg/m3]
+      ┌───────────────────────────────────┼───────────────────────────────────┤
+00:00 ┼ [32m███████████████████████████████████████████████ [32m3.20 [90m(Example station, 2)[m
+01:00 ┼ [32m██████████████████████████████████████████████████████████████████████ [32m4.73 [90m(Example station, 2)[m
+02:00 ┼ [32m███████████████████████████████████████████████████████████████ [32m4.28 [90m(Example station, 2)[m
+      ┴
+
+Graphing [35mCO[m hourly pollution for [94m3[m stations
+
+                                          1573                                  3146 [µg/m3]
+      ┌───────────────────────────────────┼───────────────────────────────────┤
+00:00 ┼ [92m██████████████████████████████████████████████████████████████████ [92m3000.20 [90m(Example station, 3)[m
+01:00 ┼ [92m██████████████████████████████████████████████████████████████████████ [92m3146.73 [90m(Example station, 3)[m
+02:00 ┼ [92m█████████████████████████████████████████████████████████████████████ [92m3128.28 [90m(Example station, 3)[m
       ┴

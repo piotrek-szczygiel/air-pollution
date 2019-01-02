@@ -67,6 +67,7 @@ class Format {
 
     static String format(float value, Parameter parameter, boolean rightAlign) {
         String unit = " \u00b5g/m3";
+        String color = getMeasurementColor(value, parameter);
 
 
         if (value >= 1000.f) {
@@ -74,7 +75,7 @@ class Format {
             unit = " mg/m3";
         }
 
-        return getMeasurementColor(value, parameter)
+        return color
                 + String.format(rightAlign ? "%6s" : "%s", String.format("%.2f", value))
                 + unit
                 + ansi().reset();

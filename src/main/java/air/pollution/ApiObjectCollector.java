@@ -48,7 +48,7 @@ class ApiObjectCollector {
             jsonSensors = airPollutionService.fetchAllSensors(stationId);
         }
 
-        if (jsonSensors == null || jsonSensors.size() < 1) {
+        if (jsonSensors == null) {
             logger.fatal("unable to fetch sensors for station with id %s", format(stationId));
             return null;
         }

@@ -69,8 +69,10 @@ class Cache {
                         // Get spinner animation current character
                         char spinner = Utils.getSpinner(spinnerIndex.incrementAndGet() / ((processors / 10) + 1));
 
-                        System.err.printf("%s fetching %s%s\r", format(spinner),
-                                format(station), ansi().eraseLine().toString());
+                        System.err.printf("%s fetching %s%s\r",
+                                format(spinner),
+                                format(station),
+                                ansi().eraseLine());
                     }
                 }
 
@@ -145,7 +147,7 @@ class Cache {
 
         List<Sensor> sensors = apiObjectCollector.getAllSensors(stationId);
 
-        if (sensors == null || sensors.size() < 1) {
+        if (sensors == null) {
             logger.warn("unable to fetch sensors for station with id %s from api", format(stationId));
             return null;
         }

@@ -110,12 +110,14 @@ class CommandGraph implements Command {
                         System.out.printf("%s \u2502 ", repeatString(" ", DATE_LENGTH));
                     }
 
+                    System.out.printf("%s%s",
+                            Format.getMeasurementColor(value, parameter),
+                            repeatString("\u2588", barLength));
 
-                    for (int j = 1; j <= barLength; j++) {
-                        System.out.printf("%s\u2588", Format.getMeasurementColor(
-                                (maximum / ASCII_BAR_LENGTH) * j,
-                                parameter));
-                    }
+//                    for (int j = 1; j <= barLength; j++) {
+//                        System.out.printf("%s\u2588",
+//                                Format.getMeasurementColor((maximum / ASCII_BAR_LENGTH) * j, parameter));
+//                    }
 
                     System.out.printf(" %s%.2f %s(%s)%s%n",
                             getMeasurementColor(value, parameter),

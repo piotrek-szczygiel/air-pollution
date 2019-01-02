@@ -52,7 +52,7 @@ public class App implements Runnable {
     @Option(names = {"--average", "-A"}, description = "Show average pollution for provided stations and parameters.")
     private boolean optionAverage;
 
-    @Option(names = {"--fluctuation", "-F"}, description = "Show highest fluctuating parameter for provided stations.")
+    @Option(names = {"--fluctuation", "-f"}, description = "Show highest fluctuating parameter for provided stations.")
     private boolean optionFluctuation;
 
     @Option(names = {"--worst-stations", "-w"}, description = "Show stations with highest pollution.")
@@ -101,7 +101,7 @@ public class App implements Runnable {
     @Option(names = {"--refresh-disable", "-R"}, description = "Don't refresh cache even when it's outdated.")
     private boolean optionRefreshCacheDisable;
 
-    @Option(names = {"--cache-file", "-f"}, description = "Path to cache file.")
+    @Option(names = {"--cache-file", "-c"}, description = "Path to cache file.")
     private File optionCacheFile = new File("cache.gz");
 
     @Option(names = {"--verbose", "-v"}, description = "Show verbose output. Use -vv for highest verbosity mode.")

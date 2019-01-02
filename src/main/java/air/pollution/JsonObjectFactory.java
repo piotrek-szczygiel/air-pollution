@@ -33,7 +33,9 @@ class JsonObjectFactory {
         Sensor sensor = new Sensor();
 
         sensor.setId(jsonSensor.id);
-        sensor.setParameter(jsonSensor.param.paramFormula);
+
+        Parameter parameter = Parameter.fromString(jsonSensor.param.paramFormula);
+        sensor.setParameter(parameter);
 
         return sensor;
     }

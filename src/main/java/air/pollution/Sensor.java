@@ -16,7 +16,7 @@ class Sensor {
         return parameter;
     }
 
-    void setParameter(String formula) {
-        parameter = Parameter.fromString(formula);
+    void setParameter(Parameter parameter) {
+        this.parameter = parameter;
     }
 }

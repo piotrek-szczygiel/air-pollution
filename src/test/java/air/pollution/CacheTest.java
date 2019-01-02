@@ -193,21 +193,21 @@ public class CacheTest {
     public void getAllSensors_CorrectSensors_ProvidedSensors() {
         Sensor sensor1 = new Sensor();
         sensor1.setId(100);
-        sensor1.setParameter("PM10");
+        sensor1.setParameter(Parameter.PM10);
 
         Sensor sensor2 = new Sensor();
         sensor2.setId(101);
-        sensor2.setParameter("C6H6");
+        sensor2.setParameter(Parameter.C6H6);
 
         when(apiObjectCollector.getAllSensors(0)).thenReturn(List.of(sensor1, sensor2));
 
         Sensor sensor3 = new Sensor();
         sensor3.setId(200);
-        sensor3.setParameter("O3");
+        sensor3.setParameter(Parameter.O3);
 
         Sensor sensor4 = new Sensor();
         sensor4.setId(201);
-        sensor4.setParameter("CO");
+        sensor4.setParameter(Parameter.CO);
 
         when(apiObjectCollector.getAllSensors(1)).thenReturn(List.of(sensor3, sensor4));
 

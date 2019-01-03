@@ -227,10 +227,6 @@ public class App implements Runnable {
 
             for (Station station : allStations) {
                 for (String stationName : optionStationNames) {
-                    if (stationName.equals("xmas")) {
-                        logger.fatal("Santa Claus is coming to town!");
-                    }
-
                     String compared = Utils.normalizeString(station.getName());
                     String searched = Utils.normalizeString(stationName);
 

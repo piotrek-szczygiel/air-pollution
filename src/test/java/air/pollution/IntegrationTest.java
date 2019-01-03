@@ -282,6 +282,7 @@ public class IntegrationTest {
                         Arrays.asList(Parameter.values()),
                         CommandUtils.getLowestDate(cache),
                         CommandUtils.getHighestDate(cache),
+                        CommandUtils.getHighestDate(cache),
                         0,
                         0,
                         23
@@ -298,6 +299,8 @@ public class IntegrationTest {
         String expectedResult =
                 new String(Files.readAllBytes(Paths.get(integrationTestResultPath)),
                         StandardCharsets.UTF_8);
+
+//        Files.write(Paths.get(integrationTestResultPath), actualResult.getBytes(StandardCharsets.UTF_8));
 
         assertEquals(expectedResult, actualResult);
     }

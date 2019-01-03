@@ -15,6 +15,8 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 class CommandGraph implements Command {
     private static final DateTimeFormatter GRAPH_DATE_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter SPECIFIC_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM");
+
     private static final int DATE_LENGTH = 5;
     private static final int ASCII_BAR_LENGTH = 70;
 
@@ -114,15 +116,19 @@ class CommandGraph implements Command {
                             Format.getMeasurementColor(value, parameter),
                             repeatString("\u2588", barLength));
 
-//                    for (int j = 1; j <= barLength; j++) {
-//                        System.out.printf("%s\u2588",
-//                                Format.getMeasurementColor((maximum / ASCII_BAR_LENGTH) * j, parameter));
-//                    }
+                    String dateString = SPECIFIC_DATE_FORMATTER.format(date);
 
-                    System.out.printf(" %s%.2f %s(%s)%s%n",
+                    if (date.getDayOfYear() == options.today.getDayOfYear()) {
+                        dateString = "Today";
+                    } else if (date.getDayOfYear() == options.today.getDayOfYear() - 1) {
+                        dateString = "Yesterday";
+                    }
+
+                    System.out.printf(" %s%.2f %s%s, %s%s%n",
                             getMeasurementColor(value, parameter),
                             value,
                             ansi().fgBrightBlack(),
+                            dateString,
                             measurementEntry.getKey().getName(),
                             ansi().reset());
 

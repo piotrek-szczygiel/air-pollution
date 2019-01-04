@@ -13,14 +13,24 @@ import java.util.zip.GZIPOutputStream;
 
 import static air.pollution.Format.format;
 
+/**
+ * Handles reading and writing cache to file archive.
+ */
 class CacheFile {
-    Logger logger = Logger.getLogger(this);
+    private Logger logger = Logger.getLogger(this);
     private File file;
 
     CacheFile(File file) {
         this.file = file;
     }
 
+    /**
+     * Load cache from file archive.
+     *
+     * @param disableRefresh if true, don't refresh if cache isn't up-to-date
+     * @return cache
+     * @see Cache
+     */
     Cache load(boolean disableRefresh) {
         if (file == null) {
             return null;
@@ -68,6 +78,12 @@ class CacheFile {
         return cache;
     }
 
+    /**
+     * Save cache to file archive.
+     *
+     * @param cache cache
+     * @see Cache
+     */
     void save(Cache cache) {
         Stopwatch stopwatch;
 

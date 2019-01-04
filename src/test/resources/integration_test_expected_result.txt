@@ -113,6 +113,18 @@ Highest measurement for [35mC6H6[m parameter is [32m4.73 µg/m3[m in [33mEx
 Lowest measurement for [35mCO[m parameter is [92m3.00 mg/m3[m in [33mExample station, 3 [34m3[m at [36m01 January, 00:00:00[m
 Highest measurement for [35mCO[m parameter is [92m3.15 mg/m3[m in [33mExample station, 3 [34m3[m at [36m01 January, 01:00:00[m
 
+Showing [94m2[m measurements above norm of [35mPM10[m ([92m50.00 µg/m3[m) for [33mExample station, 2 [34m2[m
+[93m 70.12 µg/m3[m	[90m00:00,  01 January[m
+[93m 67.50 µg/m3[m	[90m01:00,  01 January[m
+
+Showing [94m2[m measurements above norm of [35mPM25[m ([92m25.00 µg/m3[m) for [33mExample station, 2 [34m2[m
+[33m 66.77 µg/m3[m	[90m00:00,  01 January[m
+[93m 56.10 µg/m3[m	[90m01:00,  01 January[m
+
+Showing [94m2[m measurements above norm of [35mPM10[m ([92m50.00 µg/m3[m) for [33mExample station, 3 [34m3[m
+[91m160.42 µg/m3[m	[90m00:00,  01 January[m
+[91m155.75 µg/m3[m	[90m01:00,  01 January[m
+
 Top [94m3[m most polluted stations for [35mPM10[m parameter
 [91m160.42 µg/m3[m [36m01 January, 00:00:00[m: [33mExample station, 3 [34m3[m
 [93m 70.12 µg/m3[m [36m01 January, 00:00:00[m: [33mExample station, 2 [34m2[m

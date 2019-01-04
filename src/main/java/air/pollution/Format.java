@@ -29,6 +29,8 @@ class Format {
 
     private static final DateTimeFormatter TIMESTAMP_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM, HH:mm:ss");
 
+    static final DateTimeFormatter MEASUREMENT_DATE_FORMATTER = DateTimeFormatter.ofPattern("HH:mm,  dd MMMM");
+
     static String format(Station station) {
         return ansi().fgYellow().a(station.getName()).a(" ").fgBlue().a(station.getId()).reset().toString();
     }

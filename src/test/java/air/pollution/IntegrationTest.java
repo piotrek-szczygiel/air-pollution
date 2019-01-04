@@ -289,7 +289,18 @@ public class IntegrationTest {
                 );
 
         OptionStrategy strategy =
-                new OptionStrategy(true, true, true, true, true, true, true, true, true);
+                new OptionStrategy(
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                );
 
         strategy.invoke(cache, options);
 
@@ -297,8 +308,6 @@ public class IntegrationTest {
                 .replace("\r\n", "\n");
 
         String expectedResult = Files.readString(Paths.get(integrationTestResultPath));
-
-//        Files.write(Paths.get(integrationTestResultPath), actualResult.getBytes(StandardCharsets.UTF_8));
 
         assertEquals(expectedResult, actualResult);
     }

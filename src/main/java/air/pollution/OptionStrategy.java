@@ -11,6 +11,7 @@ class OptionStrategy {
     private boolean fluctuation;
     private boolean findMinMaxParameter;
     private boolean findMinMaxValue;
+    private boolean findAboveNorm;
     private boolean worstStations;
     private boolean graph;
 
@@ -18,7 +19,7 @@ class OptionStrategy {
 
     OptionStrategy(boolean listStations, boolean airIndex, boolean measurement, boolean average,
                    boolean fluctuation, boolean findMinMaxParameter, boolean findMinMaxValue,
-                   boolean worstStations, boolean graph) {
+                   boolean findAboveNorm, boolean worstStations, boolean graph) {
 
         this.listStations = listStations;
         this.airIndex = airIndex;
@@ -27,6 +28,7 @@ class OptionStrategy {
         this.fluctuation = fluctuation;
         this.findMinMaxParameter = findMinMaxParameter;
         this.findMinMaxValue = findMinMaxValue;
+        this.findAboveNorm = findAboveNorm;
         this.worstStations = worstStations;
         this.graph = graph;
     }
@@ -67,6 +69,11 @@ class OptionStrategy {
         // --find-min-max-value
         if (findMinMaxValue) {
             commands.add(new CommandFindMinMaxValue());
+        }
+
+        // --find-above-norm
+        if (findAboveNorm) {
+            commands.add(new CommandFindAboveNorm());
         }
 
         // --worst-stations

@@ -68,6 +68,10 @@ public class App implements Runnable {
             + "parameters and stations.")
     private boolean optionFindMinMaxValue;
 
+    @Option(names = {"--find-above-norm", "-n"}, description = "Find measurements above norm for provided "
+            + "parameters and stations.")
+    private boolean optionFindAboveNorm;
+
     @Option(names = {"--date", "-D"}, paramLabel = "DATE", description = "Provides specific date for commands.")
     private LocalDateTime optionDate;
 
@@ -327,6 +331,7 @@ public class App implements Runnable {
                         optionFluctuation,
                         optionFindMinMaxParameter,
                         optionFindMinMaxValue,
+                        optionFindAboveNorm,
                         optionWorstStations,
                         optionGraph
                 );

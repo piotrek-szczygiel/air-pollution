@@ -1,17 +1,17 @@
 package air.pollution;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static air.pollution.Format.MEASUREMENT_DATE_FORMATTER;
 import static air.pollution.Format.format;
 import static org.fusesource.jansi.Ansi.ansi;
 
 class CommandMeasurement implements Command {
-    private static final DateTimeFormatter MEASUREMENT_DATE_FORMATTER = DateTimeFormatter.ofPattern("HH:mm,  dd MMMM");
 
     private Logger logger = Logger.getLogger(this);
 
     @Override
+    @SuppressWarnings("Duplicates")
     public void execute(Cache cache, Options options) {
         logger.info("showing measurements for %s stations", format(options.stations.size()));
 
@@ -49,10 +49,11 @@ class CommandMeasurement implements Command {
                         break;
                     }
 
-                    System.out.printf("%s\t%s%n",
+                    System.out.printf("%s\t%s%s%s%n",
                             format(measurement.getValue(), measurement.getParameter(), true),
-                            ansi().fgBrightBlack()
-                                    .a(measurement.getDate().format(MEASUREMENT_DATE_FORMATTER)).reset());
+                            ansi().fgBrightBlack(),
+                            measurement.getDate().format(MEASUREMENT_DATE_FORMATTER),
+                            ansi().reset());
 
                     counter++;
                 }

@@ -47,5 +47,9 @@ test {
     systemProperty "user.country", "US"
 }
 
+javadoc {
+    options.memberLevel = JavadocMemberLevel.PACKAGE
+}
+
 // Define the main class for the application
 mainClassName = 'air.pollution.App'

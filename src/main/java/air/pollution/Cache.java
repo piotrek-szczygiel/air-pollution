@@ -15,6 +15,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static air.pollution.Format.format;
 import static org.fusesource.jansi.Ansi.ansi;
 
+/**
+ * Caches results from API.
+ */
 class Cache {
     // Timeout in minutes for cacheStations
     private final static int CACHE_STATIONS_TIMEOUT = 5;
@@ -30,6 +33,13 @@ class Cache {
 
     private transient Logger logger = Logger.getLogger(this);
 
+
+    /**
+     * Fetches and stores all possible information inside cache.
+     *
+     * @param stations        list of stations that we want to fetch the data for
+     * @param numberOfThreads number of threads used for making API requests
+     */
     void cacheStations(List<Station> stations, int numberOfThreads) {
         if (stations == null || stations.size() < 1) {
             logger.warn("there are no stations to fill cache for");
@@ -105,14 +115,33 @@ class Cache {
         cacheDate = LocalDateTime.now();
     }
 
+    /**
+     * Set API collector dependency.
+     *
+     * @param apiObjectCollector API collector
+     * @see ApiObjectCollector
+     */
     void setApiObjectCollector(ApiObjectCollector apiObjectCollector) {
         this.apiObjectCollector = apiObjectCollector;
     }
 
+    /**
+     * Returns last cache update timestamp.
+     *
+     * @return date
+     */
     LocalDateTime getCacheDate() {
         return cacheDate;
     }
 
+    /**
+     * Fetches list of all stations from cache.
+     * <p>
+     * If stations cache is empty it has to fetch them from API.
+     *
+     * @return list of stations
+     * @see Station
+     */
     List<Station> getAllStations() {
         if (stationCache.size() == 0) {
             List<Station> stations = apiObjectCollector.getAllStations();
@@ -133,6 +162,15 @@ class Cache {
         return new ArrayList<>(stationCache.values());
     }
 
+    /**
+     * Fetches list of all sensors for specified station from cache.
+     * <p>
+     * If sensors cache is empty it has to fetch them from API.
+     *
+     * @param stationId id of station
+     * @return list of sensors
+     * @see Sensor
+     */
     List<Sensor> getAllSensors(int stationId) {
         if (sensorCache.containsKey(stationId)) {
             List<Sensor> sensors = sensorCache.get(stationId);
@@ -156,6 +194,15 @@ class Cache {
         return getAllSensors(stationId);
     }
 
+    /**
+     * Fetches list of all measurements for specified sensor from cache.
+     * <p>
+     * If measurements cache is empty it has to fetch them from API.
+     *
+     * @param sensorId id of sensor
+     * @return list of measurements
+     * @see SensorMeasurement
+     */
     List<SensorMeasurement> getSensorMeasurements(int sensorId) {
         if (measurementCache.containsKey(sensorId)) {
             List<SensorMeasurement> measurements = measurementCache.get(sensorId);
@@ -179,6 +226,15 @@ class Cache {
         return getSensorMeasurements(sensorId);
     }
 
+    /**
+     * Fetches air index for specified station from cache.
+     * <p>
+     * If air index cache is empty it has to fetch it from API.
+     *
+     * @param stationId id of station
+     * @return air index
+     * @see AirIndex
+     */
     AirIndex getAirIndex(int stationId) {
         if (airIndexCache.containsKey(stationId)) {
             logger.debug("fetched air index for station with id %s from cache", format(stationId));

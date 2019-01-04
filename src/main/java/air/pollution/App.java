@@ -16,6 +16,9 @@ import java.util.List;
 
 import static air.pollution.Format.format;
 
+/**
+ * Main program class.
+ */
 @CommandLine.Command(
         name = "air-pollution",
         mixinStandardHelpOptions = true,
@@ -107,6 +110,13 @@ public class App implements Runnable {
     @Option(names = {"--verbose", "-v"}, description = "Show verbose output. Use -vv for highest verbosity mode.")
     private boolean[] optionVerbosity = new boolean[0];
 
+    /**
+     * This application entry point.
+     * <p>
+     * Initializes application and then runs it.
+     *
+     * @param args arguments passed from command line
+     */
     public static void main(String[] args) {
         AnsiConsole.systemInstall();
 
@@ -169,6 +179,11 @@ public class App implements Runnable {
         AnsiConsole.systemUninstall();
     }
 
+    /**
+     * Main program method.
+     * <p>
+     * Creates most important objects and invokes execution strategy.
+     */
     @Override
     public void run() {
         Logger logger = Logger.getLogger(this);

@@ -13,7 +13,15 @@ import static air.pollution.Format.format;
 import static air.pollution.Format.getMeasurementColor;
 import static org.fusesource.jansi.Ansi.ansi;
 
+/**
+ * Command displaying pollution ASCII graph.
+ * <p>
+ * It uses unicode symbols to graph colored bars.
+ * Length and color depend on severity of pollution.
+ * In verbose mode display measurement date and station.
+ */
 class CommandGraph implements Command {
+
     private static final DateTimeFormatter GRAPH_DATE_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter SPECIFIC_DATE_FORMATTER = DateTimeFormatter.ofPattern("d MMMM");
 

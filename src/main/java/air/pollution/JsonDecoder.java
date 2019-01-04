@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
  * and sometimes in unix time format, we have to differentiate between them.
  */
 class JsonDecoder {
+
     private static Gson gson = new GsonBuilder().registerTypeAdapter(
             LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> {
                 String dateStr = json.getAsString();

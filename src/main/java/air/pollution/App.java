@@ -33,86 +33,140 @@ import static air.pollution.Format.format;
         optionListHeading = "%n@|bold,underline Options:|@%n"
 )
 public class App implements Runnable {
-    @Option(names = {"--list", "-l"}, description = "List all available stations.")
-    private boolean optionListStations;
 
-    @Option(names = {"--stations", "-s"}, split = ";",
-            paramLabel = "STATION", description = "Semicolon separated list of stations. "
-            + "If this argument is not provided, use all available stations.")
+    // Options provided through command line arguments.
+
+    @Option(names = {"--stations", "-s"},
+            split = ";",
+            paramLabel = "STATION",
+            description = "Semicolon separated list of stations. If this argument is not provided, "
+                    + "use all available stations.")
     private List<String> optionStationNames = new ArrayList<>();
 
-    @Option(names = {"--parameters", "-p"}, split = ";", paramLabel = "PARAMETER",
+
+    @Option(names = {"--parameters", "-p"},
+            split = ";",
+            paramLabel = "PARAMETER",
             description = "Semicolon separated list of parameters. If this argument is not provided, "
                     + "use all parameters. Accepted values: ${COMPLETION-CANDIDATES}.")
     private List<Parameter> optionParameters = new ArrayList<>();
 
-    @Option(names = {"--air-index", "-a"}, description = "Show Air Index for provided stations.")
+
+    @Option(names = {"--list", "-l"},
+            description = "List all available stations.")
+    private boolean optionListStations;
+
+
+    @Option(names = {"--air-index", "-a"},
+            description = "Show Air Index for provided stations.")
     private boolean optionAirIndex;
 
-    @Option(names = {"--measurements", "-m"}, description = "Show parameter measurements for provided stations.")
+
+    @Option(names = {"--measurements", "-m"},
+            description = "Show parameter measurements for provided stations.")
     private boolean optionMeasurement;
 
-    @Option(names = {"--average", "-A"}, description = "Show average pollution for provided stations and parameters.")
+
+    @Option(names = {"--average", "-A"},
+            description = "Show average pollution for provided stations and parameters.")
     private boolean optionAverage;
 
-    @Option(names = {"--fluctuation", "-f"}, description = "Show highest fluctuating parameter for provided stations.")
+
+    @Option(names = {"--fluctuation", "-f"},
+            description = "Show highest fluctuating parameter for provided stations.")
     private boolean optionFluctuation;
 
-    @Option(names = {"--worst-stations", "-w"}, description = "Show stations with highest pollution.")
+
+    @Option(names = {"--worst-stations", "-w"},
+            description = "Show stations with highest pollution.")
     private boolean optionWorstStations;
 
-    @Option(names = {"--find-min-max-parameter", "-M"}, description = "Find parameter with lowest and highest value.")
+
+    @Option(names = {"--find-min-max-parameter", "-M"},
+            description = "Find parameter with lowest and highest value.")
     private boolean optionFindMinMaxParameter;
 
-    @Option(names = {"--find-min-max-value", "-x"}, description = "Find lowest and highest value for provided "
-            + "parameters and stations.")
+
+    @Option(names = {"--find-min-max-value", "-x"},
+            description = "Find lowest and highest value for provided "
+                    + "parameters and stations.")
     private boolean optionFindMinMaxValue;
 
-    @Option(names = {"--find-above-norm", "-n"}, description = "Find measurements above norm for provided "
-            + "parameters and stations.")
+
+    @Option(names = {"--find-above-norm", "-n"},
+            description = "Find measurements above norm for provided "
+                    + "parameters and stations.")
     private boolean optionFindAboveNorm;
 
-    @Option(names = {"--date", "-D"}, paramLabel = "DATE", description = "Provides specific date for commands.")
+
+    @Option(names = {"--date", "-D"},
+            paramLabel = "DATE",
+            description = "Provides specific date for commands.")
     private LocalDateTime optionDate;
 
-    @Option(names = {"--since", "-S"}, paramLabel = "DATE_SINCE", description = "Provides specific beginning date "
-            + "for commands in format 'dd, h:MM'. If this argument is not provided, assume it as the lowest possible.")
+
+    @Option(names = {"--since", "-S"},
+            paramLabel = "DATE_SINCE",
+            description = "Provides specific beginning date for commands in format 'dd, h:MM'. "
+                    + "If this argument is not provided, assume it as the lowest possible.")
     private LocalDateTime optionSince;
 
-    @Option(names = {"--until", "-U"}, paramLabel = "DATE_UNTIL", description = "Provides specific ending date "
-            + "for commands in format 'dd, h:MM'. If this argument is not provided, assume it as the highest possible.")
+
+    @Option(names = {"--until", "-U"},
+            paramLabel = "DATE_UNTIL",
+            description = "Provides specific ending date for commands in format 'dd, h:MM'. "
+                    + "If this argument is not provided, assume it as the highest possible.")
     private LocalDateTime optionUntil;
 
-    @Option(names = {"--top", "-t"}, paramLabel = "TOP", description = "Display only the first N values. "
-            + "If this argument is not provided, display first 5 values.")
+
+    @Option(names = {"--top", "-t"},
+            paramLabel = "TOP",
+            description = "Display only the first N values. If this argument is not provided, display first 5 values.")
     private int optionTop = 5;
 
-    @Option(names = {"--graph", "-g"}, description = "Show graph of pollution for specified hours.")
+
+    @Option(names = {"--graph", "-g"},
+            description = "Show graph of pollution for specified hours.")
     private boolean optionGraph;
 
-    @Option(names = {"--hour-since", "-i"}, paramLabel = "HOUR_SINCE", description = "Provides beginning hour "
-            + "for graph command.")
+
+    @Option(names = {"--hour-since", "-i"},
+            paramLabel = "HOUR_SINCE",
+            description = "Provides beginning hour for graph command.")
     private int optionHourSince = 0;
 
-    @Option(names = {"--hour-until", "-I"}, paramLabel = "HOUR_UNTIL", description = "Provides ending hour "
-            + "for graph command.")
+
+    @Option(names = {"--hour-until", "-I"},
+            paramLabel = "HOUR_UNTIL",
+            description = "Provides ending hour for graph command.")
     private int optionHourUntil = 23;
 
-    @Option(names = {"--threads", "-T"}, description = "Number of threads used while fetching data. "
+
+    @Option(names = {"--threads", "-T"},
+            description = "Number of threads used while fetching data. "
             + "If this argument is not provided, use one thread for every station.")
     private int optionNumberOfThreads = 0;
 
-    @Option(names = {"--refresh", "-r"}, description = "Force cache update.")
+
+    @Option(names = {"--refresh", "-r"},
+            description = "Force cache update.")
     private boolean optionRefreshCache;
 
-    @Option(names = {"--refresh-disable", "-R"}, description = "Don't refresh cache even when it's outdated.")
+
+    @Option(names = {"--refresh-disable", "-R"},
+            description = "Don't refresh cache even when it's outdated.")
     private boolean optionRefreshCacheDisable;
 
-    @Option(names = {"--cache-file", "-c"}, description = "Path to cache file.")
+
+    @Option(names = {"--cache-file", "-c"},
+            description = "Path to cache file.")
     private File optionCacheFile = new File("cache.gz");
 
-    @Option(names = {"--verbose", "-v"}, description = "Show verbose output. Use -vv for highest verbosity mode.")
+
+    @Option(names = {"--verbose", "-v"},
+            description = "Show verbose output. Use -vv for highest verbosity mode.")
     private boolean[] optionVerbosity = new boolean[0];
+
 
     /**
      * This application entry point.
@@ -182,6 +236,7 @@ public class App implements Runnable {
 
         AnsiConsole.systemUninstall();
     }
+
 
     /**
      * Main program method.

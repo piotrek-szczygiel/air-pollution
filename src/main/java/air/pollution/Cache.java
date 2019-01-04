@@ -19,6 +19,7 @@ import static org.fusesource.jansi.Ansi.ansi;
  * Caches results from API.
  */
 class Cache {
+
     // Timeout in minutes for cacheStations
     private final static int CACHE_STATIONS_TIMEOUT = 5;
 
@@ -115,6 +116,7 @@ class Cache {
         cacheDate = LocalDateTime.now();
     }
 
+
     /**
      * Set API collector dependency.
      *
@@ -124,6 +126,7 @@ class Cache {
         this.apiObjectCollector = apiObjectCollector;
     }
 
+
     /**
      * Returns last cache update timestamp.
      *
@@ -132,6 +135,7 @@ class Cache {
     LocalDateTime getCacheDate() {
         return cacheDate;
     }
+
 
     /**
      * Fetches list of all stations from cache.
@@ -160,6 +164,7 @@ class Cache {
 
         return new ArrayList<>(stationCache.values());
     }
+
 
     /**
      * Fetches list of all sensors for specified station from cache.
@@ -193,6 +198,7 @@ class Cache {
         return getAllSensors(stationId);
     }
 
+
     /**
      * Fetches list of all measurements for specified sensor from cache.
      * <p>
@@ -224,6 +230,7 @@ class Cache {
         measurementCache.put(sensorId, measurements);
         return getSensorMeasurements(sensorId);
     }
+
 
     /**
      * Fetches air index for specified station from cache.

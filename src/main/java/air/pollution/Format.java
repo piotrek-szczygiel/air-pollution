@@ -9,7 +9,15 @@ import java.time.format.DateTimeFormatter;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
+/**
+ * Utilities for colorfully formatting various objects.
+ */
 class Format {
+
+    // Thresholds table holds values from API website
+    // They describe pollution levels and are used to determine
+    // measurements colors
+
     private static final int[] PM10_THRESHOLDS = new int[]{21, 61, 101, 141, 201};
     private static final int[] PM25_THRESHOLDS = new int[]{13, 37, 61, 85, 121};
     private static final int[] O3_THRESHOLDS = new int[]{71, 121, 151, 181, 241};
@@ -27,46 +35,122 @@ class Format {
             ansi().fgRed()
     };
 
-    private static final DateTimeFormatter TIMESTAMP_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM, HH:mm:ss");
 
+    // Date formatters
+
+    private static final DateTimeFormatter TIMESTAMP_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM, HH:mm:ss");
     static final DateTimeFormatter MEASUREMENT_DATE_FORMATTER = DateTimeFormatter.ofPattern("HH:mm,  dd MMMM");
 
+
+    /**
+     * Colorfully format given station like: name id.
+     *
+     * @param station station
+     * @return string result
+     */
     static String format(Station station) {
         return ansi().fgYellow().a(station.getName()).a(" ").fgBlue().a(station.getId()).reset().toString();
     }
 
+
+    /**
+     * Colorfully format given sensor like: id parameter.
+     *
+     * @param sensor sensor
+     * @return string result
+     */
     static String format(Sensor sensor) {
         return ansi().fgCyan().a(sensor.getId()).a(" ").fgMagenta().a(sensor.getParameter()).reset().toString();
     }
 
+
+    /**
+     * Colorfully format given parameter.
+     *
+     * @param parameter parameter
+     * @return string result
+     */
     static String format(Parameter parameter) {
         return ansi().fgMagenta().a(parameter.toString()).reset().toString();
     }
 
+
+    /**
+     * Colorfully format given integer.
+     *
+     * @param integer integer
+     * @return string result
+     */
     static String format(int integer) {
         return format((long) integer);
     }
 
-    static String format(long integer) {
-        return ansi().fgBrightBlue().a(integer).reset().toString();
+
+    /**
+     * Colorfully format give long.
+     *
+     * @param longInteger long integer
+     * @return string result
+     */
+    static String format(long longInteger) {
+        return ansi().fgBrightBlue().a(longInteger).reset().toString();
     }
 
+
+    /**
+     * Colorfully format provided floating number with 2 decimal places.
+     *
+     * @param floating floating number
+     * @return string result
+     */
     static String format(float floating) {
         return ansi().fgBrightBlue().a(String.format("%.2f", floating)).reset().toString();
     }
 
+
+    /**
+     * Colorfully format stopwatch result.
+     *
+     * @param stopwatch stopwatch
+     * @return string result
+     */
     static String format(Stopwatch stopwatch) {
         return ansi().fgBrightRed().a(stopwatch).reset().toString();
     }
 
-    static String format(File filename) {
-        return ansi().fgBrightMagenta().a(filename.getPath()).reset().toString();
+
+    /**
+     * Colorfully format filename.
+     *
+     * @param file file
+     * @return string result
+     */
+    static String format(File file) {
+        return ansi().fgBrightMagenta().a(file.getPath()).reset().toString();
     }
 
+
+    /**
+     * Colorfully format single character.
+     *
+     * @param character character
+     * @return string result
+     */
     static String format(char character) {
         return ansi().fgBrightCyan().a(character).reset().toString();
     }
 
+
+    /**
+     * Colorfully format measurement.
+     * <p>
+     * If rightAlign is set, then measurement will be aligned to 6th column (format %6s).
+     *
+     * @param value      measurement value
+     * @param parameter  measurement parameter
+     * @param rightAlign right alignment
+     * @return string result
+     */
     static String format(float value, Parameter parameter, boolean rightAlign) {
         String unit = " \u00b5g/m3";
         String color = getMeasurementColor(value, parameter);
@@ -83,6 +167,14 @@ class Format {
                 + ansi().reset();
     }
 
+
+    /**
+     * Get appropriate color of the measurement depending on the pollution severity.
+     *
+     * @param value     measurement value
+     * @param parameter measurement parameter
+     * @return string result
+     */
     static String getMeasurementColor(float value, Parameter parameter) {
         Ansi color = ansi().fgDefault();
 
@@ -130,10 +222,26 @@ class Format {
         return color.toString();
     }
 
+
+    /**
+     * Colorfully format date.
+     *
+     * @param date date
+     * @return string result
+     */
     static String format(LocalDateTime date) {
         return ansi().fgCyan().a(date.format(TIMESTAMP_DATE_FORMATTER)).reset().toString();
     }
 
+
+    /**
+     * Colorfully format provided air index.
+     * <p>
+     * Display every present parameter quality with color dependent on pollution severity.
+     *
+     * @param airIndex air index
+     * @return string result
+     */
     static String format(AirIndex airIndex) {
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -157,6 +265,13 @@ class Format {
         return stringBuilder.toString();
     }
 
+
+    /**
+     * Colorfully format quality.
+     *
+     * @param quality quality
+     * @return string result
+     */
     static String format(Quality quality) {
         Ansi color;
 

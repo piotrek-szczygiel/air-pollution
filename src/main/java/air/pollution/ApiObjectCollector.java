@@ -25,6 +25,7 @@ class ApiObjectCollector {
         this.jsonObjectFactory = jsonObjectFactory;
     }
 
+
     /**
      * Returns list of all stations or null if none exists.
      *
@@ -53,6 +54,7 @@ class ApiObjectCollector {
         return stations;
     }
 
+
     /**
      * Returns list of sensors for specified station or null if none exists.
      *
@@ -77,6 +79,7 @@ class ApiObjectCollector {
                 .map(jsonObjectFactory::fromJson)
                 .collect(Collectors.toList());
     }
+
 
     /**
      * Returns list of measurements for specified sensor or null if none exists.
@@ -103,6 +106,7 @@ class ApiObjectCollector {
 
         return sensorMeasurements;
     }
+
 
     /**
      * Returns air index for specified station or null if it doesn't exist.

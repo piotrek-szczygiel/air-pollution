@@ -17,12 +17,16 @@ import static air.pollution.Format.format;
  * Handles reading and writing cache to file archive.
  */
 class CacheFile {
-    private Logger logger = Logger.getLogger(this);
+
     private File file;
+
+    private Logger logger = Logger.getLogger(this);
+
 
     CacheFile(File file) {
         this.file = file;
     }
+
 
     /**
      * Load cache from file archive.
@@ -77,6 +81,7 @@ class CacheFile {
 
         return cache;
     }
+
 
     /**
      * Save cache to file archive.

@@ -6,9 +6,19 @@ import java.util.List;
 
 import static air.pollution.Format.format;
 
+/**
+ * Various helper methods used in other commands.
+ */
 class CommandUtils {
     static private Logger logger = Logger.getLogger(CommandUtils.class);
 
+    /**
+     * Repeat given string N times.
+     *
+     * @param string string to repeat
+     * @param count  number of repetitions
+     * @return repeated string
+     */
     static String repeatString(String string, int count) {
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -19,6 +29,14 @@ class CommandUtils {
         return stringBuilder.toString();
     }
 
+    /**
+     * Find earliest date in cache.
+     * <p>
+     * Used to determine minimal {@link Options#since} value.
+     *
+     * @param cache cache
+     * @return lowest date
+     */
     static LocalDateTime getLowestDate(Cache cache) {
         logger.debug("searching for lowest date in measurements...");
 
@@ -45,6 +63,14 @@ class CommandUtils {
         return lowestDate;
     }
 
+    /**
+     * Find latest date in cache.
+     * <p>
+     * Used to determine maximal {@link Options#until} value.
+     *
+     * @param cache cache
+     * @return highest date
+     */
     static LocalDateTime getHighestDate(Cache cache) {
         logger.debug("searching for highest date in measurements...");
 
@@ -71,6 +97,16 @@ class CommandUtils {
         return highestDate;
     }
 
+    /**
+     * Calculate average pollution of provided parameter.
+     *
+     * @param cache     cache
+     * @param stations  list of stations
+     * @param parameter parameter
+     * @param since     lower date bound
+     * @param until     higher date bound
+     * @return average pollution value
+     */
     static Float getAveragePollution(Cache cache, List<Station> stations, Parameter parameter,
                                      LocalDateTime since, LocalDateTime until) {
 
@@ -104,6 +140,16 @@ class CommandUtils {
         return null;
     }
 
+    /**
+     * Return list of measurements for given station and parameter between specified dates.
+     *
+     * @param cache     cache
+     * @param station   station
+     * @param parameter parameter
+     * @param since     lower date bound
+     * @param until     higher date bound
+     * @return list of measurements
+     */
     static List<SensorMeasurement> getMeasurementsInRange(Cache cache, Station station, Parameter parameter,
                                                           LocalDateTime since, LocalDateTime until) {
 
@@ -151,6 +197,16 @@ class CommandUtils {
         return measurementsInRange;
     }
 
+    /**
+     * Get minimal pollution value of parameter.
+     *
+     * @param cache     cache
+     * @param stations  list of stations
+     * @param parameter parameter
+     * @param since     lower date bound
+     * @param until     higher date bound
+     * @return minimal pollution value
+     */
     static Float getMinimalPollution(Cache cache, List<Station> stations, Parameter parameter,
                                      LocalDateTime since, LocalDateTime until) {
 
@@ -186,6 +242,16 @@ class CommandUtils {
         return minimal;
     }
 
+    /**
+     * Get maximal pollution value of parameter.
+     *
+     * @param cache     cache
+     * @param stations  stations
+     * @param parameter parameter
+     * @param since     lower date bound
+     * @param until     higher date bound
+     * @return maximal pollution value
+     */
     static Float getMaximalPollution(Cache cache, List<Station> stations, Parameter parameter,
                                      LocalDateTime since, LocalDateTime until) {
 
@@ -221,6 +287,16 @@ class CommandUtils {
         return maximal;
     }
 
+    /**
+     * Simple utility returning how many measurements/stations should you show.
+     * <p>
+     * If top is equal to zero, you should show everything you have.
+     * Otherwise you should show at most size.
+     *
+     * @param top  maximum number of measurements/stations to show
+     * @param size size of your list
+     * @return how many should you show
+     */
     static int howManyToShow(int top, int size) {
         if (top == 0) {
             return size;

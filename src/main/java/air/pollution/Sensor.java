@@ -1,6 +1,10 @@
 package air.pollution;
 
+/**
+ * Holds information about sensor.
+ */
 class Sensor {
+
     private int id;
     private Parameter parameter;
 
@@ -11,6 +15,7 @@ class Sensor {
     void setId(int id) {
         this.id = id;
     }
+
 
     Parameter getParameter() {
         return parameter;

@@ -1,6 +1,11 @@
 package air.pollution;
 
+
+/**
+ * Holds information about station.
+ */
 class Station {
+
     private int id;
     private String name;
 
@@ -11,6 +16,7 @@ class Station {
     void setId(int id) {
         this.id = id;
     }
+
 
     String getName() {
         return name;

@@ -4,7 +4,11 @@ import java.util.List;
 
 import static air.pollution.Format.format;
 
+/**
+ * Command listing all available stations.
+ */
 class CommandListAllStations implements Command {
+
     private Logger logger = Logger.getLogger(this);
 
     @Override

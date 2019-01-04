@@ -3,7 +3,18 @@ package air.pollution;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Factory for creating usable objects from my JSON objects.
+ */
 class JsonObjectFactory {
+
+    /**
+     * Create air index object from its JSON representation.
+     *
+     * @param jsonAirIndex JSON air index
+     * @return air index
+     * @see AirIndex
+     */
     AirIndex fromJson(JsonAirIndex jsonAirIndex) {
         AirIndex airIndex = new AirIndex();
 
@@ -20,6 +31,14 @@ class JsonObjectFactory {
         return airIndex;
     }
 
+
+    /**
+     * Create station object from its JSON representation.
+     *
+     * @param jsonStation JSON station
+     * @return station
+     * @see Station
+     */
     Station fromJson(JsonStation jsonStation) {
         Station station = new Station();
 
@@ -29,6 +48,14 @@ class JsonObjectFactory {
         return station;
     }
 
+
+    /**
+     * Create sensor object from its JSON representation
+     *
+     * @param jsonSensor JSON sensor
+     * @return sensor
+     * @see Sensor
+     */
     Sensor fromJson(JsonSensor jsonSensor) {
         Sensor sensor = new Sensor();
 
@@ -40,6 +67,14 @@ class JsonObjectFactory {
         return sensor;
     }
 
+
+    /**
+     * Create list of measurements objects from their JSON representation.
+     *
+     * @param jsonSensorMeasurements JSON measurements
+     * @return list of measurements
+     * @see SensorMeasurement
+     */
     List<SensorMeasurement> fromJson(JsonSensorMeasurements jsonSensorMeasurements) {
         List<SensorMeasurement> measurements = new ArrayList<>();
 

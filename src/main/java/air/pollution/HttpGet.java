@@ -6,8 +6,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * Fetches data using HTTP GET.
+ */
 class HttpGet {
 
+    /**
+     * Fetch data from specified website.
+     *
+     * @param urlAddress URL of website
+     * @return website contents
+     * @throws IOException on unsuccessful GET request
+     */
     String from(String urlAddress) throws IOException {
         final int timeoutInMilliseconds = 3000;
 

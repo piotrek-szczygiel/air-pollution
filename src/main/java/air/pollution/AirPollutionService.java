@@ -11,6 +11,7 @@ import static air.pollution.Format.format;
  * Collects JSON objects from API.
  */
 class AirPollutionService {
+
     private static final String apiAddress = "http://api.gios.gov.pl/pjp-api/rest/";
 
     private static final String apiFetchAirIndex = apiAddress + "aqindex/getIndex/";
@@ -23,11 +24,13 @@ class AirPollutionService {
 
     private Logger logger = Logger.getLogger(this);
 
+
     AirPollutionService(Gson gson) {
         this.gson = gson;
 
         get = new HttpGet();
     }
+
 
     /**
      * Returns list of JSON stations or null if none exists.
@@ -48,6 +51,7 @@ class AirPollutionService {
 
         return jsonStations;
     }
+
 
     /**
      * Returns list of JSON sensors for specified station or null if none exists.
@@ -72,6 +76,7 @@ class AirPollutionService {
         return jsonSensors;
     }
 
+
     /**
      * Returns sensor measurements for specified sensor or null if none exists.
      *
@@ -95,6 +100,7 @@ class AirPollutionService {
 
         return jsonSensorMeasurements;
     }
+
 
     /**
      * Returns air index for specified station or null if it doesn't exist.

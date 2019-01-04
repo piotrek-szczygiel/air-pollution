@@ -2,7 +2,13 @@ package air.pollution;
 
 import static air.pollution.Format.format;
 
+/**
+ * Command displaying air index for specified stations.
+ * <p>
+ * Every index is displayed with appropriate color depending on air quality.
+ */
 class CommandAirIndex implements Command {
+
     private Logger logger = Logger.getLogger(this);
 
     @Override

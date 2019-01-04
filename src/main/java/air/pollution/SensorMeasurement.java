@@ -4,7 +4,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
+
+/**
+ * Holds information about specific measurement.
+ */
 class SensorMeasurement implements Comparable<SensorMeasurement> {
+
     private Parameter parameter;
     private LocalDateTime date;
     private float value;
@@ -17,6 +22,7 @@ class SensorMeasurement implements Comparable<SensorMeasurement> {
         this.parameter = parameter;
     }
 
+
     LocalDateTime getDate() {
         return date;
     }
@@ -25,10 +31,6 @@ class SensorMeasurement implements Comparable<SensorMeasurement> {
         this.date = date;
     }
 
-    @Override
-    public int compareTo(@NotNull SensorMeasurement other) {
-        return Float.compare(value, other.getValue());
-    }
 
     float getValue() {
         return value;
@@ -36,5 +38,17 @@ class SensorMeasurement implements Comparable<SensorMeasurement> {
 
     void setValue(float value) {
         this.value = value;
+    }
+
+
+    /**
+     * Compare two measurements by their pollution value.
+     *
+     * @param other other measurement
+     * @return comparison result
+     */
+    @Override
+    public int compareTo(@NotNull SensorMeasurement other) {
+        return Float.compare(value, other.getValue());
     }
 }

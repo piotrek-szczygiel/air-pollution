@@ -5,7 +5,15 @@ import java.io.PrintStream;
 import java.text.Normalizer;
 import java.util.regex.Pattern;
 
+
+/**
+ * Provides various utilities used in this program.
+ */
 class Utils {
+
+    /**
+     * Spinner animation used in {@link Cache#cacheStations}.
+     */
     static private char[] spinner = {
             '-',
             '\\',
@@ -13,6 +21,24 @@ class Utils {
             '/'
     };
 
+
+    /**
+     * Returns {@link #spinner} for given frame.
+     *
+     * @param iteration iteration of the animation
+     * @return spinner frame
+     */
+    static char getSpinner(int iteration) {
+        return spinner[iteration % spinner.length];
+    }
+
+
+    /**
+     * Normalizes given string - strips all its accents and makes it lowercase.
+     *
+     * @param input input
+     * @return normalized string
+     */
     static String normalizeString(final String input) {
         return stripAccents(input.toLowerCase().trim());
     }
@@ -39,14 +65,14 @@ class Utils {
         }
     }
 
+
+    /**
+     * Disable standard error output.
+     */
     static void disableStderr() {
         System.setErr(new PrintStream(new OutputStream() {
             public void write(int b) {
             }
         }));
-    }
-
-    static char getSpinner(int iteration) {
-        return spinner[iteration % spinner.length];
     }
 }

@@ -3,6 +3,9 @@ package air.pollution;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Stores information about options provided through command line arguments.
+ */
 class Options {
     List<Station> stations;
     List<Parameter> parameters;

@@ -2,7 +2,11 @@ package air.pollution;
 
 import static air.pollution.Format.format;
 
+/**
+ * Command displaying highest fluctuating parameter for specified stations and parameters.
+ */
 class CommandHighestFluctuation implements Command {
+
     private Logger logger = Logger.getLogger(this);
 
     @Override

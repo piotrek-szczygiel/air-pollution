@@ -1,6 +1,10 @@
 package air.pollution;
 
+/**
+ * Parameters that we are measuring.
+ */
 enum Parameter {
+
     PM10,
     PM25,
     O3,
@@ -9,6 +13,13 @@ enum Parameter {
     C6H6,
     CO;
 
+
+    /**
+     * Create parameter object from given formula.
+     *
+     * @param formula formula
+     * @return parameter
+     */
     static Parameter fromString(String formula) {
         Parameter parameter = null;
 

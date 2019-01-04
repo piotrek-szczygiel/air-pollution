@@ -2,7 +2,11 @@ package air.pollution;
 
 import static air.pollution.Format.format;
 
+/**
+ * Command displaying average pollution for specified stations and parameters.
+ */
 class CommandAveragePollution implements Command {
+
     private Logger logger = Logger.getLogger(this);
 
     @Override

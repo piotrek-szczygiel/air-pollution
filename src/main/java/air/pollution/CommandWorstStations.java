@@ -7,6 +7,9 @@ import static java.util.Collections.reverseOrder;
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toMap;
 
+/**
+ * Command displaying most polluted stations for given parameters.
+ */
 class CommandWorstStations implements Command {
     private Logger logger = Logger.getLogger(this);
 

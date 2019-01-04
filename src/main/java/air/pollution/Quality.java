@@ -1,6 +1,10 @@
 package air.pollution;
 
+/**
+ * Describes air quality of measurements.
+ */
 enum Quality {
+
     EXCELLENT("Excellent"),
     GOOD("Good"),
     MODERATE("Moderate"),
@@ -15,6 +19,13 @@ enum Quality {
         this.qualityName = qualityName;
     }
 
+
+    /**
+     * Creates quality object from given JSON index level.
+     *
+     * @param indexLevel JSON index level
+     * @return quality
+     */
     static Quality fromIndexLevel(JsonAirIndex.IndexLevel indexLevel) {
         if (indexLevel == null || indexLevel.indexLevelName == null) {
             return UNKNOWN;
@@ -23,6 +34,13 @@ enum Quality {
         return fromString(indexLevel.indexLevelName);
     }
 
+
+    /**
+     * Creates quality object from given string formula.
+     *
+     * @param indexLevelName string formula
+     * @return quality
+     */
     static Quality fromString(String indexLevelName) {
         indexLevelName = Utils.normalizeString(indexLevelName);
 

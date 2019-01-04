@@ -3,7 +3,11 @@ package air.pollution;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Strategy for executing commands.
+ */
 class OptionStrategy {
+
     private boolean listStations;
     private boolean airIndex;
     private boolean measurement;
@@ -33,6 +37,13 @@ class OptionStrategy {
         this.graph = graph;
     }
 
+
+    /**
+     * Invoke requested commands.
+     *
+     * @param cache   cache
+     * @param options options
+     */
     void invoke(Cache cache, Options options) {
         List<Command> commands = new LinkedList<>();
 

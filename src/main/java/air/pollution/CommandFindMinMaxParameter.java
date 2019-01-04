@@ -5,7 +5,11 @@ import java.util.List;
 
 import static air.pollution.Format.format;
 
+/**
+ * Command displaying lowest and highest measurement for specified stations and parameters.
+ */
 class CommandFindMinMaxParameter implements Command {
+
     private Logger logger = Logger.getLogger(this);
 
     @Override

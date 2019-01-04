@@ -1,5 +1,10 @@
 package air.pollution;
 
+/**
+ * JSON representation of fetched air index for GSON parser.
+ *
+ * @see AirIndex
+ */
 class JsonAirIndex {
     IndexLevel stIndexLevel;
     IndexLevel so2IndexLevel;

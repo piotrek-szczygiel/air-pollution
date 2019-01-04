@@ -7,7 +7,11 @@ import static air.pollution.Format.format;
 import static air.pollution.Parameter.*;
 import static org.fusesource.jansi.Ansi.ansi;
 
+/**
+ * Command displaying measurements that are above the norm for specified stations and parameters.
+ */
 class CommandFindAboveNorm implements Command {
+
     private Map<Parameter, Float> norms = new HashMap<>() {{
         put(PM10, 50.0f);
         put(PM25, 25.0f);

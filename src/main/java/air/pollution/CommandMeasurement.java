@@ -6,6 +6,12 @@ import static air.pollution.Format.MEASUREMENT_DATE_FORMATTER;
 import static air.pollution.Format.format;
 import static org.fusesource.jansi.Ansi.ansi;
 
+/**
+ * Command displaying measurements for specified stations and parameters.
+ * <p>
+ * Besides measurement value, it also displays its date.
+ * Measurement value is also colored according to severity of pollution.
+ */
 class CommandMeasurement implements Command {
 
     private Logger logger = Logger.getLogger(this);

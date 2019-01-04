@@ -119,7 +119,6 @@ class Cache {
      * Set API collector dependency.
      *
      * @param apiObjectCollector API collector
-     * @see ApiObjectCollector
      */
     void setApiObjectCollector(ApiObjectCollector apiObjectCollector) {
         this.apiObjectCollector = apiObjectCollector;

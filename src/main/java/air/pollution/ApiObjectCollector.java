@@ -5,7 +5,13 @@ import java.util.stream.Collectors;
 
 import static air.pollution.Format.format;
 
+/**
+ * Collects objects from air pollution service and transforms them into usable objects.
+ *
+ * @see AirPollutionService
+ */
 class ApiObjectCollector {
+
     // How many times do we retry API request before giving up
     private static final int RETRY_COUNT = 5;
 
@@ -19,6 +25,12 @@ class ApiObjectCollector {
         this.jsonObjectFactory = jsonObjectFactory;
     }
 
+    /**
+     * Returns list of all stations or null if none exists.
+     *
+     * @return list of stations
+     * @see Station
+     */
     List<Station> getAllStations() {
         List<JsonStation> jsonStations = null;
 
@@ -41,6 +53,13 @@ class ApiObjectCollector {
         return stations;
     }
 
+    /**
+     * Returns list of sensors for specified station or null if none exists.
+     *
+     * @param stationId id of station
+     * @return list of sensors
+     * @see Sensor
+     */
     List<Sensor> getAllSensors(int stationId) {
         List<JsonSensor> jsonSensors = null;
 
@@ -59,6 +78,13 @@ class ApiObjectCollector {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Returns list of measurements for specified sensor or null if none exists.
+     *
+     * @param sensorId if of sensor
+     * @return list of measurements
+     * @see SensorMeasurement
+     */
     List<SensorMeasurement> getSensorMeasurements(int sensorId) {
         JsonSensorMeasurements jsonSensorMeasurements = null;
 
@@ -78,6 +104,13 @@ class ApiObjectCollector {
         return sensorMeasurements;
     }
 
+    /**
+     * Returns air index for specified station or null if it doesn't exist.
+     *
+     * @param stationId id of station
+     * @return air index
+     * @see AirIndex
+     */
     AirIndex getAirIndex(int stationId) {
         JsonAirIndex jsonAirIndex = null;
 

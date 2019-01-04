@@ -7,6 +7,9 @@ import java.util.List;
 
 import static air.pollution.Format.format;
 
+/**
+ * Collects JSON objects from API.
+ */
 class AirPollutionService {
     private static final String apiAddress = "http://api.gios.gov.pl/pjp-api/rest/";
 
@@ -26,6 +29,12 @@ class AirPollutionService {
         get = new HttpGet();
     }
 
+    /**
+     * Returns list of JSON stations or null if none exists.
+     *
+     * @return list of stations
+     * @see JsonStation
+     */
     List<JsonStation> fetchAllStations() {
         List<JsonStation> jsonStations;
 
@@ -40,6 +49,13 @@ class AirPollutionService {
         return jsonStations;
     }
 
+    /**
+     * Returns list of JSON sensors for specified station or null if none exists.
+     *
+     * @param stationId id of station
+     * @return list of sensors
+     * @see JsonSensor
+     */
     List<JsonSensor> fetchAllSensors(int stationId) {
         List<JsonSensor> jsonSensors;
 
@@ -56,6 +72,13 @@ class AirPollutionService {
         return jsonSensors;
     }
 
+    /**
+     * Returns sensor measurements for specified sensor or null if none exists.
+     *
+     * @param sensorId id of sensor
+     * @return sensor measurements
+     * @see JsonSensorMeasurements
+     */
     JsonSensorMeasurements fetchSensorMeasurements(int sensorId) {
         JsonSensorMeasurements jsonSensorMeasurements;
 
@@ -73,6 +96,13 @@ class AirPollutionService {
         return jsonSensorMeasurements;
     }
 
+    /**
+     * Returns air index for specified station or null if it doesn't exist.
+     *
+     * @param stationId id of station
+     * @return air index
+     * @see JsonAirIndex
+     */
     JsonAirIndex fetchAirIndex(int stationId) {
         JsonAirIndex jsonAirIndex;
 

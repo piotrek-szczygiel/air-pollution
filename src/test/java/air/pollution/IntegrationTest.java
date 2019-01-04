@@ -11,7 +11,6 @@ import org.mockito.junit.MockitoRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -285,7 +284,8 @@ public class IntegrationTest {
                         CommandUtils.getHighestDate(cache),
                         0,
                         0,
-                        23
+                        23,
+                        true
                 );
 
         OptionStrategy strategy =
@@ -296,9 +296,7 @@ public class IntegrationTest {
         String actualResult = outContent.toString()
                 .replace("\r\n", "\n");
 
-        String expectedResult =
-                new String(Files.readAllBytes(Paths.get(integrationTestResultPath)),
-                        StandardCharsets.UTF_8);
+        String expectedResult = Files.readString(Paths.get(integrationTestResultPath));
 
 //        Files.write(Paths.get(integrationTestResultPath), actualResult.getBytes(StandardCharsets.UTF_8));
 

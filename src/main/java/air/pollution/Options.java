@@ -17,9 +17,11 @@ class Options {
     int hourSince;
     int hourUntil;
 
+    boolean verbose;
+
     Options(List<Station> stations, List<Parameter> parameters,
             LocalDateTime since, LocalDateTime until, LocalDateTime today,
-            int top, int hourSince, int hourUntil) {
+            int top, int hourSince, int hourUntil, boolean verbose) {
 
         this.stations = stations;
         this.parameters = parameters;
@@ -29,5 +31,6 @@ class Options {
         this.top = top;
         this.hourSince = hourSince;
         this.hourUntil = hourUntil;
+        this.verbose = verbose;
     }
 }

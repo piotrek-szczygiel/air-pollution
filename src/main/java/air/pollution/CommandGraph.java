@@ -15,7 +15,7 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 class CommandGraph implements Command {
     private static final DateTimeFormatter GRAPH_DATE_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-    private static final DateTimeFormatter SPECIFIC_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM");
+    private static final DateTimeFormatter SPECIFIC_DATE_FORMATTER = DateTimeFormatter.ofPattern("d MMMM");
 
     private static final int DATE_LENGTH = 5;
     private static final int ASCII_BAR_LENGTH = 70;
@@ -116,22 +116,29 @@ class CommandGraph implements Command {
                             Format.getMeasurementColor(value, parameter),
                             repeatString("\u2588", barLength));
 
-                    String dateString = SPECIFIC_DATE_FORMATTER.format(date);
 
-                    if (date.getDayOfYear() == options.today.getDayOfYear()) {
-                        dateString = "Today";
-                    } else if (date.getDayOfYear() == options.today.getDayOfYear() - 1) {
-                        dateString = "Yesterday";
-                    }
-
-                    System.out.printf(" %s%.2f %s%s, %s%s%n",
+                    System.out.printf(" %s%.2f%s",
                             getMeasurementColor(value, parameter),
                             value,
-                            ansi().fgBrightBlack(),
-                            dateString,
-                            measurementEntry.getKey().getName(),
                             ansi().reset());
 
+                    if (options.verbose) {
+                        String dateString = SPECIFIC_DATE_FORMATTER.format(date);
+
+                        if (date.getDayOfYear() == options.today.getDayOfYear()) {
+                            dateString = "Today";
+                        } else if (date.getDayOfYear() == options.today.getDayOfYear() - 1) {
+                            dateString = "Yesterday";
+                        }
+
+                        System.out.printf(" %s%s, %s%s",
+                                ansi().fgBrightBlack(),
+                                dateString,
+                                measurementEntry.getKey().getName(),
+                                ansi().reset());
+                    }
+
+                    System.out.printf("%n");
                     i++;
                 }
             }

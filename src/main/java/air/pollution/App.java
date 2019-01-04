@@ -298,7 +298,8 @@ public class App implements Runnable {
                         LocalDateTime.now(),
                         optionTop,
                         optionHourSince,
-                        optionHourUntil
+                        optionHourUntil,
+                        optionVerbosity.length > 0
                 );
 
         // Prepare execution strategy

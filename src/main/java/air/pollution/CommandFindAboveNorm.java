@@ -33,7 +33,15 @@ class CommandFindAboveNorm implements Command {
         for (Station station : options.stations) {
             List<RatioAndOutput> averageValuesAndOutputs = new ArrayList<>();
 
+
+            int show = CommandUtils.howManyToShow(options.top, options.parameters.size());
+            int counter = 0;
+
             for (Parameter parameter : options.parameters) {
+
+                if (counter >= show) {
+                    break;
+                }
 
                 // Skip if there are no defined norms
                 if (!norms.containsKey(parameter)) {
@@ -97,6 +105,8 @@ class CommandFindAboveNorm implements Command {
                 ratioAndOutput.ratio = ratio;
                 ratioAndOutput.output = output.toString();
                 averageValuesAndOutputs.add(ratioAndOutput);
+
+                counter++;
             }
 
             averageValuesAndOutputs.sort(Comparator.comparing(o -> o.ratio));
